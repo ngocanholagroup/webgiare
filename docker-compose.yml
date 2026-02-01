@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  # 1. Web Server (PHP + Apache)
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: webgiare_app
+    ports:
+      - "8080:80"  # Truy cập web qua http://localhost:8080
+    volumes:
+      - ./src:/var/www/html # Mount code từ máy thật vào container để sửa code live
+    depends_on:
+      - db
+    networks:
+      - webgiare_net
+
+  # 2. Database (MySQL)
+  db:
+    image: mysql:8.0
+    container_name: webgiare_db
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword  # Mật khẩu root
+      MYSQL_DATABASE: webgiare_db        # Tên database tạo sẵn
+      MYSQL_USER: user_dev               # User thường
+      MYSQL_PASSWORD: userpassword       # Mật khẩu user thường
+    volumes:
+      - db_data:/var/lib/mysql           # Giữ dữ liệu không bị mất khi tắt container
+    networks:
+      - webgiare_net
+
+  # 3. Quản trị DB (phpMyAdmin)
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: webgiare_pma
+    environment:
+      PMA_HOST: db                       # Tên service mysql ở trên
+      PMA_USER: root
+      PMA_PASSWORD: rootpassword
+    ports:
+      - "8081:80" # Truy cập phpMyAdmin qua http://localhost:8081
+    depends_on:
+      - db
+    networks:
+      - webgiare_net
+
+# Khai báo Volumes và Networks
+volumes:
+  db_data:
+
+networks:
+  webgiare_net:
+    driver: bridge

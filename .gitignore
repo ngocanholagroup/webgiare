@@ -1,0 +1,14 @@
+# Hệ điều hành
+.DS_Store
+Thumbs.db
+
+# IDE (VS Code, PHPStorm...)
+.idea/
+.vscode/
+*.swp
+
+# Docker (nếu bạn có map volume local, tránh commit data DB lên git)
+docker/mysql-data/
+
+# Environment variables (Bảo mật)
+.env
