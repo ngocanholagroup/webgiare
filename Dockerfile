@@ -1,14 +1,24 @@
-# Sử dụng PHP 8.2 kèm Apache
 FROM php:8.2-apache
 
-# Cài đặt các extension cần thiết cho MySQL
+# Cài đặt extension
 RUN docker-php-ext-install mysqli pdo pdo_mysql
 
-# Bật mod_rewrite của Apache (hữu ích nếu bạn làm router cho PHP thuần sau này)
+# Bật mod_rewrite
 RUN a2enmod rewrite
 
-# Thiết lập thư mục làm việc
-WORKDIR /var/www/html
+# --- THÊM ĐOẠN NÀY ---
+# Cấu hình Apache để cho phép file .htaccess hoạt động trong /var/www/html
+ENV APACHE_DOCUMENT_ROOT /var/www/html
 
-# Copy source code vào container (tùy chọn, vì chúng ta sẽ mount volume ở docker-compose)
-# COPY ./src /var/www/html
+RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
+RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
+
+# Cho phép AllowOverride All (quan trọng cho .htaccess)
+RUN echo '<Directory /var/www/html/>' >> /etc/apache2/apache2.conf
+RUN echo '    Options Indexes FollowSymLinks' >> /etc/apache2/apache2.conf
+RUN echo '    AllowOverride All' >> /etc/apache2/apache2.conf
+RUN echo '    Require all granted' >> /etc/apache2/apache2.conf
+RUN echo '</Directory>' >> /etc/apache2/apache2.conf
+# ---------------------
+
+WORKDIR /var/www/html

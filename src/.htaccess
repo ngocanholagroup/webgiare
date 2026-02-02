@@ -1,0 +1,8 @@
+RewriteEngine On
+
+# Nếu request là file hoặc thư mục có thật thì không rewrite (để load ảnh, css, js)
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Chuyển tất cả request còn lại về index.php
+RewriteRule ^(.*)$ index.php [QSA,L]
