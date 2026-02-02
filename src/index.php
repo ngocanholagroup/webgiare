@@ -61,7 +61,12 @@ $router->get('/lien-he', function() {
 });
 
 // Route Admin (Ví dụ)
-// $router->get('/admin', [AdminController::class, 'dashboard']);
+$router->get('/admin', [AdminController::class, 'dashboard']);
+
+// Router login admin (form)
+$router->get('/admin/login', function() {
+    view('admin.login', ['title' => 'Đăng nhập Admin']);
+});
 
 // --- CHẠY ---
 $router->resolve();
