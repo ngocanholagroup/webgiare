@@ -6,11 +6,10 @@ class Database {
     private $conn;
 
     private function __construct() {
-        // Thông tin lấy từ docker-compose.yml của bạn
-        $host = 'db'; // Tên service trong docker-compose
-        $db   = 'webgiare_db';
-        $user = 'user_dev';
-        $pass = 'userpassword';
+        $host = getenv('DB_HOST') ?: 'db';
+        $db   = getenv('DB_NAME') ?: 'webgiare_db';
+        $user = getenv('DB_USER') ?: 'user_dev';
+        $pass = getenv('DB_PASS') ?: 'userpassword';
         $charset = 'utf8mb4';
 
         $dsn = "mysql:host=$host;dbname=$db;charset=$charset";

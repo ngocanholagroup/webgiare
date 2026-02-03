@@ -126,26 +126,11 @@ function isActive($keyword, $uri) {
                 <button onclick="toggleSidebar()" class="lg:hidden p-2 -ml-2 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors">
                     <i data-lucide="menu" class="w-6 h-6"></i>
                 </button>
-                
-                <nav class="hidden md:flex text-sm font-medium text-slate-500">
-                    <a href="/admin/dashboard" class="hover:text-orange-600 transition-colors">Admin</a>
-                    <span class="mx-2 text-slate-300">/</span>
-                    <span class="text-slate-800 capitalize"><?= str_replace(['/admin/', '.php'], '', $uri) ?: 'Dashboard' ?></span>
-                </nav>
             </div>
 
-            <div class="flex items-center gap-3">
-                <a href="/" target="_blank" class="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-slate-100 hover:bg-orange-50 text-slate-600 hover:text-orange-600 rounded-full text-xs font-bold transition-all border border-transparent hover:border-orange-200">
-                    <i data-lucide="globe" class="w-3.5 h-3.5"></i> Xem trang chủ
-                </a>
-
-                <div class="h-6 w-px bg-slate-200 mx-1"></div>
-
-                <button class="relative p-2 text-slate-500 hover:bg-slate-100 rounded-full transition-colors">
-                    <i data-lucide="bell" class="w-5 h-5"></i>
-                    <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full ring-2 ring-white"></span>
-                </button>
-            </div>
+            <a href="/" target="_blank" class="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-slate-100 hover:bg-orange-50 text-slate-600 hover:text-orange-600 rounded-full text-xs font-bold transition-all border border-transparent hover:border-orange-200">
+                <i data-lucide="globe" class="w-3.5 h-3.5"></i> Xem trang chủ
+            </a>
         </header>
 
         <main class="flex-1 p-4 lg:p-8 overflow-y-auto">

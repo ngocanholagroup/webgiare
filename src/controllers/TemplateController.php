@@ -1,78 +1,114 @@
 <?php
 // src/controllers/TemplateController.php
-
-require_once __DIR__ . '/../models/Database.php';
+require_once __DIR__ . '/../models/Template.php';
+require_once __DIR__ . '/../models/TemplateCategory.php';
 
 class TemplateController {
-    
-    // Trang danh sách giao diện
-    public function index() {
-        $seoData = [
-            'title' => 'Kho Giao Diện Website Đẹp',
-            'meta_title' => 'Kho 500+ Mẫu Website Đẹp, Chuẩn SEO, Giá Rẻ - HolaGroup',
-            'meta_desc' => 'Tổng hợp các mẫu giao diện website bán hàng, bất động sản, doanh nghiệp đẹp nhất 2026. Tối ưu tốc độ, chuẩn mobile, bảo hành trọn đời.',
-            'og_image' => 'https://yourdomain.com/assets/images/template-store-cover.jpg'
-        ];
-        
-        view('client.template', $seoData);
+    private $templateModel;
+    private $categoryModel;
+
+    public function __construct() {
+        $this->templateModel = new TemplateModel();
+        $this->categoryModel = new TemplateCategoryModel();
     }
 
-    // Trang chi tiết giao diện (QUAN TRỌNG)
-    public function detail($slug) {
-        // 1. Giả lập dữ liệu Template
-        $template = [
-            'id' => 1,
-            'name' => 'TechZone - Siêu thị điện máy',
-            'price' => 2500000, // Giá số nguyên để dùng cho Schema
-            'price_text' => '2.500.000đ', // Giá hiển thị
-            'category' => 'Bán hàng',
-            'desc' => 'Giao diện web bán hàng điện máy chuẩn SEO, tích hợp bộ lọc thông minh, thanh toán online.',
-            'images' => [
-                'main' => 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80'
+    public function index() {
+        // 1. Nhận tham số từ URL
+        $catSlug = $_GET['cat'] ?? 'all';
+        $keyword = $_GET['q'] ?? null;
+        $page    = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+        $limit   = 9; // Số lượng template trên 1 trang (9 cái cho đẹp grid 3x3)
+
+        // 2. Tính toán phân trang
+        $totalRecords = $this->templateModel->countAll($catSlug, $keyword);
+        $totalPages   = ceil($totalRecords / $limit);
+        
+        // Đảm bảo page hợp lệ
+        if ($page < 1) $page = 1;
+        if ($page > $totalPages && $totalPages > 0) $page = $totalPages;
+
+        $offset = ($page - 1) * $limit;
+
+        // 3. Lấy dữ liệu
+        $templates = $this->templateModel->getAll($limit, $offset, $catSlug, $keyword);
+        $categories = $this->categoryModel->getAll();
+
+        // 4. Xử lý SEO Title
+        $pageTitle = 'Kho Giao Diện Website';
+        if ($catSlug !== 'all') {
+            $catInfo = $this->categoryModel->getBySlug($catSlug);
+            if ($catInfo) $pageTitle = 'Mẫu Website ' . $catInfo['name'];
+        }
+        if ($keyword) {
+            $pageTitle .= ' - Tìm kiếm: ' . $keyword;
+        }
+
+        // 5. Truyền dữ liệu sang View
+        $data = [
+            'title' => $pageTitle,
+            'templates' => $templates,
+            'categories' => $categories,
+            'active_cat' => $catSlug,
+            'keyword' => $keyword,
+            
+            // Dữ liệu phân trang
+            'pagination' => [
+                'current_page' => $page,
+                'total_pages' => $totalPages,
+                'total_records' => $totalRecords
             ]
         ];
+        
+        view('client.template', $data);
+    }
 
-        // 2. Tạo Schema JSON-LD (Dạng Product)
-        // Giúp Google hiển thị: Giá tiền + Trạng thái còn hàng (Rich Snippets)
+    public function detail($slug) {
+        $template = $this->templateModel->getBySlug($slug);
+
+        if (!$template) {
+            // Xử lý 404 tốt hơn: load view 404
+            echo "404 - Không tìm thấy giao diện";
+            return;
+        }
+
+        // Format giá
+        $price_val = $template['sale_price'] > 0 ? $template['sale_price'] : $template['price'];
+        $template['price_text'] = number_format($price_val, 0, ',', '.') . 'đ';
+        $template['old_price_text'] = ($template['sale_price'] > 0) ? number_format($template['price'], 0, ',', '.') . 'đ' : null;
+
+        // --- MỚI: Lấy 4 giao diện liên quan ---
+        $related_templates = $this->templateModel->getRelated($template['category_id'], $template['id'], 4);
+
+        // Schema JSON-LD
         $schema = [
             "@context" => "https://schema.org/",
             "@type" => "Product",
             "name" => $template['name'],
-            "image" => [
-                $template['images']['main']
-            ],
-            "description" => $template['desc'],
-            "brand" => [
-                "@type" => "Brand",
-                "name" => "HolaGroup"
-            ],
+            "sku" => $template['sku'],
+            "image" => [$template['images']['main']],
+            "description" => strip_tags($template['description']),
+            "brand" => ["@type" => "Brand", "name" => "HolaGroup"],
             "offers" => [
                 "@type" => "Offer",
-                "url" => "http://" . $_SERVER['HTTP_HOST'] . "/templates/" . $slug,
+                "url" => "http://" . $_SERVER['HTTP_HOST'] . "/kho-giao-dien/" . $slug,
                 "priceCurrency" => "VND",
-                "price" => $template['price'],
-                "availability" => "https://schema.org/InStock", // Trạng thái còn hàng
+                "price" => $price_val,
+                "availability" => "https://schema.org/InStock",
                 "itemCondition" => "https://schema.org/NewCondition"
             ]
         ];
 
-        // 3. Chuẩn bị dữ liệu SEO
         $data = [
             'template' => $template,
-            'slug' => $slug,
-
-            // SEO Tags
-            'meta_title' => 'Mẫu web ' . $template['name'] . ' - Giá Rẻ | HolaGroup',
-            'meta_desc' => "Mua mẫu website " . $template['name'] . " chỉ với " . $template['price_text'] . ". " . $template['desc'],
-            'meta_keywords' => 'web điện máy, mẫu web bán hàng, giao diện techzone',
+            'related_templates' => $related_templates, // <--- Truyền biến này sang View
             
-            'meta_canonical' => "http://" . $_SERVER['HTTP_HOST'] . "/templates/" . $slug,
-
-            // Social Share
-            'og_type' => 'product', // Facebook hiểu đây là sản phẩm
+            // SEO
+            'title' => $template['name'] . ' - Mẫu Web Đẹp',
+            'meta_title' => $template['name'] . ' - Giá Rẻ | HolaGroup',
+            'meta_desc' => substr(strip_tags($template['description']), 0, 160),
+            'meta_canonical' => "http://" . $_SERVER['HTTP_HOST'] . "/kho-giao-dien/" . $slug,
+            'og_type' => 'product',
             'og_image' => $template['images']['main'],
-
-            // Schema
             'schema_json' => json_encode($schema)
         ];
 

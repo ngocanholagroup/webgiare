@@ -199,22 +199,6 @@ $posts = [
             </div>
 
             <div class="w-full lg:w-4/12 space-y-8">
-
-                <div class="bg-slate-900 rounded-3xl p-8 text-center relative overflow-hidden shadow-xl">
-                    <div class="absolute top-0 right-0 w-32 h-32 bg-orange-500 rounded-full blur-[60px] opacity-20"></div>
-                    <div class="relative z-10">
-                        <div class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center text-orange-500 mx-auto mb-4 border border-white/10">
-                            <i data-lucide="mail" class="w-6 h-6"></i>
-                        </div>
-                        <h4 class="text-xl font-bold text-white mb-2">Đăng ký nhận tin</h4>
-                        <p class="text-slate-400 text-sm mb-6">Nhận các bài viết mới nhất về kinh doanh online và mã giảm giá hàng tuần.</p>
-                        <form class="space-y-3">
-                            <input type="email" placeholder="Email của bạn..." class="w-full bg-slate-800 border border-slate-700 text-white px-4 py-3 rounded-xl focus:outline-none focus:border-orange-500 transition-colors">
-                            <button class="w-full bg-orange-600 hover:bg-orange-700 text-white font-bold py-3 rounded-xl transition-colors shadow-lg">Đăng ký ngay</button>
-                        </form>
-                    </div>
-                </div>
-
                 <div class="bg-white rounded-3xl p-8 border border-slate-200 shadow-sm">
                     <h4 class="text-lg font-bold text-slate-900 mb-6 border-b border-slate-100 pb-2">Từ khóa hot</h4>
                     <div class="flex flex-wrap gap-2">

@@ -15,6 +15,11 @@ services:
       - db
     networks:
       - webgiare_net
+    environment:
+      - DB_HOST=db
+      - DB_NAME=webgiare_db
+      - DB_USER=user_dev
+      - DB_PASS=userpassword
 
   # 2. Database (MySQL)
   db:
