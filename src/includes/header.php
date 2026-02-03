@@ -6,37 +6,43 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-    <title><?= $title ?? 'Web Giá Rẻ - Thiết kế website trọn gói uy tín, chuyên nghiệp' ?></title>
+    <title><?= $meta_title ?? $title ?? 'Web Giá Rẻ - Thiết kế website trọn gói uy tín, chuyên nghiệp' ?></title>
     
-    <meta name="description" content="<?= $description ?? 'Dịch vụ thiết kế website giá rẻ, chuẩn SEO tại TP.HCM. Kho giao diện đẹp, load nhanh, bảo hành trọn đời. Tư vấn giải pháp chuyển đổi số toàn diện cho doanh nghiệp.' ?>">
+    <meta name="description" content="<?= $meta_desc ?? $description ?? 'Dịch vụ thiết kế website giá rẻ, chuẩn SEO tại TP.HCM. Kho giao diện đẹp, load nhanh, bảo hành trọn đời.' ?>">
     
-    <meta name="keywords" content="thiết kế web giá rẻ, làm web trọn gói, web chuẩn seo, thiết kế website hcm, holagroup">
+    <meta name="keywords" content="<?= $meta_keywords ?? 'thiết kế web giá rẻ, làm web trọn gói, web chuẩn seo, thiết kế website hcm, holagroup' ?>">
     
-    <meta name="author" content="HolaGroup Tech Team">
+    <meta name="robots" content="<?= $meta_robots ?? 'index, follow' ?>">
+    
+    <meta name="author" content="<?= $meta_author ?? 'HolaGroup Tech Team' ?>">
     <meta name="copyright" content="HolaGroup">
-    
-    <meta name="robots" content="index, follow">
 
-    <link rel="canonical" href="<?= "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]" ?>" />
+    <link rel="canonical" href="<?= $meta_canonical ?? "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]" ?>" />
 
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="<?= "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]" ?>">
+    <meta property="og:type" content="<?= $og_type ?? 'website' ?>">
+    <meta property="og:url" content="<?= $meta_canonical ?? "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]" ?>">
     <meta property="og:site_name" content="HolaGroup - Web Giá Rẻ">
-    <meta property="og:title" content="<?= $title ?? 'Web Giá Rẻ - Thiết kế website chuyên nghiệp' ?>">
-    <meta property="og:description" content="<?= $description ?? 'Dịch vụ thiết kế website chuẩn SEO, giao diện hiện đại, tối ưu trải nghiệm người dùng.' ?>">
+    <meta property="og:title" content="<?= $meta_title ?? $title ?? 'Web Giá Rẻ - Thiết kế website chuyên nghiệp' ?>">
+    <meta property="og:description" content="<?= $meta_desc ?? $description ?? 'Dịch vụ thiết kế website chuẩn SEO, giao diện hiện đại.' ?>">
     <meta property="og:image" content="<?= $og_image ?? 'http://yourdomain.com/assets/images/social-share-default.jpg' ?>">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta property="og:locale" content="vi_VN">
 
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="<?= $title ?? 'Web Giá Rẻ - Thiết kế website chuyên nghiệp' ?>">
-    <meta name="twitter:description" content="<?= $description ?? 'Dịch vụ thiết kế website chuẩn SEO, giao diện hiện đại.' ?>">
+    <meta name="twitter:title" content="<?= $meta_title ?? $title ?? 'Web Giá Rẻ - Thiết kế website chuyên nghiệp' ?>">
+    <meta name="twitter:description" content="<?= $meta_desc ?? $description ?? 'Dịch vụ thiết kế website chuẩn SEO, giao diện hiện đại.' ?>">
     <meta name="twitter:image" content="<?= $og_image ?? 'http://yourdomain.com/assets/images/social-share-default.jpg' ?>">
 
     <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png">
     <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
+
+    <?php if (isset($schema_json) && !empty($schema_json)): ?>
+    <script type="application/ld+json">
+        <?= $schema_json ?>
+    </script>
+    <?php endif; ?>
 
     <script type="application/ld+json">
     {
@@ -62,14 +68,7 @@
       },
       "openingHoursSpecification": {
         "@type": "OpeningHoursSpecification",
-        "dayOfWeek": [
-          "Monday",
-          "Tuesday",
-          "Wednesday",
-          "Thursday",
-          "Friday",
-          "Saturday"
-        ],
+        "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
         "opens": "08:00",
         "closes": "18:00"
       },
@@ -86,7 +85,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
     <script src="https://cdn.tailwindcss.com"></script>
-    
     <script src="https://unpkg.com/lucide@latest"></script>
 
     <script>
@@ -112,12 +110,11 @@
     
     <style>
         body { font-family: 'Inter', sans-serif; }
-        /* Smooth scrolling cho toàn trang */
         html { scroll-behavior: smooth; }
     </style>
 </head>
 
-<body class="bg-gray-50 text-gray-800 flex flex-col min-h-screen">
+<body class="bg-gray-50 text-gray-800 flex flex-col min-h-screen overflow-x-hidden">
 
     <header class="fixed w-full top-0 z-50 transition-all duration-300" id="main-header">
         
@@ -133,12 +130,11 @@
                 </div>
                 <div class="flex items-center gap-4">
                     <a href="/tin-tuc" class="opacity-80 hover:opacity-100 hover:text-orange-400 transition">Tin tức</a>
-                    <a href="/tuyen-dung" class="opacity-80 hover:opacity-100 hover:text-orange-400 transition">Tuyển dụng</a>
                 </div>
             </div>
         </div>
 
-        <nav class="bg-white/95 backdrop-blur-md border-b border-gray-100 shadow-sm relative">
+        <nav class="bg-white/95 backdrop-blur-md border-b border-gray-100 shadow-sm relative z-50">
             <div class="container mx-auto px-4 py-3 md:py-4">
                 <div class="flex items-center justify-between">
                     
@@ -182,41 +178,67 @@
                         </a>
                     </div>
 
-                    <button id="mobile-menu-btn" class="lg:hidden p-2 text-gray-600 hover:text-orange-500 hover:bg-gray-50 rounded-lg transition-colors" aria-label="Mở menu">
+                    <button id="mobile-menu-btn" class="lg:hidden p-2 text-gray-600 hover:text-orange-500 hover:bg-gray-50 rounded-lg transition-colors z-50 relative" aria-label="Mở menu">
                         <i data-lucide="menu" class="w-7 h-7"></i>
                     </button>
 
                 </div>
             </div>
-
-            <div id="mobile-menu" class="hidden lg:hidden bg-white border-t border-gray-100 absolute w-full left-0 top-full shadow-2xl transition-all duration-300 origin-top z-50">
-                <div class="flex flex-col p-4 space-y-2 max-h-[80vh] overflow-y-auto">
-                    <a href="/" class="px-4 py-3 text-orange-600 bg-orange-50 font-semibold rounded-lg flex items-center gap-3">
-                        <i data-lucide="home" class="w-5 h-5"></i> Trang chủ
-                    </a>
-                    <a href="/kho-giao-dien" class="px-4 py-3 text-gray-700 hover:text-orange-600 hover:bg-gray-50 font-semibold rounded-lg flex items-center gap-3">
-                        <i data-lucide="layout-template" class="w-5 h-5"></i> Kho giao diện
-                    </a>
-                    <a href="/dich-vu" class="px-4 py-3 text-gray-700 hover:text-orange-600 hover:bg-gray-50 font-semibold rounded-lg flex items-center gap-3">
-                        <i data-lucide="briefcase" class="w-5 h-5"></i> Dịch vụ
-                    </a>
-                    <a href="/gioi-thieu" class="px-4 py-3 text-gray-700 hover:text-orange-600 hover:bg-gray-50 font-semibold rounded-lg flex items-center gap-3">
-                        <i data-lucide="info" class="w-5 h-5"></i> Giới thiệu
-                    </a>
-                    <a href="/tin-tuc" class="px-4 py-3 text-gray-700 hover:text-orange-600 hover:bg-gray-50 font-semibold rounded-lg flex items-center gap-3">
-                        <i data-lucide="newspaper" class="w-5 h-5"></i> Tin tức
-                    </a>
-                    
-                    <div class="h-px bg-gray-100 my-2"></div>
-                    
-                    <a href="/lien-he" class="px-4 py-3 text-center text-white bg-orange-500 hover:bg-orange-600 font-bold rounded-lg shadow-md transition-colors">
-                        Liên hệ báo giá
-                    </a>
-                </div>
-            </div>
         </nav>
     </header>
-    
+
+    <div id="mobile-backdrop" class="fixed inset-0 bg-slate-900/50 z-[60] hidden transition-opacity duration-300 opacity-0 backdrop-blur-sm"></div>
+
+    <div id="mobile-menu" class="fixed top-0 right-0 w-[300px] h-full bg-white z-[70] transform translate-x-full transition-transform duration-300 shadow-2xl flex flex-col">
+        
+        <div class="p-5 flex items-center justify-between border-b border-gray-100">
+            <span class="text-lg font-bold text-slate-800">HolaGroup</span>
+            <button id="close-menu-btn" class="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-full transition-colors">
+                <i data-lucide="x" class="w-6 h-6"></i>
+            </button>
+        </div>
+
+        <div class="flex-1 overflow-y-auto p-4 flex flex-col gap-2">
+            <a href="/" class="px-4 py-3 text-orange-600 bg-orange-50 font-semibold rounded-xl flex items-center gap-3">
+                <i data-lucide="home" class="w-5 h-5"></i> Trang chủ
+            </a>
+            <a href="/kho-giao-dien" class="px-4 py-3 text-gray-700 hover:text-orange-600 hover:bg-gray-50 font-semibold rounded-xl flex items-center gap-3">
+                <i data-lucide="layout-template" class="w-5 h-5"></i> Kho giao diện
+            </a>
+            <a href="/dich-vu" class="px-4 py-3 text-gray-700 hover:text-orange-600 hover:bg-gray-50 font-semibold rounded-xl flex items-center gap-3">
+                <i data-lucide="briefcase" class="w-5 h-5"></i> Dịch vụ
+            </a>
+            <a href="/gioi-thieu" class="px-4 py-3 text-gray-700 hover:text-orange-600 hover:bg-gray-50 font-semibold rounded-xl flex items-center gap-3">
+                <i data-lucide="info" class="w-5 h-5"></i> Giới thiệu
+            </a>
+            <a href="/tin-tuc" class="px-4 py-3 text-gray-700 hover:text-orange-600 hover:bg-gray-50 font-semibold rounded-xl flex items-center gap-3">
+                <i data-lucide="newspaper" class="w-5 h-5"></i> Tin tức
+            </a>
+
+            <div class="mt-6 border-t border-gray-100 pt-6 space-y-4">
+                <p class="px-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Liên hệ</p>
+                <a href="tel:0973157932" class="px-4 flex items-center gap-3 text-sm font-medium text-gray-600 hover:text-orange-600">
+                    <div class="w-8 h-8 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center">
+                        <i data-lucide="phone" class="w-4 h-4"></i>
+                    </div>
+                    0973.157.932
+                </a>
+                <a href="mailto:sale@holagroup.com.vn" class="px-4 flex items-center gap-3 text-sm font-medium text-gray-600 hover:text-orange-600">
+                    <div class="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center">
+                        <i data-lucide="mail" class="w-4 h-4"></i>
+                    </div>
+                    sale@holagroup.com.vn
+                </a>
+            </div>
+        </div>
+
+        <div class="p-4 border-t border-gray-100 bg-gray-50">
+            <a href="/lien-he" class="flex items-center justify-center gap-2 w-full py-3.5 bg-slate-900 text-white font-bold rounded-xl shadow-lg hover:bg-orange-600 transition-colors">
+                Liên hệ báo giá <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            </a>
+        </div>
+    </div>
+
     <div class="h-[72px] md:h-[106px]"></div>
 
     <main class="flex-grow">

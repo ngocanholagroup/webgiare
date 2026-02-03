@@ -23,9 +23,14 @@ $template = [
     ],
     'tech_specs' => ['HTML5', 'CSS3', 'Bootstrap 5', 'jQuery', 'PHP 8'],
     'images' => [
-        'main' => 'https://cdn.dribbble.com/users/1615584/screenshots/15668383/media/89d1a8c3d9806f3621453916962f9095.jpg', // Ảnh chính
-        'sub1' => 'https://cdn.dribbble.com/users/1615584/screenshots/14686948/media/25292415d86b71887e2213a48e89b25a.jpg', // Ảnh trang danh mục
-        'sub2' => 'https://cdn.dribbble.com/users/702789/screenshots/16900609/media/c8a24c084f938b25121b6d194564249a.png', // Ảnh trang chi tiết
+        // Ảnh 1: Giao diện trang chủ (Theme Công nghệ/Laptop)
+        'main' => 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80',
+
+        // Ảnh 2: Giao diện danh mục/Grid sản phẩm (Theme mua sắm)
+        'sub1' => 'https://images.unsplash.com/photo-1556742049-0cfed4f7a07d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80',
+
+        // Ảnh 3: Giao diện chi tiết/Mobile (Theme UI hiện đại)
+        'sub2' => 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80',
     ]
 ];
 ?>
@@ -34,8 +39,10 @@ $template = [
     .sticky-sidebar {
         position: -webkit-sticky;
         position: sticky;
-        top: 100px; /* Cách đỉnh màn hình 100px khi cuộn */
+        top: 100px;
+        /* Cách đỉnh màn hình 100px khi cuộn */
     }
+
     .scrollbar-hide::-webkit-scrollbar {
         display: none;
     }
@@ -43,16 +50,8 @@ $template = [
 
 <section class="bg-slate-900 pt-28 pb-12 lg:pt-36 lg:pb-20 relative overflow-hidden">
     <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-orange-500/20 rounded-full blur-[120px] pointer-events-none translate-x-1/2 -translate-y-1/2"></div>
-    
-    <div class="container mx-auto px-4 relative z-10">
-        <nav class="flex text-sm text-slate-400 mb-6">
-            <a href="/" class="hover:text-white transition-colors">Trang chủ</a>
-            <span class="mx-2">/</span>
-            <a href="/kho-giao-dien" class="hover:text-white transition-colors">Kho giao diện</a>
-            <span class="mx-2">/</span>
-            <span class="text-orange-500 font-bold truncate"><?= $template['name'] ?></span>
-        </nav>
 
+    <div class="container mx-auto px-4 relative z-10">
         <div class="flex flex-col lg:flex-row gap-10 items-center">
             <div class="w-full lg:w-7/12 text-white">
                 <div class="inline-block px-3 py-1 mb-4 text-xs font-bold tracking-wider text-white uppercase bg-orange-600 rounded-full">
@@ -65,7 +64,7 @@ $template = [
                     Mã sản phẩm: <span class="text-white font-mono"><?= $template['sku'] ?></span> <br>
                     Giao diện bán hàng chuyên nghiệp, chuẩn SEO, tối ưu tỷ lệ chuyển đổi đơn hàng.
                 </p>
-                
+
                 <div class="flex flex-wrap gap-4">
                     <a href="#demo" class="px-8 py-3.5 bg-white text-slate-900 font-bold rounded-full hover:bg-orange-50 transition-colors flex items-center gap-2">
                         <i data-lucide="eye" class="w-5 h-5"></i> Xem Demo Trực tiếp
@@ -92,24 +91,78 @@ $template = [
 
 <section class="py-16 bg-slate-50 min-h-screen" id="chi-tiet">
     <div class="container mx-auto px-4">
-        
+
         <div class="flex flex-col lg:flex-row gap-8 lg:gap-12">
-            
+
             <div class="w-full lg:w-8/12 space-y-12">
-                
+
                 <div class="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-slate-100">
-                    <h3 class="text-xl font-bold text-slate-900 mb-6 flex items-center gap-2">
-                        <i data-lucide="image" class="w-5 h-5 text-orange-500"></i> Hình ảnh giao diện
-                    </h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <img src="<?= $template['images']['main'] ?>" class="rounded-lg shadow-sm border border-slate-100 hover:shadow-lg transition-shadow cursor-pointer">
-                        <img src="<?= $template['images']['sub1'] ?>" class="rounded-lg shadow-sm border border-slate-100 hover:shadow-lg transition-shadow cursor-pointer">
-                        <div class="md:col-span-2">
-                            <img src="<?= $template['images']['sub2'] ?>" class="w-full rounded-lg shadow-sm border border-slate-100 hover:shadow-lg transition-shadow cursor-pointer">
+
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+                        <h3 class="text-xl font-bold text-slate-900 flex items-center gap-2">
+                            <i data-lucide="monitor-smartphone" class="w-5 h-5 text-orange-500"></i> Demo Giao diện
+                        </h3>
+
+                        <div class="bg-slate-100 p-1 rounded-lg inline-flex self-start md:self-auto">
+                            <button onclick="switchView('desktop')" id="btn-desktop" class="px-4 py-2 rounded-md text-sm font-bold transition-all bg-white text-orange-600 shadow-sm flex items-center gap-2">
+                                <i data-lucide="monitor" class="w-4 h-4"></i> Desktop
+                            </button>
+                            <button onclick="switchView('mobile')" id="btn-mobile" class="px-4 py-2 rounded-md text-sm font-bold transition-all text-slate-500 hover:text-slate-900 flex items-center gap-2">
+                                <i data-lucide="smartphone" class="w-4 h-4"></i> Mobile
+                            </button>
                         </div>
                     </div>
-                </div>
 
+                    <div class="relative bg-slate-50 rounded-2xl border border-slate-100 p-8 md:p-12 flex items-center justify-center min-h-[500px] overflow-hidden">
+
+                        <div class="absolute inset-0 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px] opacity-50"></div>
+                        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-orange-500/5 rounded-full blur-3xl"></div>
+
+                        <div id="view-desktop" class="relative w-full max-w-4xl transition-all duration-500 ease-out transform opacity-100 scale-100">
+                            <div class="relative mx-auto">
+                                <div class="relative mx-auto w-[86%] aspect-[16/10] bg-black rounded-t-xl overflow-hidden shadow-2xl border-[4px] border-slate-800">
+                                    <div class="w-full h-full overflow-y-auto scrollbar-hide bg-white group cursor-n-resize">
+                                        <img src="<?= $template['images']['main'] ?>" class="w-full h-auto object-cover object-top transition-transform duration-[2000ms] ease-linear group-hover:-translate-y-[calc(100%-100vh)]">
+                                    </div>
+                                </div>
+
+                                <div class="relative -mt-1 w-full">
+                                    <svg viewBox="0 0 1000 40" class="w-full h-auto drop-shadow-xl">
+                                        <path d="M10 0 L990 0 C995 0 1000 5 1000 10 L1000 20 L0 20 L0 10 C0 5 5 0 10 0 Z" fill="#1e293b" />
+                                        <path d="M0 20 L1000 20 L960 35 C950 40 50 40 40 35 L0 20 Z" fill="#cbd5e1" />
+                                        <path d="M420 0 L580 0 L550 8 L450 8 Z" fill="#334155" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="view-mobile" class="absolute inset-0 flex items-center justify-center transition-all duration-500 ease-out transform opacity-0 scale-90 pointer-events-none">
+                            <div class="relative w-[300px] h-[600px] bg-slate-900 rounded-[3rem] shadow-2xl border-[8px] border-slate-800 ring-1 ring-slate-900/50">
+                                <div class="absolute top-0 left-1/2 -translate-x-1/2 w-1/3 h-7 bg-slate-900 rounded-b-2xl z-20 flex justify-center items-center">
+                                    <div class="w-10 h-1 bg-slate-800 rounded-full opacity-50"></div>
+                                </div>
+
+                                <div class="w-full h-full bg-white rounded-[2.5rem] overflow-hidden relative">
+                                    <div class="w-full h-full overflow-y-auto scrollbar-hide group cursor-n-resize">
+                                        <img src="<?= $template['images']['sub2'] ?>" class="w-full h-auto min-h-full object-cover object-top">
+                                    </div>
+
+                                    <div class="absolute top-2 left-6 text-[10px] font-bold text-slate-900 z-10">9:41</div>
+                                    <div class="absolute top-2 right-6 flex gap-1 z-10">
+                                        <div class="w-3 h-3 rounded-full border border-slate-900"></div>
+                                        <div class="w-3 h-3 bg-slate-900 rounded-full"></div>
+                                    </div>
+                                </div>
+
+                                <div class="absolute top-24 -left-[10px] w-[10px] h-10 bg-slate-700 rounded-l-md"></div>
+                                <div class="absolute top-40 -left-[10px] w-[10px] h-16 bg-slate-700 rounded-l-md"></div>
+                                <div class="absolute top-32 -right-[10px] w-[10px] h-20 bg-slate-700 rounded-r-md"></div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
                 <div class="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-slate-100">
                     <h3 class="text-xl font-bold text-slate-900 mb-4 flex items-center gap-2">
                         <i data-lucide="file-text" class="w-5 h-5 text-orange-500"></i> Mô tả chi tiết
@@ -120,20 +173,20 @@ $template = [
 
                     <h4 class="font-bold text-slate-900 mb-4">Tính năng nổi bật:</h4>
                     <ul class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-8">
-                        <?php foreach($template['features'] as $feat): ?>
-                        <li class="flex items-start gap-2 text-sm text-slate-600">
-                            <i data-lucide="check-circle-2" class="w-4 h-4 text-green-500 shrink-0 mt-0.5"></i>
-                            <?= $feat ?>
-                        </li>
+                        <?php foreach ($template['features'] as $feat): ?>
+                            <li class="flex items-start gap-2 text-sm text-slate-600">
+                                <i data-lucide="check-circle-2" class="w-4 h-4 text-green-500 shrink-0 mt-0.5"></i>
+                                <?= $feat ?>
+                            </li>
                         <?php endforeach; ?>
                     </ul>
 
                     <h4 class="font-bold text-slate-900 mb-4">Công nghệ sử dụng:</h4>
                     <div class="flex flex-wrap gap-2">
-                        <?php foreach($template['tech_specs'] as $tech): ?>
-                        <span class="px-3 py-1 bg-slate-100 text-slate-600 text-xs font-bold rounded-md border border-slate-200">
-                            <?= $tech ?>
-                        </span>
+                        <?php foreach ($template['tech_specs'] as $tech): ?>
+                            <span class="px-3 py-1 bg-slate-100 text-slate-600 text-xs font-bold rounded-md border border-slate-200">
+                                <?= $tech ?>
+                            </span>
                         <?php endforeach; ?>
                     </div>
                 </div>
@@ -159,10 +212,10 @@ $template = [
 
             <div class="w-full lg:w-4/12 relative">
                 <div class="sticky-sidebar space-y-6">
-                    
+
                     <div class="bg-white rounded-2xl p-6 shadow-xl shadow-orange-500/5 border border-slate-100 relative overflow-hidden">
                         <div class="absolute top-0 right-0 w-24 h-24 bg-orange-500/10 rounded-bl-full -mr-4 -mt-4"></div>
-                        
+
                         <div class="mb-6">
                             <span class="text-sm text-slate-500 line-through block"><?= $template['old_price'] ?></span>
                             <div class="flex items-center gap-2">
@@ -213,26 +266,81 @@ $template = [
 <section class="py-16 bg-white border-t border-slate-100">
     <div class="container mx-auto px-4">
         <h2 class="text-2xl font-bold text-slate-900 mb-8">Có thể bạn sẽ thích</h2>
-        
+
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <?php for($i=1; $i<=4; $i++): ?>
-            <div class="group bg-white rounded-xl overflow-hidden border border-slate-100 hover:shadow-xl hover:border-orange-200 transition-all duration-300">
-                <div class="relative overflow-hidden aspect-[4/3] bg-slate-200">
-                    <div class="w-full h-full bg-cover bg-center transform group-hover:scale-110 transition-transform duration-500"
-                         style="background-image: url('https://cdn.dribbble.com/users/1615584/screenshots/15668383/media/89d1a8c3d9806f3621453916962f9095.jpg');"></div>
-                </div>
-                <div class="p-4">
-                    <h3 class="text-sm font-bold text-slate-900 mb-1 truncate">Giao diện Bán hàng Số <?= $i ?></h3>
-                    <div class="flex items-center justify-between">
-                        <span class="text-orange-600 font-bold text-sm">2.500.000đ</span>
-                        <a href="#" class="text-xs text-slate-500 hover:text-orange-500 flex items-center">Chi tiết <i data-lucide="arrow-right" class="w-3 h-3 ml-1"></i></a>
+            <?php for ($i = 1; $i <= 4; $i++): ?>
+                <div class="group bg-white rounded-xl overflow-hidden border border-slate-100 hover:shadow-xl hover:border-orange-200 transition-all duration-300">
+                    <div class="relative overflow-hidden aspect-[4/3] bg-slate-200">
+                        <div class="w-full h-full bg-cover bg-center transform group-hover:scale-110 transition-transform duration-500"
+                            style="background-image: url('https://cdn.dribbble.com/users/1615584/screenshots/15668383/media/89d1a8c3d9806f3621453916962f9095.jpg');"></div>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="text-sm font-bold text-slate-900 mb-1 truncate">Giao diện Bán hàng Số <?= $i ?></h3>
+                        <div class="flex items-center justify-between">
+                            <span class="text-orange-600 font-bold text-sm">2.500.000đ</span>
+                            <a href="#" class="text-xs text-slate-500 hover:text-orange-500 flex items-center">Chi tiết <i data-lucide="arrow-right" class="w-3 h-3 ml-1"></i></a>
+                        </div>
                     </div>
                 </div>
-            </div>
             <?php endfor; ?>
         </div>
     </div>
 </section>
+
+<script>
+    function switchView(device) {
+        const desktopView = document.getElementById('view-desktop');
+        const mobileView = document.getElementById('view-mobile');
+        const btnDesktop = document.getElementById('btn-desktop');
+        const btnMobile = document.getElementById('btn-mobile');
+
+        // Style cho nút active
+        const activeClass = "bg-white text-orange-600 shadow-sm".split(" ");
+        const inactiveClass = "text-slate-500 hover:text-slate-900".split(" ");
+
+        if (device === 'desktop') {
+            // Show Desktop
+            desktopView.classList.remove('opacity-0', 'scale-90', 'pointer-events-none', 'absolute');
+            desktopView.classList.add('opacity-100', 'scale-100', 'relative');
+
+            // Hide Mobile
+            mobileView.classList.add('opacity-0', 'scale-90', 'pointer-events-none', 'absolute');
+            mobileView.classList.remove('opacity-100', 'scale-100', 'relative');
+
+            // Update Button Styles
+            btnDesktop.classList.add(...activeClass);
+            btnDesktop.classList.remove(...inactiveClass);
+            btnMobile.classList.remove(...activeClass);
+            btnMobile.classList.add(...inactiveClass);
+        } else {
+            // Show Mobile
+            mobileView.classList.remove('opacity-0', 'scale-90', 'pointer-events-none', 'absolute');
+            mobileView.classList.add('opacity-100', 'scale-100', 'relative');
+
+            // Hide Desktop
+            desktopView.classList.add('opacity-0', 'scale-90', 'pointer-events-none', 'absolute');
+            desktopView.classList.remove('opacity-100', 'scale-100', 'relative');
+
+            // Update Button Styles
+            btnMobile.classList.add(...activeClass);
+            btnMobile.classList.remove(...inactiveClass);
+            btnDesktop.classList.remove(...activeClass);
+            btnDesktop.classList.add(...inactiveClass);
+        }
+    }
+</script>
+
+<style>
+    /* Ẩn scrollbar nhưng vẫn cho phép cuộn */
+    .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+    }
+
+    .scrollbar-hide {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+</style>
 
 <?php
 // Gọi Footer

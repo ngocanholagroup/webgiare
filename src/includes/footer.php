@@ -215,35 +215,41 @@
         lucide.createIcons();
     }
     
-    // 3. Xử lý logic Mobile Menu (Dùng lại logic của Header)
-    // Đặt ở đây để đảm bảo DOM đã load xong
-    document.addEventListener('DOMContentLoaded', function() {
-        const menuBtn = document.getElementById('mobile-menu-btn');
+    const menuBtn = document.getElementById('mobile-menu-btn');
+        const closeBtn = document.getElementById('close-menu-btn');
         const mobileMenu = document.getElementById('mobile-menu');
-        
-        if(menuBtn && mobileMenu) {
-            menuBtn.addEventListener('click', (e) => {
-                e.stopPropagation(); // Ngăn sự kiện click lan ra ngoài
-                mobileMenu.classList.toggle('hidden');
-                
-                // Đổi icon
-                const icon = mobileMenu.classList.contains('hidden') ? 'menu' : 'x';
-                menuBtn.innerHTML = `<i data-lucide="${icon}" class="w-7 h-7"></i>`;
-                lucide.createIcons();
-            });
+        const backdrop = document.getElementById('mobile-backdrop');
+        const body = document.body;
 
-            // Click ra ngoài thì đóng menu
-            document.addEventListener('click', (e) => {
-                if (!mobileMenu.contains(e.target) && !menuBtn.contains(e.target)) {
-                    if (!mobileMenu.classList.contains('hidden')) {
-                        mobileMenu.classList.add('hidden');
-                        menuBtn.innerHTML = `<i data-lucide="menu" class="w-7 h-7"></i>`;
-                        lucide.createIcons();
-                    }
-                }
-            });
+        function openMenu() {
+            // Hiện backdrop
+            backdrop.classList.remove('hidden');
+            // Cần setTimeout nhỏ để transition hoạt động
+            setTimeout(() => backdrop.classList.remove('opacity-0'), 10);
+            
+            // Trượt menu vào
+            mobileMenu.classList.remove('translate-x-full');
+            
+            // Khóa cuộn trang
+            body.style.overflow = 'hidden';
         }
-    });
+
+        function closeMenu() {
+            // Ẩn backdrop
+            backdrop.classList.add('opacity-0');
+            setTimeout(() => backdrop.classList.add('hidden'), 300); // Chờ animation xong mới ẩn hẳn
+            
+            // Trượt menu ra
+            mobileMenu.classList.add('translate-x-full');
+            
+            // Mở cuộn trang
+            body.style.overflow = '';
+        }
+
+        // Event Listeners
+        menuBtn.addEventListener('click', openMenu);
+        closeBtn.addEventListener('click', closeMenu);
+        backdrop.addEventListener('click', closeMenu); // Bấm ra ngoài thì đóng
 </script>
 
 </body>

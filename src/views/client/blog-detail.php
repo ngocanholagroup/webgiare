@@ -7,9 +7,10 @@ $post = [
     'title' => '5 Xu hướng Thiết kế Website sẽ thống trị năm 2026',
     'cat' => 'Xu hướng công nghệ',
     'date' => '02/02/2026',
-    'author' => 'Tuấn Anh (Senior Dev)',
+    'author' => 'Tuấn Anh',
     'views' => '2,543',
-    'image' => 'https://cdn.dribbble.com/users/1294862/screenshots/17390977/media/a96095940428d227b233a59569766624.png',
+    // Ảnh phong cách công nghệ tương lai (Retro Future / Abstract 3D)
+    'image' => 'https://images.unsplash.com/photo-1614728263952-84ea256f9679?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
 ];
 ?>
 
@@ -119,7 +120,7 @@ $post = [
                     <p>
                         Không chỉ là những tấm kính mờ đơn thuần như macOS Big Sur. Phiên bản 2.0 sẽ kết hợp với các dải màu Gradient chuyển động (Aurora Backgrounds) tạo nên chiều sâu không gian cực kỳ ấn tượng.
                     </p>
-                    <img src="https://cdn.dribbble.com/users/418188/screenshots/16386596/media/53239a2444634734892c908f5127602f.jpg" alt="Glassmorphism Example">
+                    <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="Glassmorphism Example" class="w-full h-auto rounded-xl shadow-lg">
                     
                     <h2 id="section-2">2. Typography khổng lồ (Large Typography)</h2>
                     <p>

@@ -57,8 +57,8 @@ include 'includes/header.php';
                             <i data-lucide="trophy" class="w-5 h-5"></i>
                         </div>
                         <div>
-                            <p class="text-xs text-slate-500">Giải thưởng</p>
-                            <p class="text-sm font-bold text-slate-900">Top 10 Tech Agency 2025</p>
+                            <p class="text-xs text-slate-500">Top</p>
+                            <p class="text-sm font-bold text-slate-900">Các công ty công nghệ 2025</p>
                         </div>
                     </div>
                     <div class="h-1 w-full bg-slate-100 rounded-full overflow-hidden">
@@ -214,19 +214,6 @@ include 'includes/header.php';
                 <p class="text-sm text-orange-500 font-medium">Customer Success Lead</p>
             </div>
 
-        </div>
-    </div>
-</section>
-
-<section class="py-16 bg-slate-50 border-y border-slate-200">
-    <div class="container mx-auto px-4 text-center">
-        <p class="text-slate-400 font-medium mb-8">Được tin tưởng bởi các doanh nghiệp hàng đầu</p>
-        <div class="flex flex-wrap justify-center gap-12 lg:gap-20 opacity-50 grayscale hover:grayscale-0 transition-all duration-500">
-            <div class="flex items-center gap-2 text-xl font-bold text-slate-700"><i data-lucide="hexagon" class="fill-current"></i> Vingroup</div>
-            <div class="flex items-center gap-2 text-xl font-bold text-slate-700"><i data-lucide="triangle" class="fill-current"></i> Sungroup</div>
-            <div class="flex items-center gap-2 text-xl font-bold text-slate-700"><i data-lucide="circle" class="fill-current"></i> FPT Corp</div>
-            <div class="flex items-center gap-2 text-xl font-bold text-slate-700"><i data-lucide="square" class="fill-current"></i> Viettel</div>
-            <div class="flex items-center gap-2 text-xl font-bold text-slate-700"><i data-lucide="droplet" class="fill-current"></i> Masan</div>
         </div>
     </div>
 </section>

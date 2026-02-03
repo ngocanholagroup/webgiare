@@ -52,8 +52,8 @@ $router->get('/tin-tuc', [BlogController::class, 'index']);
 $router->get('/tin-tuc/{slug}', [BlogController::class, 'detail']);
 
 // Route template
-$router->get('/templates', [TemplateController::class, 'index']);
-$router->get('/templates/{slug}', [TemplateController::class, 'detail']);
+$router->get('/kho-giao-dien', [HomeController::class, 'template']);
+$router->get('/kho-giao-dien/{slug}', [TemplateController::class, 'detail']);
 
 // Route Lien hệ (form)
 $router->get('/lien-he', function() {

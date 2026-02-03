@@ -57,31 +57,28 @@ function isActive($keyword, $uri) {
         </div>
 
         <div class="flex-1 overflow-y-auto no-scrollbar py-6 px-4 space-y-1">
-            
-            <p class="px-2 text-xs font-bold text-slate-500 uppercase tracking-widest mb-4 mt-2">Tổng quan</p>
-            
-            <a href="/admin/dashboard" class="flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium transition-all <?= isActive('dashboard', $uri) ?>">
-                <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
-                Dashboard
-            </a>
 
             <p class="px-2 text-xs font-bold text-slate-500 uppercase tracking-widest mb-4 mt-8">Quản lý sản phẩm</p>
 
             <a href="/admin/templates" class="flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium transition-all <?= isActive('templates', $uri) ?>">
                 <i data-lucide="layout-template" class="w-5 h-5"></i>
-                Kho giao diện
+                Templates
             </a>
             
             <a href="/admin/categories" class="flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium transition-all <?= isActive('categories', $uri) ?>">
                 <i data-lucide="layers" class="w-5 h-5"></i>
-                Danh mục theme
+                Danh mục Templates
             </a>
 
             <p class="px-2 text-xs font-bold text-slate-500 uppercase tracking-widest mb-4 mt-8">Nội dung & KH</p>
 
             <a href="/admin/blogs" class="flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium transition-all <?= isActive('blogs', $uri) ?>">
                 <i data-lucide="newspaper" class="w-5 h-5"></i>
-                Tin tức / Blog
+                Blog
+            </a>
+            <a href="/admin/blog-categories" class="flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium transition-all <?= isActive('blog-categories', $uri) ?>">
+                <i data-lucide="folder" class="w-5 h-5"></i>
+                Danh mục Blog
             </a>
 
             <a href="/admin/contacts" class="flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium transition-all <?= isActive('contacts', $uri) ?>">
@@ -89,7 +86,7 @@ function isActive($keyword, $uri) {
                     <i data-lucide="inbox" class="w-5 h-5"></i>
                     <span class="absolute -top-1 -right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-slate-900"></span>
                 </div>
-                Liên hệ / Leads
+                Liên hệ
             </a>
 
             <p class="px-2 text-xs font-bold text-slate-500 uppercase tracking-widest mb-4 mt-8">Cấu hình</p>

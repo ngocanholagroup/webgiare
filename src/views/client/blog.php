@@ -65,6 +65,7 @@ $posts = [
         background-clip: text;
         -webkit-text-fill-color: transparent;
     }
+
     .bg-noise {
         background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
     }
@@ -77,7 +78,7 @@ $posts = [
 
     <div class="container mx-auto px-4 relative z-10">
         <div class="max-w-4xl mx-auto text-center">
-            
+
             <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-800/50 border border-slate-700 backdrop-blur-md mb-8">
                 <span class="w-2 h-2 rounded-full bg-orange-500 animate-pulse"></span>
                 <span class="text-xs font-bold text-slate-300 uppercase tracking-widest">Kiến thức & Kinh nghiệm</span>
@@ -96,8 +97,8 @@ $posts = [
                 <div class="absolute -inset-1 bg-gradient-to-r from-orange-500 to-pink-600 rounded-full blur opacity-25 group-hover:opacity-50 transition duration-1000"></div>
                 <div class="relative flex items-center bg-slate-800 rounded-full p-2 border border-slate-700 shadow-2xl">
                     <div class="pl-6 text-slate-400"><i data-lucide="search" class="w-6 h-6"></i></div>
-                    <input type="text" placeholder="Tìm kiếm bài viết? (VD: SEO, Marketing, Hosting...)" 
-                           class="w-full bg-transparent text-white px-4 py-3 focus:outline-none placeholder-slate-500">
+                    <input type="text" placeholder="Tìm kiếm bài viết? (VD: SEO, Marketing, Hosting...)"
+                        class="w-full bg-transparent text-white px-4 py-3 focus:outline-none placeholder-slate-500">
                     <button class="bg-orange-600 hover:bg-orange-700 text-white px-8 py-3 rounded-full font-bold transition-all shadow-lg shadow-orange-600/20">
                         Tìm kiếm
                     </button>
@@ -118,16 +119,16 @@ $posts = [
 
 <section class="py-16 bg-slate-50 min-h-screen relative">
     <div class="container mx-auto px-4 relative z-10">
-        
+
         <div class="flex flex-col lg:flex-row gap-12">
-            
+
             <div class="w-full lg:w-8/12">
-                
-                <div class="group relative rounded-3xl overflow-hidden bg-white shadow-xl hover:shadow-2xl transition-all duration-300 mb-12 border border-slate-200">
+
+                <a href="/blog-detail" class="group block relative rounded-3xl overflow-hidden bg-white shadow-xl hover:shadow-2xl transition-all duration-300 mb-12 border border-slate-200">
                     <div class="relative aspect-video overflow-hidden">
                         <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/20 to-transparent z-10"></div>
                         <img src="<?= $featured_post['image'] ?>" alt="Featured" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700">
-                        
+
                         <div class="absolute top-6 left-6 z-20">
                             <span class="bg-orange-600 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow-lg">Tiêu điểm</span>
                         </div>
@@ -138,45 +139,45 @@ $posts = [
                                 <span class="flex items-center gap-1"><i data-lucide="user" class="w-4 h-4 text-orange-500"></i> <?= $featured_post['author'] ?></span>
                             </div>
                             <h2 class="text-2xl md:text-3xl font-extrabold text-white mb-3 leading-tight group-hover:text-orange-400 transition-colors">
-                                <a href="/blog-detail"><?= $featured_post['title'] ?></a>
+                                <?= $featured_post['title'] ?>
                             </h2>
                             <p class="text-slate-300 line-clamp-2 md:line-clamp-none mb-4 hidden md:block">
                                 <?= $featured_post['desc'] ?>
                             </p>
-                            <a href="/blog-detail" class="inline-flex items-center text-white font-bold border-b-2 border-orange-500 hover:text-orange-400 transition-colors pb-1">
+                            <span class="inline-flex items-center text-white font-bold border-b-2 border-orange-500 group-hover:text-orange-400 transition-colors pb-1">
                                 Đọc tiếp <i data-lucide="arrow-right" class="w-4 h-4 ml-2"></i>
-                            </a>
+                            </span>
                         </div>
                     </div>
-                </div>
+                </a>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <?php foreach($posts as $post): ?>
-                    <article class="group bg-white rounded-2xl overflow-hidden border border-slate-200 shadow-sm hover:shadow-xl hover:shadow-orange-500/10 hover:-translate-y-1 transition-all duration-300 flex flex-col h-full">
-                        <div class="relative overflow-hidden aspect-[16/10]">
-                            <span class="absolute top-4 left-4 z-10 bg-white/90 backdrop-blur-sm text-slate-800 text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider border border-slate-200">
-                                <?= $post['cat'] ?>
-                            </span>
-                            <img src="<?= $post['image'] ?>" alt="Blog" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500">
-                        </div>
-                        
-                        <div class="p-6 flex flex-col flex-1">
-                            <div class="flex items-center gap-3 text-xs text-slate-400 mb-3">
-                                <span class="flex items-center gap-1"><i data-lucide="clock" class="w-3 h-3"></i> <?= $post['date'] ?></span>
-                                <span class="flex items-center gap-1"><i data-lucide="eye" class="w-3 h-3"></i> <?= $post['views'] ?></span>
+                    <?php foreach ($posts as $post): ?>
+                        <a href="/blog-detail" class="group block bg-white rounded-2xl overflow-hidden border border-slate-200 shadow-sm hover:shadow-xl hover:shadow-orange-500/10 hover:-translate-y-1 transition-all duration-300 flex flex-col h-full">
+                            <div class="relative overflow-hidden aspect-[16/10]">
+                                <span class="absolute top-4 left-4 z-10 bg-white/90 backdrop-blur-sm text-slate-800 text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider border border-slate-200">
+                                    <?= $post['cat'] ?>
+                                </span>
+                                <img src="<?= $post['image'] ?>" alt="Blog" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500">
                             </div>
-                            
-                            <h3 class="text-lg font-bold text-slate-900 mb-3 line-clamp-2 group-hover:text-orange-600 transition-colors">
-                                <a href="/blog-detail"><?= $post['title'] ?></a>
-                            </h3>
-                            
-                            <div class="mt-auto pt-4 border-t border-slate-50">
-                                <a href="/blog-detail" class="text-sm font-semibold text-slate-600 hover:text-orange-600 flex items-center gap-1 group/link">
-                                    Xem chi tiết <i data-lucide="chevron-right" class="w-4 h-4 transition-transform group-hover/link:translate-x-1"></i>
-                                </a>
+
+                            <div class="p-6 flex flex-col flex-1">
+                                <div class="flex items-center gap-3 text-xs text-slate-400 mb-3">
+                                    <span class="flex items-center gap-1"><i data-lucide="clock" class="w-3 h-3"></i> <?= $post['date'] ?></span>
+                                    <span class="flex items-center gap-1"><i data-lucide="eye" class="w-3 h-3"></i> <?= $post['views'] ?></span>
+                                </div>
+
+                                <h3 class="text-lg font-bold text-slate-900 mb-3 line-clamp-2 group-hover:text-orange-600 transition-colors">
+                                    <?= $post['title'] ?>
+                                </h3>
+
+                                <div class="mt-auto pt-4 border-t border-slate-50">
+                                    <span class="text-sm font-semibold text-slate-600 group-hover:text-orange-600 flex items-center gap-1">
+                                        Xem chi tiết <i data-lucide="chevron-right" class="w-4 h-4 transition-transform group-hover:translate-x-1"></i>
+                                    </span>
+                                </div>
                             </div>
-                        </div>
-                    </article>
+                        </a>
                     <?php endforeach; ?>
                 </div>
 
@@ -198,7 +199,7 @@ $posts = [
             </div>
 
             <div class="w-full lg:w-4/12 space-y-8">
-                
+
                 <div class="bg-slate-900 rounded-3xl p-8 text-center relative overflow-hidden shadow-xl">
                     <div class="absolute top-0 right-0 w-32 h-32 bg-orange-500 rounded-full blur-[60px] opacity-20"></div>
                     <div class="relative z-10">
@@ -217,26 +218,62 @@ $posts = [
                 <div class="bg-white rounded-3xl p-8 border border-slate-200 shadow-sm">
                     <h4 class="text-lg font-bold text-slate-900 mb-6 border-b border-slate-100 pb-2">Từ khóa hot</h4>
                     <div class="flex flex-wrap gap-2">
-                        <?php 
+                        <?php
                         $tags = ['SEO', 'Google Ads', 'Facebook', 'Livestream', 'Hosting', 'SSL', 'Tốc độ web', 'UX/UI', 'Content'];
-                        foreach($tags as $t): ?>
-                        <a href="#" class="px-3 py-1.5 bg-slate-50 text-slate-600 text-xs font-bold rounded-lg hover:bg-orange-500 hover:text-white transition-all border border-slate-100">
-                            #<?= $t ?>
-                        </a>
+                        foreach ($tags as $t): ?>
+                            <a href="#" class="px-3 py-1.5 bg-slate-50 text-slate-600 text-xs font-bold rounded-lg hover:bg-orange-500 hover:text-white transition-all border border-slate-100">
+                                #<?= $t ?>
+                            </a>
                         <?php endforeach; ?>
                     </div>
                 </div>
 
-                <div class="relative rounded-3xl overflow-hidden aspect-[3/4] group cursor-pointer shadow-lg border border-slate-200">
-                    <div class="absolute inset-0 bg-slate-200">
-                         <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" alt="Ad" class="w-full h-full object-cover">
+                <a href="/dich-vu" class="block relative rounded-3xl overflow-hidden aspect-[3/4] group cursor-pointer shadow-xl border border-slate-800/50 bg-slate-900">
+
+                    <div class="absolute inset-0">
+                        <svg viewBox="0 0 300 400" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
+                            <defs>
+                                <linearGradient id="growthGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+                                    <stop offset="0%" style="stop-color:#f97316;stop-opacity:1" />
+                                    <stop offset="100%" style="stop-color:#fbbf24;stop-opacity:1" />
+                                </linearGradient>
+                            </defs>
+
+                            <circle cx="50%" cy="30%" r="100" fill="#f97316" opacity="0.2" style="filter: blur(60px);"></circle>
+                            <circle cx="80%" cy="80%" r="80" fill="#4f46e5" opacity="0.15" style="filter: blur(50px);"></circle>
+
+                            <g class="transition-transform duration-700 ease-out group-hover:-translate-y-4">
+                                <circle cx="150" cy="180" r="80" stroke="white" stroke-width="1.5" fill="none" opacity="0.1"></circle>
+                                <circle cx="150" cy="180" r="60" stroke="white" stroke-width="2" fill="none" opacity="0.2" stroke-dasharray="8 12"></circle>
+
+                                <path d="M150 100 L120 160 L150 140 L180 160 Z" fill="url(#growthGrad)" filter="drop-shadow(0 10px 20px rgba(249, 115, 22, 0.4))" />
+
+                                <circle cx="150" cy="140" r="12" fill="white"></circle>
+                                <ellipse cx="150" cy="220" rx="60" ry="15" fill="#ffffff" opacity="0.05"></ellipse>
+                            </g>
+                        </svg>
                     </div>
-                    <div class="absolute inset-0 bg-slate-900/80 flex flex-col items-center justify-center text-center p-6 transition-all group-hover:bg-slate-900/70">
-                        <span class="text-orange-400 font-bold tracking-widest uppercase text-xs mb-2">Ưu đãi tháng 2</span>
-                        <h3 class="text-2xl font-extrabold text-white mb-4">Thiết kế Web<br>Tặng Hosting</h3>
-                        <span class="bg-white text-slate-900 px-6 py-2 rounded-full font-bold text-sm hover:bg-orange-500 hover:text-white transition-colors shadow-lg">Xem chi tiết</span>
+
+                    <div class="absolute inset-0 flex flex-col items-center justify-end text-center p-8 z-20 bg-gradient-to-t from-slate-900 via-slate-900/50 to-transparent">
+
+                        <span class="inline-block text-orange-400 font-bold tracking-widest uppercase text-[11px] mb-3 bg-slate-950/80 px-3 py-1 rounded-full border border-orange-500/20 backdrop-blur-md">
+                            Giải pháp doanh nghiệp
+                        </span>
+
+                        <h3 class="text-2xl font-extrabold text-white mb-3 leading-tight">
+                            Tăng Trưởng Số <br>
+                            <span class="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-yellow-400">Đột Phá Doanh Thu</span>
+                        </h3>
+
+                        <p class="text-slate-300 text-sm mb-6 opacity-90">
+                            Chiến lược Web & Marketing tổng thể giúp bạn dẫn đầu thị trường.
+                        </p>
+
+                        <span class="w-full py-3.5 bg-gradient-to-r from-orange-600 to-orange-500 text-white rounded-2xl font-bold text-sm shadow-lg shadow-orange-600/30 group-hover:shadow-orange-600/50 transition-all transform group-hover:scale-[1.02] flex items-center justify-center gap-2">
+                            Nhận tư vấn miễn phí <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
+                        </span>
                     </div>
-                </div>
+                </a>
 
             </div>
 

@@ -124,7 +124,7 @@ include 'includes/header.php';
                         <i data-lucide="check-circle-2" class="w-5 h-5 text-blue-600"></i> Viết bài chuẩn SEO & Chăm sóc Fanpage
                     </li>
                 </ul>
-                <a href="#" class="text-blue-600 font-bold hover:text-blue-700 inline-flex items-center gap-2 group/link">
+                <a href="/lien-he" class="text-blue-600 font-bold hover:text-blue-700 inline-flex items-center gap-2 group/link">
                     Nhận kế hoạch SEO miễn phí <i data-lucide="arrow-right" class="w-4 h-4 transform group-hover/link:translate-x-1 transition-transform"></i>
                 </a>
             </div>
@@ -188,8 +188,8 @@ include 'includes/header.php';
                         <i data-lucide="check-circle-2" class="w-5 h-5 text-purple-600"></i> Email Doanh nghiệp theo tên miền
                     </li>
                 </ul>
-                <a href="#" class="text-purple-600 font-bold hover:text-purple-700 inline-flex items-center gap-2 group/link">
-                    Xem bảng giá Hosting <i data-lucide="arrow-right" class="w-4 h-4 transform group-hover/link:translate-x-1 transition-transform"></i>
+                <a href="/lien-he" class="text-purple-600 font-bold hover:text-purple-700 inline-flex items-center gap-2 group/link">
+                    Liên hệ báo giá Hosting <i data-lucide="arrow-right" class="w-4 h-4 transform group-hover/link:translate-x-1 transition-transform"></i>
                 </a>
             </div>
         </div>
