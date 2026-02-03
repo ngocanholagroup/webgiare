@@ -43,7 +43,7 @@ $selected_template = isset($_GET['template']) ? $_GET['template'] : '';
 
 <section class="relative -mt-32 pb-24 z-20">
     <div class="container mx-auto px-4">
-        <div class="bg-white rounded-3xl shadow-2xl shadow-slate-900/10 border border-slate-100 overflow-hidden flex flex-col lg:flex-row">
+        <div class="bg-white rounded-3xl shadow-2xl shadow-slate-900/10 overflow-hidden flex flex-col lg:flex-row">
             
             <div class="w-full lg:w-2/5 bg-slate-900 p-8 md:p-12 text-white relative overflow-hidden">
                 <div class="absolute bottom-0 right-0 w-64 h-64 bg-orange-500 rounded-full blur-[80px] opacity-20 pointer-events-none"></div>
@@ -164,48 +164,6 @@ $selected_template = isset($_GET['template']) ? $_GET['template'] : '';
         </a>
     </div>
 </section>
-
-<section class="py-24 bg-slate-50">
-    <div class="container mx-auto px-4 max-w-3xl">
-        <div class="text-center mb-12">
-            <h2 class="text-3xl font-bold text-slate-900 mb-4">Câu hỏi thường gặp</h2>
-            <p class="text-slate-500">Giải đáp nhanh những thắc mắc trước khi bạn liên hệ.</p>
-        </div>
-
-        <div class="space-y-4">
-            <details class="group bg-white rounded-xl shadow-sm border border-slate-200 open:border-orange-300 open:ring-1 open:ring-orange-100 transition-all duration-300">
-                <summary class="flex items-center justify-between p-6 cursor-pointer font-bold text-slate-800 marker:content-none hover:text-orange-600">
-                    Quy trình thanh toán như thế nào?
-                    <i data-lucide="chevron-down" class="w-5 h-5 text-slate-400 group-open:rotate-180 transition-transform"></i>
-                </summary>
-                <div class="px-6 pb-6 text-slate-600 leading-relaxed border-t border-slate-100 pt-4">
-                    Chúng tôi chia làm 2 đợt thanh toán: <strong>Đợt 1 (50%)</strong> tạm ứng sau khi ký hợp đồng để triển khai dự án. <strong>Đợt 2 (50%)</strong> thanh toán sau khi nghiệm thu và bàn giao website.
-                </div>
-            </details>
-
-            <details class="group bg-white rounded-xl shadow-sm border border-slate-200 open:border-orange-300 open:ring-1 open:ring-orange-100 transition-all duration-300">
-                <summary class="flex items-center justify-between p-6 cursor-pointer font-bold text-slate-800 marker:content-none hover:text-orange-600">
-                    Tôi ở tỉnh xa thì làm việc thế nào?
-                    <i data-lucide="chevron-down" class="w-5 h-5 text-slate-400 group-open:rotate-180 transition-transform"></i>
-                </summary>
-                <div class="px-6 pb-6 text-slate-600 leading-relaxed border-t border-slate-100 pt-4">
-                    Hoàn toàn được. Chúng tôi làm việc Online qua Zalo/Google Meet/Ultraviewer. Hợp đồng và hóa đơn sẽ được gửi chuyển phát nhanh đến tận tay bạn. Hiện tại HolaGroup đang phục vụ khách hàng trên khắp 63 tỉnh thành.
-                </div>
-            </details>
-
-            <details class="group bg-white rounded-xl shadow-sm border border-slate-200 open:border-orange-300 open:ring-1 open:ring-orange-100 transition-all duration-300">
-                <summary class="flex items-center justify-between p-6 cursor-pointer font-bold text-slate-800 marker:content-none hover:text-orange-600">
-                    Website có được bảo hành không?
-                    <i data-lucide="chevron-down" class="w-5 h-5 text-slate-400 group-open:rotate-180 transition-transform"></i>
-                </summary>
-                <div class="px-6 pb-6 text-slate-600 leading-relaxed border-t border-slate-100 pt-4">
-                    Có. Chúng tôi <strong>bảo hành vĩnh viễn</strong> đối với các lỗi kỹ thuật phát sinh từ mã nguồn do chúng tôi xây dựng, miễn là bạn còn sử dụng Hosting tại HolaGroup hoặc giữ nguyên source code gốc.
-                </div>
-            </details>
-        </div>
-    </div>
-</section>
-
 <?php
 // Gọi Footer
 include 'includes/footer.php';

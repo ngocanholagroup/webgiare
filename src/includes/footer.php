@@ -19,17 +19,6 @@
                 <p class="text-sm leading-relaxed text-slate-400">
                     Đối tác tin cậy cung cấp giải pháp chuyển đổi số toàn diện. Chúng tôi biến ý tưởng kinh doanh của bạn thành hiện thực trên môi trường số với chi phí tối ưu nhất.
                 </p>
-                <div class="flex gap-4">
-                    <a href="#" class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-[#1877F2] hover:text-white hover:-translate-y-1 transition-all duration-300 shadow-lg shadow-slate-900/50">
-                        <i data-lucide="facebook" class="w-5 h-5 fill-current"></i>
-                    </a>
-                    <a href="#" class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-black hover:text-white hover:-translate-y-1 transition-all duration-300 shadow-lg shadow-slate-900/50">
-                        <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-                    </a>
-                    <a href="#" class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-pink-600 hover:text-white hover:-translate-y-1 transition-all duration-300 shadow-lg shadow-slate-900/50">
-                        <i data-lucide="instagram" class="w-5 h-5"></i>
-                    </a>
-                </div>
             </div>
 
             <div>
@@ -80,11 +69,6 @@
                             <i data-lucide="credit-card" class="w-4 h-4 text-slate-600 group-hover:text-orange-500"></i> Hướng dẫn thanh toán
                         </a>
                     </li>
-                    <li>
-                        <a href="/lien-he" class="flex items-center gap-2 hover:text-orange-500 hover:translate-x-1 transition-all duration-300 group">
-                            <i data-lucide="users" class="w-4 h-4 text-slate-600 group-hover:text-orange-500"></i> Tuyển dụng nhân sự
-                        </a>
-                    </li>
                 </ul>
             </div>
 
@@ -112,16 +96,6 @@
                         <span class="text-slate-400 group-hover:text-white transition-colors">sale@holagroup.com.vn</span>
                     </li>
                 </ul>
-                
-                <div class="mt-6 pt-6 border-t border-slate-800">
-                    <p class="text-xs mb-3 font-semibold text-slate-400 uppercase tracking-wider">Đăng ký nhận tin</p>
-                    <form class="relative">
-                        <input type="email" placeholder="Email của bạn..." class="w-full bg-slate-800 text-white rounded-lg pl-4 pr-12 py-3 text-sm focus:ring-2 focus:ring-orange-500 focus:bg-slate-700 outline-none transition-all placeholder-slate-500">
-                        <button class="absolute right-1.5 top-1.5 bg-gradient-to-r from-orange-500 to-red-500 p-1.5 rounded-md text-white hover:shadow-lg hover:shadow-orange-500/30 transition-all">
-                            <i data-lucide="send" class="w-4 h-4"></i>
-                        </button>
-                    </form>
-                </div>
             </div>
 
         </div>
@@ -148,13 +122,13 @@
         <i data-lucide="arrow-up" class="w-5 h-5"></i>
     </button>
 
-    <a href="#" target="_blank" class="relative flex items-center group/btn z-50">
+    <a href="https://www.facebook.com/profile.php?id=61570773781588" target="_blank" class="relative flex items-center group/btn z-50">
         <span class="absolute right-14 bg-slate-800 text-white text-xs font-bold px-3 py-1.5 rounded-lg shadow-xl opacity-0 translate-x-4 group-hover/btn:opacity-100 group-hover/btn:translate-x-0 transition-all duration-300 whitespace-nowrap pointer-events-none border border-slate-700">
             Chat Facebook
             <span class="absolute right-[-4px] top-1/2 -translate-y-1/2 w-2 h-2 bg-slate-800 rotate-45 border-r border-t border-slate-700"></span>
         </span>
         <div class="w-12 h-12 bg-[#0084FF] text-white rounded-full shadow-lg shadow-blue-500/30 flex items-center justify-center hover:scale-110 transition-transform duration-300">
-            <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.03 2 11C2 13.66 3.39 16.05 5.61 17.58C5.61 17.58 5.25 19.5 4.9 20.85C4.81 21.19 5.17 21.49 5.48 21.28C7.19 20.12 9.53 18.72 9.53 18.72C10.33 18.91 11.16 19.01 12 19.01C17.52 19.01 22 14.98 22 10.01C22 5.03 17.52 2 12 2Z"/></svg>
+            <i data-lucide="facebook" class="w-5 h-5 fill-current"></i>
         </div>
     </a>
 
