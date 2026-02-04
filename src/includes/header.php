@@ -6,33 +6,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-    <title><?= $meta_title ?? $title ?? 'Web Giá Rẻ - Thiết kế website trọn gói uy tín, chuyên nghiệp' ?></title>
+    <title><?= $meta_title ?? $title ?? setting('default_title') ?></title>
     
-    <meta name="description" content="<?= $meta_desc ?? $description ?? 'Dịch vụ thiết kế website giá rẻ, chuẩn SEO tại TP.HCM. Kho giao diện đẹp, load nhanh, bảo hành trọn đời.' ?>">
-    
-    <meta name="keywords" content="<?= $meta_keywords ?? 'thiết kế web giá rẻ, làm web trọn gói, web chuẩn seo, thiết kế website hcm, holagroup' ?>">
-    
+    <meta name="description" content="<?= $meta_desc ?? $description ?? setting('default_desc') ?>">
+    <meta name="keywords" content="<?= $meta_keywords ?? setting('default_keywords') ?>">
     <meta name="robots" content="<?= $meta_robots ?? 'index, follow' ?>">
-    
-    <meta name="author" content="<?= $meta_author ?? 'HolaGroup Tech Team' ?>">
-    <meta name="copyright" content="HolaGroup">
+    <meta name="author" content="<?= $meta_author ?? setting('company_name', 'HolaGroup') ?>">
+    <meta name="copyright" content="<?= setting('company_name', 'HolaGroup') ?>">
 
     <link rel="canonical" href="<?= $meta_canonical ?? "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]" ?>" />
 
     <meta property="og:type" content="<?= $og_type ?? 'website' ?>">
     <meta property="og:url" content="<?= $meta_canonical ?? "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]" ?>">
-    <meta property="og:site_name" content="HolaGroup - Web Giá Rẻ">
-    <meta property="og:title" content="<?= $meta_title ?? $title ?? 'Web Giá Rẻ - Thiết kế website chuyên nghiệp' ?>">
-    <meta property="og:description" content="<?= $meta_desc ?? $description ?? 'Dịch vụ thiết kế website chuẩn SEO, giao diện hiện đại.' ?>">
-    <meta property="og:image" content="<?= $og_image ?? 'http://yourdomain.com/assets/images/social-share-default.jpg' ?>">
+    <meta property="og:site_name" content="<?= setting('company_name', 'HolaGroup') ?>">
+    <meta property="og:title" content="<?= $meta_title ?? $title ?? setting('default_title') ?>">
+    <meta property="og:description" content="<?= $meta_desc ?? $description ?? setting('default_desc') ?>">
+    <meta property="og:image" content="<?= $og_image ?? setting('default_share_image') ?>">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta property="og:locale" content="vi_VN">
 
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="<?= $meta_title ?? $title ?? 'Web Giá Rẻ - Thiết kế website chuyên nghiệp' ?>">
-    <meta name="twitter:description" content="<?= $meta_desc ?? $description ?? 'Dịch vụ thiết kế website chuẩn SEO, giao diện hiện đại.' ?>">
-    <meta name="twitter:image" content="<?= $og_image ?? 'http://yourdomain.com/assets/images/social-share-default.jpg' ?>">
+    <meta name="twitter:title" content="<?= $meta_title ?? $title ?? setting('default_title') ?>">
+    <meta name="twitter:description" content="<?= $meta_desc ?? $description ?? setting('default_desc') ?>">
+    <meta name="twitter:image" content="<?= $og_image ?? setting('default_share_image') ?>">
 
     <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png">
@@ -48,15 +45,15 @@
     {
       "@context": "https://schema.org",
       "@type": "ProfessionalService",
-      "name": "HolaGroup - Web Giá Rẻ",
-      "image": "http://yourdomain.com/assets/logo.png",
-      "@id": "http://yourdomain.com",
-      "url": "http://yourdomain.com",
-      "telephone": "0973157932",
+      "name": "<?= setting('company_name', 'HolaGroup') ?>",
+      "image": "<?= setting('default_share_image') ?>",
+      "@id": "http://<?= $_SERVER['HTTP_HOST'] ?>",
+      "url": "http://<?= $_SERVER['HTTP_HOST'] ?>",
+      "telephone": "<?= setting('company_phone') ?>",
       "priceRange": "$$",
       "address": {
         "@type": "PostalAddress",
-        "streetAddress": "119 Đường Lê Bôi, Phường 7, Quận 8",
+        "streetAddress": "<?= setting('company_address') ?>",
         "addressLocality": "Hồ Chí Minh",
         "postalCode": "700000",
         "addressCountry": "VN"
@@ -73,9 +70,8 @@
         "closes": "18:00"
       },
       "sameAs": [
-        "https://www.facebook.com/holagroup",
-        "https://twitter.com/holagroup",
-        "https://www.instagram.com/holagroup"
+        "<?= setting('social_facebook') ?>",
+        "<?= setting('social_zalo') ?>"
       ]
     }
     </script>
@@ -121,15 +117,15 @@
         <div class="bg-slate-900 text-white py-2 text-xs md:text-sm hidden md:block border-b border-slate-800">
             <div class="container mx-auto px-4 flex justify-between items-center">
                 <div class="flex items-center gap-6">
-                    <a href="mailto:sale@holagroup.com.vn" class="flex items-center gap-2 opacity-80 hover:opacity-100 hover:text-orange-400 transition">
-                        <i data-lucide="mail" class="w-3.5 h-3.5"></i> sale@holagroup.com.vn
+                    <a href="mailto:<?= setting('company_email') ?>" class="flex items-center gap-2 opacity-80 hover:opacity-100 hover:text-orange-400 transition">
+                        <i data-lucide="mail" class="w-3.5 h-3.5"></i> <?= setting('company_email') ?>
                     </a>
-                    <a href="tel:0973157932" class="flex items-center gap-2 opacity-80 hover:opacity-100 hover:text-orange-400 transition">
-                        <i data-lucide="phone" class="w-3.5 h-3.5"></i> 0973.157.932
+                    <a href="tel:<?= setting('company_phone') ?>" class="flex items-center gap-2 opacity-80 hover:opacity-100 hover:text-orange-400 transition">
+                        <i data-lucide="phone" class="w-3.5 h-3.5"></i> <?= setting('company_phone') ?>
                     </a>
                 </div>
                 <div class="flex items-center gap-4">
-                    <a href="/tin-tuc" class="opacity-80 hover:opacity-100 hover:text-orange-400 transition">Tin tức</a>
+                    <a href="/tin-tuc" class="opacity-80 hover:opacity-100 hover:text-orange-400 transition">Tin tức & Sự kiện</a>
                 </div>
             </div>
         </div>
@@ -138,14 +134,22 @@
             <div class="container mx-auto px-4 py-3 md:py-4">
                 <div class="flex items-center justify-between">
                     
-                    <a href="/" class="flex items-center gap-2.5 group" title="Về trang chủ Web Giá Rẻ">
-                        <div class="w-10 h-10 bg-gradient-to-br from-orange-500 to-pink-500 rounded-xl flex items-center justify-center text-white shadow-lg shadow-orange-500/20 group-hover:rotate-12 transition-transform duration-300">
-                            <i data-lucide="zap" class="w-6 h-6 fill-current"></i>
-                        </div>
-                        <div class="leading-tight">
-                            <span class="block text-xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-slate-900 to-slate-700">HolaGroup</span>
-                            <span class="block text-[10px] font-bold tracking-[0.2em] text-orange-500 uppercase">Tech Solution</span>
-                        </div>
+                    <a href="/" class="flex items-center gap-2.5 group" title="Về trang chủ">
+                        <?php if(setting('site_logo_url')): ?>
+                            <img src="<?= setting('site_logo_url') ?>" alt="<?= setting('company_name') ?>" class="h-10 w-auto">
+                        <?php else: ?>
+                            <div class="w-10 h-10 bg-gradient-to-br from-orange-500 to-pink-500 rounded-xl flex items-center justify-center text-white shadow-lg shadow-orange-500/20 group-hover:rotate-12 transition-transform duration-300">
+                                <i data-lucide="zap" class="w-6 h-6 fill-current"></i>
+                            </div>
+                            <div class="leading-tight">
+                                <span class="block text-xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-slate-900 to-slate-700">
+                                    <?= setting('company_name', 'HolaGroup') ?>
+                                </span>
+                                <span class="block text-[10px] font-bold tracking-[0.2em] text-orange-500 uppercase">
+                                    <?= setting('company_slogan', 'Tech Solution') ?>
+                                </span>
+                            </div>
+                        <?php endif; ?>
                     </a>
 
                     <div class="hidden lg:flex items-center gap-8">
@@ -166,7 +170,7 @@
                             <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-orange-500 transition-all duration-300 group-hover:w-full"></span>
                         </a>
                         <a href="/tin-tuc" class="relative text-sm font-semibold text-gray-700 hover:text-orange-600 transition-colors group py-2">
-                            Blog
+                            Tin tức
                             <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-orange-500 transition-all duration-300 group-hover:w-full"></span>
                         </a>
                     </div>
@@ -192,7 +196,7 @@
     <div id="mobile-menu" class="fixed top-0 right-0 w-[300px] h-full bg-white z-[70] transform translate-x-full transition-transform duration-300 shadow-2xl flex flex-col">
         
         <div class="p-5 flex items-center justify-between border-b border-gray-100">
-            <span class="text-lg font-bold text-slate-800">HolaGroup</span>
+            <span class="text-lg font-bold text-slate-800"><?= setting('company_name', 'HolaGroup') ?></span>
             <button id="close-menu-btn" class="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-full transition-colors">
                 <i data-lucide="x" class="w-6 h-6"></i>
             </button>
@@ -217,17 +221,17 @@
 
             <div class="mt-6 border-t border-gray-100 pt-6 space-y-4">
                 <p class="px-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Liên hệ</p>
-                <a href="tel:0973157932" class="px-4 flex items-center gap-3 text-sm font-medium text-gray-600 hover:text-orange-600">
+                <a href="tel:<?= setting('company_phone') ?>" class="px-4 flex items-center gap-3 text-sm font-medium text-gray-600 hover:text-orange-600">
                     <div class="w-8 h-8 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center">
                         <i data-lucide="phone" class="w-4 h-4"></i>
                     </div>
-                    0973.157.932
+                    <?= setting('company_phone') ?>
                 </a>
-                <a href="mailto:sale@holagroup.com.vn" class="px-4 flex items-center gap-3 text-sm font-medium text-gray-600 hover:text-orange-600">
+                <a href="mailto:<?= setting('company_email') ?>" class="px-4 flex items-center gap-3 text-sm font-medium text-gray-600 hover:text-orange-600">
                     <div class="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center">
                         <i data-lucide="mail" class="w-4 h-4"></i>
                     </div>
-                    sale@holagroup.com.vn
+                    <?= setting('company_email') ?>
                 </a>
             </div>
         </div>

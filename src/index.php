@@ -1,58 +1,46 @@
 <?php
 // src/index.php
 
-// 1. AUTOLOAD
-spl_autoload_register(function ($className) {
-    $fileController = __DIR__ . '/controllers/' . $className . '.php';
-    if (file_exists($fileController)) {
-        require_once $fileController;
-        return;
-    }
+// 1. NẠP AUTOLOAD (QUAN TRỌNG: Phải nạp đầu tiên)
+require_once __DIR__ . '/autoload.php';
 
-    $fileModel = __DIR__ . '/models/' . $className . '.php';
-    if (file_exists($fileModel)) {
-        require_once $fileModel;
-        return;
-    }
-    
-    if ($className === 'Router') {
-        require_once __DIR__ . '/Router.php';
-    }
-});
-
-// 2. HELPER VIEW
-function view($viewPath, $data = []) {
-    $path = str_replace('.', '/', $viewPath);
-    $fullPath = __DIR__ . '/views/' . $path . '.php';
-    if (file_exists($fullPath)) {
-        extract($data);
-        require $fullPath;
-    } else {
-        echo "View not found: $fullPath";
-    }
-}
+// 2. SAU ĐÓ MỚI NẠP HELPER
+require_once __DIR__ . '/helpers.php';
 
 // 3. KHỞI TẠO ROUTER
 $router = new Router();
 
 // --- ĐỊNH NGHĨA ROUTE ---
 
-$router->get('/', [HomeController::class, 'index']);
-$router->get('/gioi-thieu', [HomeController::class, 'about']);
-$router->get('/dich-vu', [HomeController::class, 'services']);
+// 1. Các trang tĩnh
+$router->get('/', [PageController::class, 'home']);
+// $router->get('/gioi-thieu', [PageController::class, 'about']);
+// $router->get('/dich-vu', [PageController::class, 'services']);
+// $router->get('/chinh-sach', [PageController::class, 'policy']);
 
-// Route Tin tức
+$router->get('/gioi-thieu', function() {
+    view('client.about', ['title' => 'Giới thiệu - HolaGroup']);
+});
+
+$router->get('/dich-vu', function() {
+    view('client.services', ['title' => 'Dịch vụ - HolaGroup']);
+});
+
+$router->get('/chinh-sach', function() {
+    view('client.policy', ['title' => 'Điều khoản sử dụng - HolaGroup']);
+});
+
+// ✅ Route Blog
 $router->get('/tin-tuc', [BlogController::class, 'index']);
 $router->get('/tin-tuc/{slug}', [BlogController::class, 'detail']);
 
-// ✅ Route Template (Logic Database nằm ở đây)
+// ✅ Route Template
 $router->get('/kho-giao-dien', [TemplateController::class, 'index']);
 $router->get('/kho-giao-dien/{slug}', [TemplateController::class, 'detail']);
 
-// Route Lien hệ
-$router->get('/lien-he', function() {
-    view('client.contact', ['title' => 'Liên hệ']);
-});
+// Route Lien hệ hiển thị form
+$router->get('/lien-he', [ContactController::class, 'index']);
+$router->post('/lien-he/submit', [ContactController::class, 'submit']);
 
 // Route Admin
 $router->get('/admin', [AdminController::class, 'dashboard']);

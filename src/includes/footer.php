@@ -1,4 +1,6 @@
-</main> <footer class="bg-slate-900 text-slate-300 pt-20 pb-10 relative overflow-hidden font-sans border-t border-slate-800">
+</main>
+
+<footer class="bg-slate-900 text-slate-300 pt-20 pb-10 relative overflow-hidden font-sans border-t border-slate-800">
     
     <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full pointer-events-none">
         <div class="absolute top-0 left-1/4 w-96 h-96 bg-blue-900/20 rounded-full blur-[100px]"></div>
@@ -14,7 +16,7 @@
                     <div class="w-10 h-10 bg-gradient-to-br from-orange-500 to-pink-500 rounded-xl flex items-center justify-center text-white shadow-lg shadow-orange-900/20 group-hover:scale-105 transition-transform">
                         <i data-lucide="zap" class="w-6 h-6 fill-current"></i>
                     </div>
-                    <span class="text-2xl font-bold text-white tracking-tight">HolaGroup</span>
+                    <span class="text-2xl font-bold text-white tracking-tight"><?= setting('company_name', 'HolaGroup') ?></span>
                 </a>
                 <p class="text-sm leading-relaxed text-slate-400">
                     Đối tác tin cậy cung cấp giải pháp chuyển đổi số toàn diện. Chúng tôi biến ý tưởng kinh doanh của bạn thành hiện thực trên môi trường số với chi phí tối ưu nhất.
@@ -26,6 +28,11 @@
                     <span class="w-8 h-1 bg-orange-500 rounded-full"></span> Dịch vụ
                 </h3>
                 <ul class="space-y-3 text-sm">
+                    <li>
+                        <a href="/kho-giao-dien" class="flex items-center gap-2 hover:text-orange-500 hover:translate-x-1 transition-all duration-300 group">
+                            <i data-lucide="chevron-right" class="w-4 h-4 text-slate-600 group-hover:text-orange-500"></i> Kho giao diện mẫu
+                        </a>
+                    </li>
                     <li>
                         <a href="/dich-vu" class="flex items-center gap-2 hover:text-orange-500 hover:translate-x-1 transition-all duration-300 group">
                             <i data-lucide="chevron-right" class="w-4 h-4 text-slate-600 group-hover:text-orange-500"></i> Thiết kế Website trọn gói
@@ -39,11 +46,6 @@
                     <li>
                         <a href="/dich-vu" class="flex items-center gap-2 hover:text-orange-500 hover:translate-x-1 transition-all duration-300 group">
                             <i data-lucide="chevron-right" class="w-4 h-4 text-slate-600 group-hover:text-orange-500"></i> Hosting & Tên miền
-                        </a>
-                    </li>
-                    <li>
-                        <a href="/dich-vu" class="flex items-center gap-2 hover:text-orange-500 hover:translate-x-1 transition-all duration-300 group">
-                            <i data-lucide="chevron-right" class="w-4 h-4 text-slate-600 group-hover:text-orange-500"></i> Chăm sóc Fanpage
                         </a>
                     </li>
                 </ul>
@@ -64,11 +66,6 @@
                             <i data-lucide="file-text" class="w-4 h-4 text-slate-600 group-hover:text-orange-500"></i> Điều khoản dịch vụ
                         </a>
                     </li>
-                    <li>
-                        <a href="/lien-he" class="flex items-center gap-2 hover:text-orange-500 hover:translate-x-1 transition-all duration-300 group">
-                            <i data-lucide="credit-card" class="w-4 h-4 text-slate-600 group-hover:text-orange-500"></i> Hướng dẫn thanh toán
-                        </a>
-                    </li>
                 </ul>
             </div>
 
@@ -81,19 +78,25 @@
                         <div class="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center shrink-0 group-hover:bg-orange-500 transition-colors">
                             <i data-lucide="map-pin" class="w-4 h-4 text-orange-500 group-hover:text-white"></i>
                         </div>
-                        <span class="text-slate-400 group-hover:text-white transition-colors">119 Đường Lê Bôi, Phường 7, Quận 8, TP. HCM</span>
+                        <span class="text-slate-400 group-hover:text-white transition-colors">
+                            <?= setting('company_address', 'Đang cập nhật địa chỉ...') ?>
+                        </span>
                     </li>
                     <li class="flex items-center gap-3 group cursor-pointer">
                         <div class="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center shrink-0 group-hover:bg-orange-500 transition-colors">
                             <i data-lucide="phone" class="w-4 h-4 text-orange-500 group-hover:text-white"></i>
                         </div>
-                        <span class="font-bold text-white group-hover:text-orange-500 transition-colors">0973.157.932</span>
+                        <span class="font-bold text-white group-hover:text-orange-500 transition-colors">
+                            <?= setting('company_phone', 'Hotline...') ?>
+                        </span>
                     </li>
                     <li class="flex items-center gap-3 group cursor-pointer">
                         <div class="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center shrink-0 group-hover:bg-orange-500 transition-colors">
                             <i data-lucide="mail" class="w-4 h-4 text-orange-500 group-hover:text-white"></i>
                         </div>
-                        <span class="text-slate-400 group-hover:text-white transition-colors">sale@holagroup.com.vn</span>
+                        <span class="text-slate-400 group-hover:text-white transition-colors">
+                            <?= setting('company_email', 'Email...') ?>
+                        </span>
                     </li>
                 </ul>
             </div>
@@ -102,12 +105,12 @@
 
         <div class="border-t border-slate-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-slate-500">
             <div>
-                &copy; <?php echo date("Y"); ?> <strong class="text-white">HolaGroup</strong>. All rights reserved.
+                &copy; <?php echo date("Y"); ?> <strong class="text-white"><?= setting('company_name', 'HolaGroup') ?></strong>. All rights reserved.
             </div>
             <div class="flex items-center gap-2">
                 <span>Designed with</span>
                 <i data-lucide="heart" class="w-3 h-3 text-red-500 fill-current animate-pulse"></i>
-                <span>by <a href="#" class="text-orange-500 hover:text-white hover:underline transition-colors">WebPro Team</a></span>
+                <span>by <a href="#" class="text-orange-500 hover:text-white hover:underline transition-colors">HolaGroup Team</a></span>
             </div>
         </div>
 
@@ -122,7 +125,8 @@
         <i data-lucide="arrow-up" class="w-5 h-5"></i>
     </button>
 
-    <a href="https://www.facebook.com/profile.php?id=61570773781588" target="_blank" class="relative flex items-center group/btn z-50">
+    <?php if(setting('social_facebook')): ?>
+    <a href="<?= setting('social_facebook') ?>" target="_blank" class="relative flex items-center group/btn z-50">
         <span class="absolute right-14 bg-slate-800 text-white text-xs font-bold px-3 py-1.5 rounded-lg shadow-xl opacity-0 translate-x-4 group-hover/btn:opacity-100 group-hover/btn:translate-x-0 transition-all duration-300 whitespace-nowrap pointer-events-none border border-slate-700">
             Chat Facebook
             <span class="absolute right-[-4px] top-1/2 -translate-y-1/2 w-2 h-2 bg-slate-800 rotate-45 border-r border-t border-slate-700"></span>
@@ -131,20 +135,24 @@
             <i data-lucide="facebook" class="w-5 h-5 fill-current"></i>
         </div>
     </a>
+    <?php endif; ?>
 
-    <a href="https://zalo.me/0973157932" target="_blank" class="relative flex items-center group/btn z-50">
+    <?php if(setting('social_zalo')): ?>
+    <a href="<?= setting('social_zalo') ?>" target="_blank" class="relative flex items-center group/btn z-50">
         <span class="absolute right-14 bg-slate-800 text-white text-xs font-bold px-3 py-1.5 rounded-lg shadow-xl opacity-0 translate-x-4 group-hover/btn:opacity-100 group-hover/btn:translate-x-0 transition-all duration-300 whitespace-nowrap pointer-events-none border border-slate-700">
             Chat Zalo
             <span class="absolute right-[-4px] top-1/2 -translate-y-1/2 w-2 h-2 bg-slate-800 rotate-45 border-r border-t border-slate-700"></span>
         </span>
         <div class="w-12 h-12 bg-[#0068FF] text-white rounded-full shadow-lg shadow-blue-600/30 flex items-center justify-center hover:scale-110 transition-transform duration-300 overflow-hidden border-2 border-white ring-2 ring-blue-100">
-            <span class="font-extrabold text-[10px] font-sans">Zalo</span>
+             <span class="font-extrabold text-[10px] font-sans">Zalo</span>
         </div>
     </a>
+    <?php endif; ?>
 
-    <a href="tel:0973157932" class="relative flex items-center group/btn z-50">
+    <?php if(setting('company_phone')): ?>
+    <a href="tel:<?= setting('company_phone') ?>" class="relative flex items-center group/btn z-50">
         <span class="absolute right-14 bg-slate-800 text-white text-xs font-bold px-3 py-1.5 rounded-lg shadow-xl opacity-0 translate-x-4 group-hover/btn:opacity-100 group-hover/btn:translate-x-0 transition-all duration-300 whitespace-nowrap pointer-events-none border border-slate-700">
-            0973.157.932
+            <?= setting('company_phone') ?>
             <span class="absolute right-[-4px] top-1/2 -translate-y-1/2 w-2 h-2 bg-slate-800 rotate-45 border-r border-t border-slate-700"></span>
         </span>
         
@@ -154,6 +162,7 @@
             <i data-lucide="phone-call" class="w-5 h-5 fill-current animate-tada"></i>
         </div>
     </a>
+    <?php endif; ?>
 
 </div>
 
@@ -184,46 +193,36 @@
     });
 
     // 2. Kích hoạt Lucide Icons
-    // Lưu ý: Đảm bảo script lucide đã load ở Header hoặc load lại ở đây nếu cần
     if (typeof lucide !== 'undefined') {
         lucide.createIcons();
     }
     
+    // Script Mobile Menu (Giữ nguyên của bạn)
     const menuBtn = document.getElementById('mobile-menu-btn');
-        const closeBtn = document.getElementById('close-menu-btn');
-        const mobileMenu = document.getElementById('mobile-menu');
-        const backdrop = document.getElementById('mobile-backdrop');
-        const body = document.body;
+    const closeBtn = document.getElementById('close-menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const backdrop = document.getElementById('mobile-backdrop');
+    const body = document.body;
 
+    if(menuBtn && mobileMenu && backdrop) {
         function openMenu() {
-            // Hiện backdrop
             backdrop.classList.remove('hidden');
-            // Cần setTimeout nhỏ để transition hoạt động
             setTimeout(() => backdrop.classList.remove('opacity-0'), 10);
-            
-            // Trượt menu vào
             mobileMenu.classList.remove('translate-x-full');
-            
-            // Khóa cuộn trang
             body.style.overflow = 'hidden';
         }
 
         function closeMenu() {
-            // Ẩn backdrop
             backdrop.classList.add('opacity-0');
-            setTimeout(() => backdrop.classList.add('hidden'), 300); // Chờ animation xong mới ẩn hẳn
-            
-            // Trượt menu ra
+            setTimeout(() => backdrop.classList.add('hidden'), 300);
             mobileMenu.classList.add('translate-x-full');
-            
-            // Mở cuộn trang
             body.style.overflow = '';
         }
 
-        // Event Listeners
         menuBtn.addEventListener('click', openMenu);
         closeBtn.addEventListener('click', closeMenu);
-        backdrop.addEventListener('click', closeMenu); // Bấm ra ngoài thì đóng
+        backdrop.addEventListener('click', closeMenu);
+    }
 </script>
 
 </body>

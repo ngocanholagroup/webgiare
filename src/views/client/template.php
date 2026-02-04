@@ -88,17 +88,16 @@ $pagination = $pagination ?? ['current_page' => 1, 'total_pages' => 1];
         <div class="sticky top-[80px] z-30 mb-12 py-4 bg-slate-50/95 backdrop-blur-sm transition-all">
             <div class="flex overflow-x-auto gap-3 p-2 scrollbar-hide md:justify-center">
                 <a href="<?= buildUrl('cat', 'all') ?>"
-                    class="group flex items-center gap-2 px-6 py-3 rounded-full text-sm font-bold transition-all border whitespace-nowrap
-                   <?= ($active_cat === 'all') ? 'bg-slate-900 text-white shadow-xl' : 'bg-white text-slate-600 border-slate-200 hover:text-orange-600' ?>">
+                    class="group flex items-center gap-2 px-6 py-3 rounded-full text-sm capitalize transition-all whitespace-nowrap
+                   <?= ($active_cat === 'all') ? 'bg-orange-500 text-white' : 'bg-slate-100 text-slate-600 hover:bg-orange-500 hover:text-white' ?>">
                     Tất cả
                 </a>
-
                 <?php if (isset($categories)): foreach ($categories as $cat): ?>
                         <a href="<?= buildUrl('cat', $cat['slug']) ?>"
-                            class="group flex items-center gap-2 px-6 py-3 rounded-full text-sm font-bold transition-all border whitespace-nowrap
+                            class="group flex items-center gap-2 px-6 py-3 rounded-full text-sm capitalize transition-all whitespace-nowrap
                        <?= ($active_cat === $cat['slug'])
-                            ? 'bg-slate-900 text-white border-slate-900 shadow-xl ring-2 ring-offset-2 ring-slate-900'
-                            : 'bg-white text-slate-600 border-slate-200 hover:border-orange-500 hover:text-orange-600 hover:shadow-md'
+                            ? 'bg-orange-500 text-white'
+                            : 'bg-slate-100 text-slate-600 hover:bg-orange-500 hover:text-white'
                         ?>">
                             <?= htmlspecialchars($cat['name']) ?>
                         </a>
@@ -118,7 +117,7 @@ $pagination = $pagination ?? ['current_page' => 1, 'total_pages' => 1];
                 <?php foreach ($templates as $item):
                     $has_sale = ($item['sale_price'] > 0 && $item['sale_price'] < $item['price']);
                 ?>
-                    <a href="/kho-giao-dien/<?= $item['slug'] ?>" class="group relative flex flex-col bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-2xl hover:shadow-orange-500/10 hover:-translate-y-2 transition-all duration-500 block">
+                    <a href="/kho-giao-dien/<?= $item['slug'] ?>" class="group relative flex flex-col bg-white rounded-2xl shadow-sm hover:shadow-2xl hover:shadow-orange-500/10 hover:-translate-y-2 transition-all duration-500 block">
                         <div class="h-8 bg-slate-100 rounded-t-2xl border-b border-slate-200 flex items-center px-4 gap-2">
                             <div class="flex gap-1.5">
                                 <div class="w-2.5 h-2.5 rounded-full bg-red-400"></div>
@@ -181,7 +180,7 @@ $pagination = $pagination ?? ['current_page' => 1, 'total_pages' => 1];
                     </div>
                     <h3 class="text-xl font-bold text-slate-900">Không tìm thấy kết quả</h3>
                     <p class="text-slate-500 mt-2">Vui lòng thử từ khóa khác hoặc chọn danh mục khác.</p>
-                    <a href="?" class="inline-block mt-4 text-orange-600 font-bold hover:underline">Xem tất cả mẫu</a>
+                    <a href="/kho-giao-dien" class="inline-block mt-4 text-orange-600 font-bold hover:underline">Xem tất cả mẫu</a>
                 </div>
             <?php endif; ?>
         </div>
@@ -217,23 +216,11 @@ $pagination = $pagination ?? ['current_page' => 1, 'total_pages' => 1];
     </div>
 </section>
 
-<section class="py-24 bg-white border-t border-slate-100 relative overflow-hidden">
-    <div class="container mx-auto px-4">
-        <div class="relative bg-gradient-to-r from-orange-500 to-pink-600 rounded-[2.5rem] p-12 md:p-20 overflow-hidden text-center shadow-2xl shadow-orange-500/30">
-            <div class="absolute top-0 left-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
-            <div class="relative z-10 max-w-3xl mx-auto">
-                <h2 class="text-3xl md:text-5xl font-extrabold text-white mb-6">Không tìm thấy mẫu ưng ý?</h2>
-                <div class="flex flex-col sm:flex-row justify-center gap-4">
-                    <a href="/lien-he" class="px-8 py-4 bg-white text-orange-600 font-bold rounded-full shadow-xl hover:bg-slate-900 hover:text-white transition-all flex items-center justify-center gap-2">
-                        <i data-lucide="pen-tool" class="w-5 h-5"></i> Đặt thiết kế riêng
-                    </a>
-                    <a href="https://zalo.me/0973157932" class="px-8 py-4 bg-orange-700/50 text-white font-bold rounded-full border border-white/20 hover:bg-orange-700 transition-all flex items-center justify-center gap-2 backdrop-blur-sm">
-                        <i data-lucide="message-circle" class="w-5 h-5"></i> Chat tư vấn Zalo
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
+<?php 
+$cta_title = "Không tìm thấy mẫu phù hợp?";
+$cta_desc = "Đừng lo lắng! Hãy để đội ngũ chuyên gia của chúng tôi thiết kế giao diện web độc quyền, hoàn toàn theo ý bạn.";
+$cta_note = "Liên hệ ngay để nhận tư vấn miễn phí và báo giá tốt nhất.";
+include 'includes/cta-section.php'; 
+?>
 
 <?php include 'includes/footer.php'; ?>

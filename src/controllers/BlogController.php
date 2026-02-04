@@ -1,84 +1,104 @@
 <?php
 // src/controllers/BlogController.php
 
-require_once __DIR__ . '/../models/Database.php';
+require_once __DIR__ . '/../models/BlogPost.php';
+require_once __DIR__ . '/../models/BlogCategory.php';
 
 class BlogController {
-    
-    // Trang danh sách tin tức
-    public function index() {
-        // [SEO] Cấu hình cho trang danh sách
-        $seoData = [
-            'title' => 'Tin tức & Kiến thức Website',
-            'meta_title' => 'Tin tức công nghệ, Kiến thức thiết kế Web & SEO - HolaGroup',
-            'meta_desc' => 'Cập nhật xu hướng thiết kế website mới nhất 2026. Chia sẻ kiến thức SEO, Marketing Online và kinh nghiệm kinh doanh hiệu quả.',
-            'meta_keywords' => 'kiến thức seo, xu hướng web 2026, marketing online',
-            'og_image' => 'https://yourdomain.com/assets/images/blog-cover.jpg'
-        ];
+    private $blogModel;
+    private $categoryModel;
 
-        view('client.blog', $seoData); // Truyền dữ liệu sang view
+    public function __construct() {
+        $this->blogModel = new BlogPostModel();
+        $this->categoryModel = new BlogCategoryModel();
     }
 
-    // Trang chi tiết bài viết (QUAN TRỌNG)
-    public function detail($slug) {
-        // 1. Giả lập lấy bài viết từ DB theo $slug
-        // Thực tế: $post = $this->blogModel->getBySlug($slug);
-        $post = [
-            'title' => '5 Xu hướng Thiết kế Website sẽ thống trị năm 2026',
-            'summary' => 'Năm 2026 đánh dấu sự lên ngôi của Glassmorphism, AI Design và trải nghiệm 3D tương tác. Cùng HolaGroup khám phá ngay!',
-            'content' => 'Nội dung chi tiết bài viết ở đây...',
-            'image' => 'https://images.unsplash.com/photo-1614728263952-84ea256f9679?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
-            'author' => 'Tuấn Anh',
-            'created_at' => '2026-02-02',
-            'updated_at' => '2026-02-05'
+    // Trang danh sách Blog
+    public function index() {
+        $catSlug = $_GET['cat'] ?? 'all';
+        $keyword = $_GET['q'] ?? null;
+        $page    = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+        $limit   = 6; // 6 bài mỗi trang
+
+        // 1. Lấy bài Featured (Chỉ lấy ở trang 1 và khi không search/lọc)
+        $featured_post = null;
+        if ($page === 1 && $catSlug === 'all' && empty($keyword)) {
+            $featured_post = $this->blogModel->getFeaturedPost();
+        }
+
+        // 2. Tính phân trang
+        $totalRecords = $this->blogModel->countAll($catSlug, $keyword);
+        $totalPages   = ceil($totalRecords / $limit);
+        if ($page < 1) $page = 1;
+        if ($page > $totalPages && $totalPages > 0) $page = $totalPages;
+        $offset = ($page - 1) * $limit;
+
+        // 3. Lấy danh sách bài viết
+        // Nếu có bài featured thì loại nó ra khỏi danh sách list
+        $excludeId = ($featured_post) ? $featured_post['id'] : null;
+        $posts = $this->blogModel->getAll($limit, $offset, $catSlug, $keyword, $excludeId);
+
+        // 4. Lấy danh mục cho Sidebar/Menu
+        $categories = $this->categoryModel->getAll();
+
+        // 5. SEO & View Data
+        $data = [
+            'title' => 'Blog Công Nghệ & Marketing',
+            'meta_title' => 'Blog Kiến thức Web, SEO, Marketing - HolaGroup',
+            'meta_desc' => 'Chia sẻ kiến thức thiết kế web, lập trình, SEO và Marketing Online thực chiến.',
+            'featured_post' => $featured_post,
+            'posts' => $posts,
+            'categories' => $categories,
+            'active_cat' => $catSlug,
+            'keyword' => $keyword,
+            'pagination' => [
+                'current_page' => $page,
+                'total_pages' => $totalPages,
+                'total_records' => $totalRecords
+            ]
         ];
 
-        // 2. Tạo Schema JSON-LD (Dạng BlogPosting)
-        // Giúp Google hiển thị: Ảnh thumbnail + Tên bài + Ngày đăng + Tác giả trên kết quả tìm kiếm
+        view('client.blog', $data); // Lưu ý: Tên file view của bạn là blog.php
+    }
+
+    // Trang chi tiết bài viết
+    public function detail($slug) {
+        $post = $this->blogModel->getBySlug($slug);
+
+        if (!$post) {
+            header("HTTP/1.0 404 Not Found");
+            echo "Bài viết không tồn tại";
+            return;
+        }
+
+        // Lấy bài liên quan
+        $related_posts = $this->blogModel->getRelated($post['category_id'], $post['id'], 3);
+
+        // Format ngày tháng đẹp (VD: 04 Tháng 02, 2026)
+        $date = date_create($post['published_at']);
+        $post['date_text'] = date_format($date, "d/m/Y");
+
+        // Schema Article
         $schema = [
             "@context" => "https://schema.org",
-            "@type" => "BlogPosting",
+            "@type" => "Article",
             "headline" => $post['title'],
-            "image" => [
-                $post['image']
-            ],
-            "datePublished" => $post['created_at'],
-            "dateModified" => $post['updated_at'],
+            "image" => $post['thumbnail'],
             "author" => [
                 "@type" => "Person",
-                "name" => $post['author']
+                "name" => $post['author_name']
             ],
-            "publisher" => [
-                "@type" => "Organization",
-                "name" => "HolaGroup",
-                "logo" => [
-                    "@type" => "ImageObject",
-                    "url" => "http://yourdomain.com/assets/logo.png"
-                ]
-            ],
+            "datePublished" => $post['published_at'],
             "description" => $post['summary']
         ];
 
-        // 3. Chuẩn bị dữ liệu SEO đầy đủ
         $data = [
-            // Dữ liệu nội dung
             'post' => $post,
-            'slug' => $slug,
-
-            // Dữ liệu SEO Header
-            'meta_title' => $post['title'] . ' - Tin tức HolaGroup', // Title chuẩn SEO: Tên bài - Tên Brand
-            'meta_desc' => $post['summary'], // Description lấy từ summary
-            'meta_keywords' => 'xu hướng web, thiết kế web 2026, holagroup',
-            'meta_author' => $post['author'],
-            
-            // Canonical: Trỏ về link hiện tại (quan trọng để tránh trùng lặp)
-            'meta_canonical' => "http://" . $_SERVER['HTTP_HOST'] . "/tin-tuc/" . $slug,
-
-            // Social Share (Facebook/Zalo)
-            'og_type' => 'article',
-            'og_image' => $post['image'], // Khi share sẽ hiện ảnh bài viết, không phải logo cty
-
-            // Schema JSON-LD
+            'related_posts' => $related_posts,
+            'title' => $post['title'],
+            'meta_title' => $post['title'] . ' - Blog HolaGroup',
+            'meta_desc' => $post['summary'],
+            'og_image' => $post['thumbnail'],
             'schema_json' => json_encode($schema)
         ];
 

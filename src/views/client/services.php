@@ -197,90 +197,164 @@ include 'includes/header.php';
     </div>
 </section>
 
-<section class="py-20 bg-slate-50 border-t border-slate-200">
+<section class="py-24 bg-slate-50 border-t border-slate-200" id="dich-vu-bo-tro">
     <div class="container mx-auto px-4">
-        <div class="text-center mb-16">
-            <h2 class="text-2xl md:text-3xl font-bold text-slate-900">Dịch vụ bổ trợ</h2>
+        <div class="text-center mb-16 max-w-2xl mx-auto">
+            <span class="text-orange-500 font-bold tracking-widest uppercase text-xs mb-2 block">Mở rộng tiềm năng</span>
+            <h2 class="text-3xl md:text-4xl font-bold text-slate-900 mb-4">Hệ sinh thái dịch vụ bổ trợ</h2>
+            <p class="text-slate-500">Giải pháp toàn diện giúp doanh nghiệp vận hành trơn tru và phát triển thương hiệu đồng bộ.</p>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 hover:shadow-lg transition-all group">
-                <div class="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center text-orange-600 mb-4 group-hover:bg-orange-500 group-hover:text-white transition-colors">
-                    <i data-lucide="pen-tool" class="w-6 h-6"></i>
+            
+            <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 hover:shadow-xl hover:shadow-orange-500/5 hover:-translate-y-2 transition-all duration-300 group">
+                <div class="h-24 mb-6 flex items-center justify-start">
+                    <svg width="80" height="80" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" class="transform group-hover:scale-110 transition-transform duration-500">
+                        <circle cx="50" cy="50" r="40" fill="#FFF7ED"/>
+                        
+                        <path d="M30 60 C 20 50, 20 30, 40 25 C 50 20, 70 20, 80 35 C 90 50, 80 70, 60 75 C 50 80, 40 70, 30 60" fill="#FFEDD5" stroke="#F97316" stroke-width="2"/>
+                        <circle cx="40" cy="40" r="3" fill="#F97316"/>
+                        <circle cx="55" cy="35" r="3" fill="#F97316"/>
+                        <circle cx="70" cy="45" r="3" fill="#F97316"/>
+                        
+                        <path d="M60 60 L 25 90 L 20 80 L 50 45" fill="white" stroke="#EA580C" stroke-width="2"/>
+                        <path d="M50 45 L 65 30 C 70 25, 75 30, 70 35 L 55 50" fill="#F97316"/>
+                        
+                        <path d="M25 90 C 15 95, 10 80, 15 75" stroke="#FDBA74" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
                 </div>
-                <h3 class="text-lg font-bold text-slate-900 mb-2">Thiết kế Logo & Branding</h3>
-                <p class="text-sm text-slate-500">Xây dựng bộ nhận diện thương hiệu chuyên nghiệp, ấn tượng ngay từ cái nhìn đầu tiên.</p>
+                <h3 class="text-xl font-bold text-slate-900 mb-3 group-hover:text-orange-600 transition-colors">Thiết kế Logo & Branding</h3>
+                <p class="text-slate-500 text-sm leading-relaxed">Xây dựng bộ nhận diện thương hiệu chuyên nghiệp (Logo, Card, Banner...), tạo ấn tượng thị giác mạnh mẽ ngay từ cái nhìn đầu tiên.</p>
             </div>
 
-            <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 hover:shadow-lg transition-all group">
-                <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center text-blue-600 mb-4 group-hover:bg-blue-500 group-hover:text-white transition-colors">
-                    <i data-lucide="settings" class="w-6 h-6"></i>
+            <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 hover:shadow-xl hover:shadow-blue-500/5 hover:-translate-y-2 transition-all duration-300 group">
+                <div class="h-24 mb-6 flex items-center justify-start">
+                    <svg width="80" height="80" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" class="transform group-hover:rotate-6 transition-transform duration-500">
+                        <circle cx="50" cy="50" r="40" fill="#EFF6FF"/>
+                        
+                        <circle cx="50" cy="50" r="15" stroke="#3B82F6" stroke-width="8" stroke-dasharray="10 4"/>
+                        <circle cx="50" cy="50" r="8" fill="#DBEAFE"/>
+                        
+                        <path d="M35 65 L 25 75 C 20 80, 25 85, 30 80 L 40 70" stroke="#2563EB" stroke-width="6" stroke-linecap="round"/>
+                        <path d="M60 40 L 40 60" stroke="#60A5FA" stroke-width="6" stroke-linecap="round"/>
+                        
+                        <path d="M70 20 C 70 20, 80 25, 80 35 C 80 50, 70 60, 70 60 C 70 60, 60 50, 60 35 C 60 25, 70 20, 70 20 Z" fill="#3B82F6" stroke="white" stroke-width="2"/>
+                        <path d="M68 35 L 72 40 L 76 30" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
                 </div>
-                <h3 class="text-lg font-bold text-slate-900 mb-2">Chăm sóc & Bảo trì Web</h3>
-                <p class="text-sm text-slate-500">Cập nhật nội dung, vá lỗi bảo mật, backup dữ liệu định kỳ giúp website luôn tươi mới.</p>
+                <h3 class="text-xl font-bold text-slate-900 mb-3 group-hover:text-blue-600 transition-colors">Chăm sóc & Bảo trì Web</h3>
+                <p class="text-slate-500 text-sm leading-relaxed">Dịch vụ "Bảo hiểm" cho website: Cập nhật nội dung, vá lỗi bảo mật, backup dữ liệu định kỳ giúp website luôn an toàn và tươi mới.</p>
             </div>
 
-            <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 hover:shadow-lg transition-all group">
-                <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center text-green-600 mb-4 group-hover:bg-green-500 group-hover:text-white transition-colors">
-                    <i data-lucide="code-2" class="w-6 h-6"></i>
+            <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 hover:shadow-xl hover:shadow-green-500/5 hover:-translate-y-2 transition-all duration-300 group">
+                <div class="h-24 mb-6 flex items-center justify-start">
+                    <svg width="80" height="80" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" class="transform group-hover:scale-105 transition-transform duration-500">
+                        <circle cx="50" cy="50" r="40" fill="#F0FDF4"/>
+                        
+                        <rect x="20" y="25" width="60" height="45" rx="4" fill="white" stroke="#16A34A" stroke-width="2"/>
+                        <rect x="20" y="25" width="60" height="10" rx="4" fill="#DCFCE7"/>
+                        <circle cx="28" cy="30" r="2" fill="#16A34A"/>
+                        <circle cx="34" cy="30" r="2" fill="#16A34A" opacity="0.5"/>
+                        
+                        <rect x="28" y="45" width="20" height="4" rx="2" fill="#86EFAC"/>
+                        <rect x="28" y="55" width="30" height="4" rx="2" fill="#BBF7D0"/>
+                        <rect x="28" y="65" width="15" height="4" rx="2" fill="#BBF7D0"/>
+                        
+                        <path d="M65 60 H 75 V 70 H 65 V 60 Z" fill="#16A34A" class="drop-shadow-md"/>
+                        <circle cx="70" cy="60" r="3" fill="#16A34A"/> <circle cx="75" cy="65" r="3" fill="#16A34A"/> </svg>
                 </div>
-                <h3 class="text-lg font-bold text-slate-900 mb-2">Gia công phần mềm</h3>
-                <p class="text-sm text-slate-500">Lập trình các tính năng đặc thù, tích hợp API, cổng thanh toán theo yêu cầu riêng.</p>
+                <h3 class="text-xl font-bold text-slate-900 mb-3 group-hover:text-green-600 transition-colors">Gia công phần mềm</h3>
+                <p class="text-slate-500 text-sm leading-relaxed">Lập trình các tính năng đặc thù (CRM, HRM...), tích hợp API, cổng thanh toán hoặc viết tool tự động hóa theo yêu cầu riêng.</p>
             </div>
+
         </div>
     </div>
 </section>
 
-<section class="py-16 bg-white overflow-hidden">
-    <div class="container mx-auto px-4 text-center mb-8">
-        <p class="text-sm font-bold text-slate-400 uppercase tracking-widest">Công nghệ chúng tôi sử dụng</p>
+<section class="py-16 bg-white border-t border-slate-100 overflow-hidden">
+    <div class="container mx-auto px-4 text-center mb-12">
+        <p class="text-sm font-bold text-orange-500 uppercase tracking-widest mb-2">Nền tảng kỹ thuật</p>
+        <h3 class="text-2xl font-bold text-slate-900">Công nghệ tối ưu & Tiên tiến</h3>
     </div>
-    <div class="flex flex-wrap justify-center gap-8 md:gap-16 opacity-60 grayscale hover:grayscale-0 transition-all">
-        <div class="flex flex-col items-center gap-2">
-            <i data-lucide="codepen" class="w-10 h-10 text-slate-800"></i>
-            <span class="text-xs font-bold text-slate-600">PHP 8</span>
+
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12 max-w-5xl mx-auto">
+
+        <div class="group flex flex-col items-center gap-4 p-4 rounded-2xl hover:bg-slate-50 transition-colors duration-300">
+            <div class="w-16 h-16 relative flex items-center justify-center">
+                <svg class="w-full h-full text-slate-300 group-hover:text-orange-500 transition-colors duration-500" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="12" y="12" width="40" height="40" rx="4" stroke="currentColor" stroke-width="2" fill="none"/>
+                    <path d="M12 20H8 M12 32H8 M12 44H8 M52 20H56 M52 32H56 M52 44H56 M20 12V8 M32 12V8 M44 12V8 M20 52V56 M32 52V56 M44 52V56" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    <rect x="22" y="22" width="20" height="20" rx="2" fill="currentColor" opacity="0.1"/>
+                    <path d="M32 22V42 M22 32H42" stroke="currentColor" stroke-width="1.5"/>
+                    <circle cx="32" cy="32" r="3" fill="currentColor"/>
+                </svg>
+            </div>
+            <div class="text-center">
+                <h4 class="text-sm font-bold text-slate-700 group-hover:text-slate-900">High Performance Core</h4>
+                <p class="text-[10px] text-slate-400 mt-1">Xử lý nhanh & ổn định</p>
+            </div>
         </div>
-        <div class="flex flex-col items-center gap-2">
-            <i data-lucide="database" class="w-10 h-10 text-slate-800"></i>
-            <span class="text-xs font-bold text-slate-600">MySQL</span>
+
+        <div class="group flex flex-col items-center gap-4 p-4 rounded-2xl hover:bg-slate-50 transition-colors duration-300">
+            <div class="w-16 h-16 relative flex items-center justify-center">
+                <svg class="w-full h-full text-slate-300 group-hover:text-blue-500 transition-colors duration-500" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="10" y="14" width="44" height="36" rx="3" stroke="currentColor" stroke-width="2"/>
+                    <path d="M26 56H38 M32 50V56" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    <rect x="16" y="22" width="14" height="20" rx="1" fill="currentColor" opacity="0.2"/>
+                    <rect x="34" y="22" width="14" height="4" rx="1" fill="currentColor" opacity="0.1"/>
+                    <rect x="34" y="30" width="10" height="4" rx="1" fill="currentColor" opacity="0.1"/>
+                    <rect x="40" y="38" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.5" fill="white" class="group-hover:-translate-y-1 transition-transform duration-500"/>
+                </svg>
+            </div>
+            <div class="text-center">
+                <h4 class="text-sm font-bold text-slate-700 group-hover:text-slate-900">Modern UI/UX</h4>
+                <p class="text-[10px] text-slate-400 mt-1">Giao diện tương tác cao</p>
+            </div>
         </div>
-        <div class="flex flex-col items-center gap-2">
-            <i data-lucide="layout" class="w-10 h-10 text-slate-800"></i>
-            <span class="text-xs font-bold text-slate-600">Tailwind</span>
+
+        <div class="group flex flex-col items-center gap-4 p-4 rounded-2xl hover:bg-slate-50 transition-colors duration-300">
+            <div class="w-16 h-16 relative flex items-center justify-center">
+                <svg class="w-full h-full text-slate-300 group-hover:text-green-500 transition-colors duration-500" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M16 44C16 48.4183 23.1634 52 32 52C40.8366 52 48 48.4183 48 44V36C48 40.4183 40.8366 44 32 44C23.1634 44 16 40.4183 16 36V44Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M16 36C16 40.4183 23.1634 44 32 44C40.8366 44 48 40.4183 48 36V28C48 32.4183 40.8366 36 32 36C23.1634 36 16 32.4183 16 28V36Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <ellipse cx="32" cy="20" rx="16" ry="8" stroke="currentColor" stroke-width="2"/>
+                    <path d="M16 20V28" stroke="currentColor" stroke-width="2"/>
+                    <path d="M48 20V28" stroke="currentColor" stroke-width="2"/>
+                    <path d="M40 40 L44 44 L52 36" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-hover:opacity-100 transition-opacity"/>
+                </svg>
+            </div>
+            <div class="text-center">
+                <h4 class="text-sm font-bold text-slate-700 group-hover:text-slate-900">Secure Data</h4>
+                <p class="text-[10px] text-slate-400 mt-1">Bảo mật & Backup định kỳ</p>
+            </div>
         </div>
-        <div class="flex flex-col items-center gap-2">
-            <i data-lucide="server" class="w-10 h-10 text-slate-800"></i>
-            <span class="text-xs font-bold text-slate-600">Docker</span>
+
+        <div class="group flex flex-col items-center gap-4 p-4 rounded-2xl hover:bg-slate-50 transition-colors duration-300">
+            <div class="w-16 h-16 relative flex items-center justify-center">
+                <svg class="w-full h-full text-slate-300 group-hover:text-purple-500 transition-colors duration-500" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M46 44C52.6274 44 58 38.6274 58 32C58 25.3726 52.6274 20 46 20C45.3976 20 44.8081 20.0409 44.2343 20.1205C42.8423 13.7846 37.2435 9 30.5 9C22.4919 9 16 15.4919 16 23.5C16 24.3164 16.0673 25.1147 16.1969 25.892C11.5367 27.2396 8 31.5458 8 36.5C8 42.299 12.701 47 18.5 47H32" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <circle cx="20" cy="36" r="2" fill="currentColor"/>
+                    <circle cx="32" cy="28" r="2" fill="currentColor"/>
+                    <circle cx="48" cy="32" r="2" fill="currentColor"/>
+                    <path d="M38 42L42 38L38 34" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M42 38H32" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+            </div>
+            <div class="text-center">
+                <h4 class="text-sm font-bold text-slate-700 group-hover:text-slate-900">Cloud Architecture</h4>
+                <p class="text-[10px] text-slate-400 mt-1">Linh hoạt & Mở rộng</p>
+            </div>
         </div>
-        <div class="flex flex-col items-center gap-2">
-            <i data-lucide="box" class="w-10 h-10 text-slate-800"></i>
-            <span class="text-xs font-bold text-slate-600">Laravel</span>
-        </div>
-        <div class="flex flex-col items-center gap-2">
-            <i data-lucide="globe" class="w-10 h-10 text-slate-800"></i>
-            <span class="text-xs font-bold text-slate-600">ReactJS</span>
-        </div>
+
     </div>
 </section>
 
-<section class="py-24 bg-slate-900 relative overflow-hidden">
-    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-orange-500/10 rounded-full blur-[100px] pointer-events-none"></div>
-
-    <div class="container mx-auto px-4 relative z-10 text-center">
-        <h2 class="text-3xl md:text-5xl font-extrabold text-white mb-6">Bạn chưa biết nên bắt đầu từ đâu?</h2>
-        <p class="text-slate-400 text-lg mb-10 max-w-2xl mx-auto">
-            Đừng lo lắng, hãy để chuyên gia của chúng tôi tư vấn giải pháp phù hợp nhất với ngân sách và mục tiêu của bạn.
-        </p>
-        <div class="flex flex-col sm:flex-row justify-center gap-4">
-            <a href="tel:0973157932" class="px-8 py-4 bg-orange-600 hover:bg-orange-700 text-white font-bold rounded-full transition-all shadow-lg shadow-orange-600/30 flex items-center justify-center gap-2">
-                <i data-lucide="phone" class="w-5 h-5"></i> Tư vấn miễn phí 1:1
-            </a>
-            <a href="/lien-he" class="px-8 py-4 bg-white/10 hover:bg-white/20 text-white font-bold rounded-full backdrop-blur-md border border-white/10 transition-all flex items-center justify-center gap-2">
-                <i data-lucide="mail" class="w-5 h-5"></i> Gửi yêu cầu báo giá
-            </a>
-        </div>
-    </div>
-</section>
+<?php 
+$cta_title = "Bạn chưa biết nên bắt đầu từ đâu?";
+$cta_desc = "Đừng lo lắng, hãy để chuyên gia của chúng tôi tư vấn giải pháp phù hợp nhất với ngân sách và mục tiêu của bạn.";
+$cta_note = "Tư vấn miễn phí 1:1 • Hoàn toàn không phát sinh chi phí";
+include 'includes/cta-section.php'; 
+?>
 
 <?php
 // Gọi Footer

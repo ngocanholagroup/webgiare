@@ -1,18 +1,21 @@
 <?php
-// Gọi Header
+// views/client/blog-detail.php
 include 'includes/header.php';
 
-// --- MOCK DATA ---
-$post = [
-    'title' => '5 Xu hướng Thiết kế Website sẽ thống trị năm 2026',
-    'cat' => 'Xu hướng công nghệ',
-    'date' => '02/02/2026',
-    'author' => 'Tuấn Anh',
-    'views' => '2,543',
-    // Ảnh phong cách công nghệ tương lai (Retro Future / Abstract 3D)
-    'image' => 'https://images.unsplash.com/photo-1614728263952-84ea256f9679?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
-];
+// Các biến đã có từ Controller: $post, $related_posts, $schema_json
+// Fallback nếu không có dữ liệu để tránh lỗi
+if (empty($post)) {
+    echo "<div class='container mx-auto py-20 text-center'>Bài viết không tồn tại.</div>";
+    include 'includes/footer.php';
+    exit;
+}
 ?>
+
+<?php if(isset($schema_json)): ?>
+<script type="application/ld+json">
+    <?= $schema_json ?>
+</script>
+<?php endif; ?>
 
 <style>
     /* Thanh tiến trình đọc */
@@ -27,15 +30,17 @@ $post = [
         transition: width 0.1s;
     }
     
-    /* Typography cho bài viết */
-    .article-content h2 { font-size: 1.875rem; font-weight: 800; color: #0f172a; margin-top: 2.5rem; margin-bottom: 1.25rem; }
+    /* Typography cho bài viết (Tailwind Typography Plugin thay thế thủ công) */
+    .article-content h2 { font-size: 1.8rem; font-weight: 800; color: #0f172a; margin-top: 2.5rem; margin-bottom: 1rem; line-height: 1.3; }
     .article-content h3 { font-size: 1.5rem; font-weight: 700; color: #1e293b; margin-top: 2rem; margin-bottom: 1rem; }
-    .article-content p { font-size: 1.125rem; color: #475569; line-height: 1.8; margin-bottom: 1.5rem; }
-    .article-content ul { list-style: none; margin-bottom: 1.5rem; }
-    .article-content ul li { position: relative; padding-left: 1.5rem; margin-bottom: 0.75rem; color: #475569; }
-    .article-content ul li::before { content: "•"; color: #f97316; font-weight: bold; font-size: 1.5rem; position: absolute; left: 0; top: -0.25rem; }
-    .article-content blockquote { border-left: 4px solid #f97316; padding-left: 1.5rem; font-style: italic; color: #334155; background: #fff7ed; padding: 1.5rem; border-radius: 0 1rem 1rem 0; margin: 2rem 0; }
-    .article-content img { border-radius: 1rem; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); margin: 2rem 0; width: 100%; }
+    .article-content p { font-size: 1.1rem; color: #334155; line-height: 1.8; margin-bottom: 1.5rem; }
+    .article-content ul, .article-content ol { margin-bottom: 1.5rem; padding-left: 1.5rem; }
+    .article-content ul { list-style: disc; }
+    .article-content ol { list-style: decimal; }
+    .article-content li { margin-bottom: 0.5rem; color: #334155; }
+    .article-content blockquote { border-left: 4px solid #f97316; padding: 1.5rem; font-style: italic; background: #fff7ed; border-radius: 0 1rem 1rem 0; margin: 2rem 0; color: #475569; }
+    .article-content img { border-radius: 1rem; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); margin: 2rem auto; max-width: 100%; height: auto; display: block; }
+    .article-content a { color: #f97316; text-decoration: underline; font-weight: 600; }
     
     /* Sticky Sidebar */
     .sticky-toc {
@@ -43,6 +48,10 @@ $post = [
         position: sticky;
         top: 120px;
     }
+    
+    /* Style cho mục lục động */
+    .toc-link { display: block; padding: 4px 0; color: #64748b; transition: all 0.2s; font-size: 0.9rem; }
+    .toc-link:hover, .toc-link.active { color: #ea580c; padding-left: 5px; border-left: 2px solid #ea580c; }
 </style>
 
 <div id="progress-bar"></div>
@@ -55,36 +64,36 @@ $post = [
         <div class="max-w-4xl mx-auto text-center">
             
             <div class="inline-flex items-center gap-2 mb-6">
-                <span class="bg-orange-600 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
-                    <?= $post['cat'] ?>
-                </span>
+                <a href="/blog?cat=<?= $post['cat_slug'] ?>" class="bg-orange-600 hover:bg-orange-700 transition text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+                    <?= htmlspecialchars($post['cat_name']) ?>
+                </a>
                 <span class="text-slate-400 text-sm flex items-center gap-1">
-                    <i data-lucide="clock" class="w-3 h-3"></i> 5 phút đọc
+                    <i data-lucide="clock" class="w-3 h-3"></i> <?= $post['reading_time'] ?? 5 ?> phút đọc
                 </span>
             </div>
 
             <h1 class="text-3xl md:text-5xl lg:text-6xl font-extrabold text-white mb-8 leading-tight">
-                <?= $post['title'] ?>
+                <?= htmlspecialchars($post['title']) ?>
             </h1>
 
             <div class="flex items-center justify-center gap-6 text-slate-400 text-sm md:text-base border-t border-slate-800 pt-8 mt-8">
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 bg-slate-700 rounded-full flex items-center justify-center text-orange-500 font-bold border-2 border-slate-600">
-                        TA
+                    <div class="w-10 h-10 bg-slate-700 rounded-full overflow-hidden border-2 border-slate-600">
+                        <img src="<?= !empty($post['author_avatar']) ? $post['author_avatar'] : 'https://ui-avatars.com/api/?name='.urlencode($post['author_name']) ?>" alt="Author" class="w-full h-full object-cover">
                     </div>
-                    <div>
-                        <p class="text-white font-bold"><?= $post['author'] ?></p>
+                    <div class="text-left">
+                        <p class="text-white font-bold"><?= htmlspecialchars($post['author_name']) ?></p>
                         <p class="text-xs">Tác giả</p>
                     </div>
                 </div>
-                <div class="h-8 w-px bg-slate-800"></div>
-                <div>
-                    <p class="text-white font-bold"><?= $post['date'] ?></p>
+                <div class="h-8 w-px bg-slate-800 hidden sm:block"></div>
+                <div class="hidden sm:block">
+                    <p class="text-white font-bold"><?= date('d/m/Y', strtotime($post['published_at'])) ?></p>
                     <p class="text-xs">Ngày đăng</p>
                 </div>
                 <div class="h-8 w-px bg-slate-800"></div>
                 <div>
-                    <p class="text-white font-bold"><?= $post['views'] ?></p>
+                    <p class="text-white font-bold"><?= number_format($post['views']) ?></p>
                     <p class="text-xs">Lượt xem</p>
                 </div>
             </div>
@@ -99,89 +108,51 @@ $post = [
         <div class="flex flex-col lg:flex-row gap-12">
             
             <div class="hidden lg:flex flex-col gap-4 w-12 sticky-toc h-fit">
-                <a href="#" class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hover:bg-[#1877F2] hover:text-white transition-colors" title="Share Facebook"><i data-lucide="facebook" class="w-5 h-5"></i></a>
-                <a href="#" class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hover:bg-[#1DA1F2] hover:text-white transition-colors" title="Share Twitter"><i data-lucide="twitter" class="w-5 h-5"></i></a>
-                <a href="#" class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hover:bg-[#0A66C2] hover:text-white transition-colors" title="Share LinkedIn"><i data-lucide="linkedin" class="w-5 h-5"></i></a>
+                <a href="https://www.facebook.com/sharer/sharer.php?u=<?= urlencode("http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]") ?>" target="_blank" class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hover:bg-[#1877F2] hover:text-white transition-colors" title="Share Facebook"><i data-lucide="facebook" class="w-5 h-5"></i></a>
                 <a href="#" class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hover:bg-orange-500 hover:text-white transition-colors" title="Copy Link"><i data-lucide="link" class="w-5 h-5"></i></a>
             </div>
 
             <div class="w-full lg:w-8/12">
                 
-                <div class="rounded-3xl overflow-hidden shadow-2xl mb-12 -mt-24 relative z-20 border-4 border-white">
-                    <img src="<?= $post['image'] ?>" alt="<?= $post['title'] ?>" class="w-full h-auto">
+                <div class="rounded-3xl overflow-hidden shadow-2xl mb-12 -mt-24 relative z-20 border-4 border-white aspect-video bg-slate-200">
+                    <img src="<?= !empty($post['thumbnail']) ? $post['thumbnail'] : 'https://placehold.co/800x400' ?>" 
+                         alt="<?= htmlspecialchars($post['title']) ?>" 
+                         class="w-full h-full object-cover">
                 </div>
 
-                <article class="article-content max-w-none">
-                    <p class="lead text-xl font-medium text-slate-600 mb-8">
-                        Năm 2025 đánh dấu sự bùng nổ của AI trong thiết kế web. Nhưng đến năm 2026, chúng ta sẽ thấy sự lên ngôi của những trải nghiệm người dùng siêu cá nhân hóa và các phong cách thị giác táo bạo hơn.
+                <article class="article-content max-w-none" id="main-content">
+                    <p class="lead text-xl font-medium text-slate-600 mb-8 border-l-4 border-orange-500 pl-4">
+                        <?= $post['summary'] ?>
                     </p>
 
-                    <h2 id="section-1">1. Glassmorphism 2.0 (Hiệu ứng kính mờ)</h2>
-                    <p>
-                        Không chỉ là những tấm kính mờ đơn thuần như macOS Big Sur. Phiên bản 2.0 sẽ kết hợp với các dải màu Gradient chuyển động (Aurora Backgrounds) tạo nên chiều sâu không gian cực kỳ ấn tượng.
-                    </p>
-                    <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="Glassmorphism Example" class="w-full h-auto rounded-xl shadow-lg">
-                    
-                    <h2 id="section-2">2. Typography khổng lồ (Large Typography)</h2>
-                    <p>
-                        "Less is more". Thay vì dùng hình ảnh, các nhà thiết kế sẽ sử dụng những font chữ kích thước cực lớn (Bold & Heavy) để truyền tải thông điệp mạnh mẽ ngay từ cái nhìn đầu tiên.
-                    </p>
-                    
-                    <div class="my-10 bg-slate-900 rounded-2xl p-8 text-center relative overflow-hidden group cursor-pointer hover:shadow-2xl transition-all">
-                        <div class="absolute top-0 right-0 w-32 h-32 bg-orange-500 rounded-full blur-[50px] opacity-30 group-hover:opacity-50 transition-opacity"></div>
-                        <div class="relative z-10">
-                            <h4 class="text-white font-bold text-xl mb-2">Bạn muốn Website chuẩn Trend 2026?</h4>
-                            <p class="text-slate-400 text-sm mb-6">Đội ngũ HolaGroup sẵn sàng tư vấn giải pháp thiết kế độc quyền cho bạn.</p>
-                            <a href="/lien-he" class="inline-block bg-orange-600 hover:bg-orange-700 text-white font-bold py-3 px-8 rounded-full transition-colors">Nhận tư vấn ngay</a>
-                        </div>
-                    </div>
-
-                    <h2 id="section-3">3. Dark Mode là tiêu chuẩn</h2>
-                    <p>
-                        Chế độ tối không còn là tùy chọn phụ. Nó sẽ trở thành giao diện mặc định cho các sản phẩm công nghệ, SaaS và Portfolio cá nhân để tạo cảm giác sang trọng và giảm mỏi mắt.
-                    </p>
-                    
-                    <blockquote>
-                        "Thiết kế không chỉ là nó trông như thế nào và cảm thấy như thế nào. Thiết kế là cách nó hoạt động." - Steve Jobs
-                    </blockquote>
-
-                    <h2 id="section-4">4. Tương tác vi mô (Micro-interactions)</h2>
-                    <p>
-                        Những chuyển động nhỏ khi di chuột, click nút, hoặc cuộn trang sẽ được chăm chút tỉ mỉ. Nó làm cho website trở nên "sống động" và phản hồi lại người dùng như một sinh vật sống.
-                    </p>
-                    <ul>
-                        <li>Hiệu ứng Hover button sáng tạo</li>
-                        <li>Loading bar theo trục dọc</li>
-                        <li>Cursor tùy chỉnh theo ngữ cảnh</li>
-                    </ul>
-
-                    <h3 id="ket-luan">Kết luận</h3>
-                    <p>
-                        Để không bị bỏ lại phía sau, doanh nghiệp cần cập nhật liên tục. Một website đẹp không chỉ để ngắm, mà là công cụ bán hàng đắc lực nhất của bạn.
-                    </p>
+                    <?= $post['content'] ?>
                 </article>
 
                 <div class="mt-12 pt-8 border-t border-slate-100">
+                    
+                    <?php if(!empty($post['tags'])): ?>
                     <div class="flex flex-wrap gap-2 mb-8">
-                        <span class="text-sm font-bold text-slate-400 mr-2">Tags:</span>
-                        <a href="#" class="px-3 py-1 bg-slate-100 text-slate-600 rounded-md text-xs font-bold hover:bg-orange-500 hover:text-white transition-colors">#WebDesign</a>
-                        <a href="#" class="px-3 py-1 bg-slate-100 text-slate-600 rounded-md text-xs font-bold hover:bg-orange-500 hover:text-white transition-colors">#2026Trends</a>
-                        <a href="#" class="px-3 py-1 bg-slate-100 text-slate-600 rounded-md text-xs font-bold hover:bg-orange-500 hover:text-white transition-colors">#UI/UX</a>
+                        <span class="text-sm font-bold text-slate-400 mr-2 flex items-center"><i data-lucide="tag" class="w-4 h-4 mr-1"></i> Tags:</span>
+                        <?php foreach($post['tags'] as $tag): ?>
+                            <a href="/blog?q=<?= $tag['name'] ?>" class="px-3 py-1 bg-slate-100 text-slate-600 rounded-md text-xs font-bold hover:bg-orange-500 hover:text-white transition-colors">
+                                #<?= htmlspecialchars($tag['name']) ?>
+                            </a>
+                        <?php endforeach; ?>
                     </div>
+                    <?php endif; ?>
 
-                    <div class="bg-slate-50 rounded-2xl p-6 flex items-start gap-4">
+                    <div class="bg-slate-50 rounded-2xl p-6 flex flex-col sm:flex-row items-start gap-4">
                         <div class="w-16 h-16 rounded-full bg-slate-200 flex-shrink-0 overflow-hidden">
-                            <img src="https://ui-avatars.com/api/?name=Tuan+Anh&background=f97316&color=fff" alt="Author">
+                            <img src="<?= !empty($post['author_avatar']) ? $post['author_avatar'] : 'https://ui-avatars.com/api/?name='.urlencode($post['author_name']) ?>" alt="Author">
                         </div>
                         <div>
-                            <h4 class="font-bold text-slate-900 text-lg">Tuấn Anh (Senior Dev)</h4>
+                            <h4 class="font-bold text-slate-900 text-lg">
+                                <?= htmlspecialchars($post['author_name']) ?> 
+                                <span class="text-sm font-normal text-slate-500 ml-2">(<?= htmlspecialchars($post['author_title'] ?? 'Admin') ?>)</span>
+                            </h4>
                             <p class="text-slate-500 text-sm mb-3">
-                                10 năm kinh nghiệm trong lĩnh vực Fullstack Web Development. Đam mê chia sẻ kiến thức về công nghệ và tối ưu hiệu suất website.
+                                <?= !empty($post['author_bio']) ? htmlspecialchars($post['author_bio']) : 'Tác giả chưa cập nhật giới thiệu.' ?>
                             </p>
-                            <div class="flex gap-3">
-                                <a href="#" class="text-slate-400 hover:text-blue-600"><i data-lucide="facebook" class="w-4 h-4"></i></a>
-                                <a href="#" class="text-slate-400 hover:text-blue-400"><i data-lucide="twitter" class="w-4 h-4"></i></a>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -191,21 +162,16 @@ $post = [
             <div class="w-full lg:w-3/12 relative hidden lg:block">
                 <div class="sticky-toc space-y-8">
                     
-                    <div class="border-l-2 border-slate-100 pl-4">
+                    <div class="border-l-2 border-slate-100 pl-4" id="toc-container">
                         <h4 class="font-bold text-slate-900 mb-4 text-sm uppercase tracking-wider">Mục lục bài viết</h4>
-                        <nav class="flex flex-col gap-3 text-sm">
-                            <a href="#section-1" class="text-slate-500 hover:text-orange-600 hover:pl-1 transition-all">1. Glassmorphism 2.0</a>
-                            <a href="#section-2" class="text-slate-500 hover:text-orange-600 hover:pl-1 transition-all">2. Typography khổng lồ</a>
-                            <a href="#section-3" class="text-slate-500 hover:text-orange-600 hover:pl-1 transition-all">3. Dark Mode là tiêu chuẩn</a>
-                            <a href="#section-4" class="text-slate-500 hover:text-orange-600 hover:pl-1 transition-all">4. Tương tác vi mô</a>
-                            <a href="#ket-luan" class="text-slate-500 hover:text-orange-600 hover:pl-1 transition-all">Kết luận</a>
-                        </nav>
+                        <nav class="flex flex-col gap-3 text-sm" id="toc-list">
+                            </nav>
                     </div>
 
                     <div class="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl p-6 text-center text-white relative overflow-hidden">
                         <div class="absolute top-0 right-0 w-24 h-24 bg-orange-500 rounded-full blur-[40px] opacity-20"></div>
                         <h5 class="font-bold text-lg mb-2">Cần Website?</h5>
-                        <p class="text-slate-400 text-xs mb-4">Đăng ký ngay để nhận ưu đãi Hosting miễn phí.</p>
+                        <p class="text-slate-400 text-xs mb-4">Đăng ký ngay để nhận ưu đãi Hosting miễn phí trọn đời.</p>
                         <a href="/lien-he" class="block w-full py-2 bg-white text-orange-600 font-bold rounded-lg text-sm hover:bg-orange-50 transition-colors">Báo giá ngay</a>
                     </div>
 
@@ -220,36 +186,80 @@ $post = [
     <div class="container mx-auto px-4">
         <h2 class="text-2xl font-bold text-slate-900 mb-8">Bài viết liên quan</h2>
         
+        <?php if(!empty($related_posts)): ?>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <?php for($i=1; $i<=3; $i++): ?>
-            <a href="#" class="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300">
-                <div class="aspect-video bg-slate-200 overflow-hidden">
-                    <img src="https://source.unsplash.com/random/800x600?tech,<?= $i ?>" alt="Blog" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500">
+            <?php foreach($related_posts as $item): ?>
+            <a href="/blog/<?= $item['slug'] ?>" class="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col h-full">
+                <div class="aspect-video bg-slate-200 overflow-hidden relative">
+                    <span class="absolute top-3 left-3 bg-white/90 backdrop-blur text-[10px] font-bold px-2 py-1 rounded text-slate-800 z-10">
+                        <?= htmlspecialchars($item['cat_name']) ?>
+                    </span>
+                    <img src="<?= !empty($item['thumbnail']) ? $item['thumbnail'] : 'https://placehold.co/600x400' ?>" 
+                         alt="<?= htmlspecialchars($item['title']) ?>" 
+                         class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500">
                 </div>
-                <div class="p-6">
-                    <span class="text-xs font-bold text-orange-500 uppercase">Công nghệ</span>
+                <div class="p-6 flex flex-col flex-1">
                     <h3 class="font-bold text-slate-900 mt-2 mb-2 line-clamp-2 group-hover:text-orange-600 transition-colors">
-                        Làm thế nào để tối ưu điểm Google PageSpeed lên 100?
+                        <?= htmlspecialchars($item['title']) ?>
                     </h3>
-                    <p class="text-slate-400 text-sm">28/01/2026</p>
+                    <p class="text-slate-400 text-sm mt-auto"><?= date('d/m/Y', strtotime($item['published_at'])) ?></p>
                 </div>
             </a>
-            <?php endfor; ?>
+            <?php endforeach; ?>
         </div>
+        <?php else: ?>
+            <p class="text-slate-500">Chưa có bài viết liên quan.</p>
+        <?php endif; ?>
     </div>
 </section>
 
 <script>
-    // Xử lý thanh tiến trình đọc
+    // 1. Xử lý thanh tiến trình đọc
     window.onscroll = function() {
         let winScroll = document.body.scrollTop || document.documentElement.scrollTop;
         let height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
         let scrolled = (winScroll / height) * 100;
         document.getElementById("progress-bar").style.width = scrolled + "%";
     };
+
+    // 2. Tự động tạo Mục lục (Table of Contents) từ thẻ H2
+    document.addEventListener("DOMContentLoaded", function() {
+        const content = document.getElementById('main-content');
+        const tocList = document.getElementById('toc-list');
+        const tocContainer = document.getElementById('toc-container');
+        
+        if (content && tocList) {
+            const headers = content.querySelectorAll('h2');
+            
+            if (headers.length > 0) {
+                headers.forEach((header, index) => {
+                    // Tạo ID cho thẻ h2 nếu chưa có
+                    if (!header.id) {
+                        header.id = 'section-' + index;
+                    }
+                    
+                    // Tạo link trong sidebar
+                    const link = document.createElement('a');
+                    link.href = '#' + header.id;
+                    link.textContent = header.textContent;
+                    link.className = 'toc-link';
+                    
+                    // Smooth scroll khi click
+                    link.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        document.querySelector(this.getAttribute('href')).scrollIntoView({
+                            behavior: 'smooth'
+                        });
+                    });
+
+                    tocList.appendChild(link);
+                });
+            } else {
+                // Ẩn mục lục nếu bài viết không có thẻ H2
+                tocContainer.style.display = 'none';
+            }
+        }
+    });
 </script>
 
-<?php
-// Gọi Footer
-include 'includes/footer.php';
-?>
+<?php include 'includes/footer.php'; ?>

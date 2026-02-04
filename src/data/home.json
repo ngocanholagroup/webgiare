@@ -74,7 +74,11 @@
             "name": "Khởi nghiệp",
             "price": "2.500.000",
             "desc": "Website giới thiệu cơ bản...",
-            "features": ["Giao diện theo mẫu", "Hosting 1GB", "Bảo mật SSL"],
+            "features": [
+                "Giao diện theo mẫu",
+                "Hosting 1GB",
+                "Bảo mật SSL"
+            ],
             "btn_text": "Chọn gói này",
             "btn_link": "https://zalo.me/0973157932?text=TuvanGoiBasic"
         },
@@ -82,7 +86,12 @@
             "name": "Kinh doanh",
             "price": "4.900.000",
             "desc": "Đầy đủ tính năng bán hàng...",
-            "features": ["Giao diện Premium", "Chuẩn SEO Pro", "Hosting NVMe 5GB", "Backup hàng ngày"],
+            "features": [
+                "Giao diện Premium",
+                "Chuẩn SEO Pro",
+                "Hosting NVMe 5GB",
+                "Backup hàng ngày"
+            ],
             "btn_text": "Đăng ký ngay",
             "btn_link": "https://zalo.me/0973157932?text=TuvanGoiPro"
         },
@@ -90,18 +99,18 @@
             "name": "Doanh nghiệp lớn",
             "price": "Liên hệ",
             "desc": "Thiết kế riêng độc quyền...",
-            "features": ["Thiết kế UI/UX riêng", "Server riêng (VPS)", "Code tính năng riêng"],
+            "features": [
+                "Thiết kế UI/UX riêng",
+                "Server riêng (VPS)",
+                "Code tính năng riêng"
+            ],
             "btn_text": "Chat tư vấn",
             "btn_link": "https://zalo.me/0973157932?text=TuvanGoiEnterprise"
         }
     },
     "cta": {
         "title": "Đừng để đối thủ <br> vượt mặt bạn trên Google",
-        "desc": "Mỗi giây bạn chần chừ là một khách hàng tiềm năng...",
-        "phone_display": "0973.157.932",
-        "phone_val": "0973157932",
-        "zalo_text": "Chat Zalo",
-        "zalo_link": "https://zalo.me/0973157932",
+        "desc": "Mỗi giây bạn chần chừ là một khách hàng tiềm năng đang rơi vào tay đối thủ.",
         "note": "Tư vấn miễn phí 100% • Không mua không sao"
     }
 }
