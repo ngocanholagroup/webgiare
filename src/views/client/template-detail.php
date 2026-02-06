@@ -80,7 +80,7 @@ include 'includes/header.php';
 
             <div class="w-full lg:w-5/12">
                 <div class="relative rounded-xl overflow-hidden shadow-2xl border-4 border-slate-800 group aspect-[16/10]">
-                    <img src="<?= htmlspecialchars($template['images']['main']) ?>" alt="<?= htmlspecialchars($template['name']) ?>" class="w-full h-full object-cover object-top transform group-hover:scale-105 transition-transform duration-700">
+                    <img src="<?= htmlspecialchars($template['image_desktop']) ?>" alt="<?= htmlspecialchars($template['name']) ?>" class="w-full h-full object-cover object-top transform group-hover:scale-105 transition-transform duration-700">
                     <a href="#demo" class="absolute inset-0 bg-slate-900/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                         <div class="w-16 h-16 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center border border-white/50 text-white hover:scale-110 transition-transform">
                             <i data-lucide="play" class="w-8 h-8 fill-current"></i>
@@ -128,7 +128,7 @@ include 'includes/header.php';
                                     </div>
 
                                     <div class="w-full h-[calc(100%-20px)] md:h-[calc(100%-32px)] overflow-y-auto scrollbar-hide bg-white group">
-                                        <img src="<?= htmlspecialchars($template['images']['main']) ?>"
+                                        <img src="<?= htmlspecialchars($template['image_desktop']) ?>"
                                             class="w-full h-auto shadow-sm group-hover:-translate-y-[calc(100%-300px)] transition-transform duration-[4000ms] ease-in-out">
                                     </div>
                                 </div>
@@ -142,7 +142,7 @@ include 'includes/header.php';
                                 </div>
                                 <div class="w-full h-full bg-white rounded-[2.5rem] overflow-hidden relative">
                                     <div class="w-full h-full overflow-y-auto scrollbar-hide">
-                                        <img src="<?= htmlspecialchars($template['images']['mobile_demo'] ?? $template['images']['main']) ?>"
+                                        <img src="<?= htmlspecialchars($template['image_mobile']) ?>"
                                             class="w-full h-auto min-h-full object-cover object-top">
                                     </div>
                                     <div class="absolute top-2 left-6 text-[10px] font-bold text-slate-900 z-10">9:41</div>

@@ -60,7 +60,6 @@ CREATE TABLE `templates` (
   
   -- [FIX] Đã thêm cột thumbnail vào đây để khớp với lệnh INSERT bên dưới
   `thumbnail` varchar(255) DEFAULT NULL, 
-  
   `image_desktop` varchar(255) DEFAULT NULL,
   `image_mobile` varchar(255) DEFAULT NULL,
   `demo_url` varchar(255) DEFAULT NULL,
