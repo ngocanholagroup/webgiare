@@ -113,10 +113,7 @@ include 'includes/header.php';
                         </div>
                     </div>
 
-                    <div class="relative bg-slate-50 rounded-2xl border border-slate-100 p-2 md:p-6 flex items-center justify-center min-h-[500px] lg:min-h-[600px] overflow-hidden">
-                        <div class="absolute inset-0 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px] opacity-50"></div>
-                        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-orange-500/5 rounded-full blur-3xl"></div>
-
+                    <div class="relative flex items-center justify-center min-h-[500px] lg:min-h-[600px] overflow-hidden">
                         <div id="view-desktop" class="relative w-full max-w-6xl transition-all duration-500 ease-out transform opacity-100 scale-100 mx-auto">
                             <div class="relative mx-auto shadow-2xl">
                                 <div class="relative w-full aspect-[16/10] bg-white rounded-xl overflow-hidden border-[1px] md:border-[6px] border-slate-800">
@@ -127,9 +124,9 @@ include 'includes/header.php';
                                         <div class="ml-2 md:ml-4 flex-1 h-3 md:h-5 bg-slate-700/50 rounded-md"></div>
                                     </div>
 
-                                    <div class="w-full h-[calc(100%-20px)] md:h-[calc(100%-32px)] overflow-y-auto scrollbar-hide bg-white group">
+                                    <div class="w-full h-[calc(100%-20px)] md:h-[calc(100%-32px)] overflow-hidden bg-white">
                                         <img src="<?= htmlspecialchars($template['image_desktop']) ?>"
-                                            class="w-full h-auto shadow-sm group-hover:-translate-y-[calc(100%-300px)] transition-transform duration-[4000ms] ease-in-out">
+                                             class="w-full h-auto shadow-sm object-top">
                                     </div>
                                 </div>
                             </div>
@@ -141,9 +138,9 @@ include 'includes/header.php';
                                     <div class="w-10 h-1 bg-slate-800 rounded-full opacity-50"></div>
                                 </div>
                                 <div class="w-full h-full bg-white rounded-[2.5rem] overflow-hidden relative">
-                                    <div class="w-full h-full overflow-y-auto scrollbar-hide">
+                                    <div class="w-full h-full overflow-hidden">
                                         <img src="<?= htmlspecialchars($template['image_mobile']) ?>"
-                                            class="w-full h-auto min-h-full object-cover object-top">
+                                             class="w-full h-auto min-h-full object-cover object-top">
                                     </div>
                                     <div class="absolute top-2 left-6 text-[10px] font-bold text-slate-900 z-10">9:41</div>
                                     <div class="absolute top-2 right-6 flex gap-1 z-10">
