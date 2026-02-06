@@ -5,10 +5,10 @@ include 'includes/header.php';
 // Lưu ý: Các biến $template, $related_templates, $schema_json đã được Controller truyền sang.
 ?>
 
-<?php if(isset($schema_json)): ?>
-<script type="application/ld+json">
-    <?= $schema_json ?>
-</script>
+<?php if (isset($schema_json)): ?>
+    <script type="application/ld+json">
+        <?= $schema_json ?>
+    </script>
 <?php endif; ?>
 
 <style>
@@ -17,14 +17,38 @@ include 'includes/header.php';
         position: sticky;
         top: 100px;
     }
-    .scrollbar-hide::-webkit-scrollbar { display: none; }
-    .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
-    
+
+    .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+    }
+
+    .scrollbar-hide {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+
     /* Animation cho Lightbox */
-    .scale-enter { transform: scale(0.95); opacity: 0; }
-    .scale-enter-active { transform: scale(1); opacity: 1; transition: all 0.3s ease-out; }
-    .scale-exit { transform: scale(1); opacity: 1; }
-    .scale-exit-active { transform: scale(0.95); opacity: 0; transition: all 0.2s ease-in; }
+    .scale-enter {
+        transform: scale(0.95);
+        opacity: 0;
+    }
+
+    .scale-enter-active {
+        transform: scale(1);
+        opacity: 1;
+        transition: all 0.3s ease-out;
+    }
+
+    .scale-exit {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    .scale-exit-active {
+        transform: scale(0.95);
+        opacity: 0;
+        transition: all 0.2s ease-in;
+    }
 </style>
 
 <section class="bg-slate-900 pt-28 pb-12 lg:pt-36 lg:pb-20 relative overflow-hidden">
@@ -44,12 +68,12 @@ include 'includes/header.php';
                     <?= substr(strip_tags($template['description']), 0, 150) ?>...
                 </p>
 
-                <div class="flex flex-wrap gap-4">
+                <div class="flex gap-4 justify-center lg:justify-start">
                     <a href="#demo" class="px-8 py-3.5 bg-white text-slate-900 font-bold rounded-full hover:bg-orange-50 transition-colors flex items-center gap-2">
-                        <i data-lucide="eye" class="w-5 h-5"></i> Xem Demo Trực tiếp
+                        <i data-lucide="eye" class="w-5 h-5"></i> Demo
                     </a>
                     <a href="#chi-tiet" class="px-8 py-3.5 bg-slate-800 text-white border border-slate-700 font-bold rounded-full hover:border-orange-500 hover:text-orange-500 transition-colors flex items-center gap-2">
-                        <i data-lucide="info" class="w-5 h-5"></i> Thông tin chi tiết
+                        <i data-lucide="info" class="w-5 h-5"></i> Chi Tiết
                     </a>
                 </div>
             </div>
@@ -73,7 +97,7 @@ include 'includes/header.php';
         <div class="flex flex-col lg:flex-row gap-8 lg:gap-12">
 
             <div class="w-full lg:w-8/12 space-y-12">
-                
+
                 <div class="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-slate-100" id="demo">
                     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
                         <h3 class="text-xl font-bold text-slate-900 flex items-center gap-2">
@@ -89,35 +113,37 @@ include 'includes/header.php';
                         </div>
                     </div>
 
-                    <div class="relative bg-slate-50 rounded-2xl border border-slate-100 p-8 md:p-12 flex items-center justify-center min-h-[500px] overflow-hidden">
+                    <div class="relative bg-slate-50 rounded-2xl border border-slate-100 p-2 md:p-6 flex items-center justify-center min-h-[500px] lg:min-h-[600px] overflow-hidden">
                         <div class="absolute inset-0 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px] opacity-50"></div>
                         <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-orange-500/5 rounded-full blur-3xl"></div>
 
-                        <div id="view-desktop" class="relative w-full max-w-4xl transition-all duration-500 ease-out transform opacity-100 scale-100">
-                            <div class="relative mx-auto">
-                                <div class="relative mx-auto w-[86%] aspect-[16/10] bg-white rounded-t-xl overflow-hidden shadow-2xl border-[4px] border-slate-800">
-                                    <div class="w-full h-full overflow-y-auto scrollbar-hide bg-white">
-                                        <img src="<?= htmlspecialchars($template['images']['main']) ?>" class="w-full h-auto shadow-sm">
+                        <div id="view-desktop" class="relative w-full max-w-6xl transition-all duration-500 ease-out transform opacity-100 scale-100 mx-auto">
+                            <div class="relative mx-auto shadow-2xl">
+                                <div class="relative w-full aspect-[16/10] bg-white rounded-xl overflow-hidden border-[1px] md:border-[6px] border-slate-800">
+                                    <div class="h-5 md:h-8 bg-slate-800 flex items-center gap-1.5 px-4">
+                                        <div class="w-2 h-2 md:w-3 md:h-3 rounded-full bg-red-500/80"></div>
+                                        <div class="w-2 h-2 md:w-3 md:h-3 rounded-full bg-yellow-500/80"></div>
+                                        <div class="w-2 h-2 md:w-3 md:h-3 rounded-full bg-green-500/80"></div>
+                                        <div class="ml-2 md:ml-4 flex-1 h-3 md:h-5 bg-slate-700/50 rounded-md"></div>
                                     </div>
-                                </div>
-                                <div class="relative -mt-1 w-full">
-                                    <svg viewBox="0 0 1000 40" class="w-full h-auto drop-shadow-xl">
-                                        <path d="M10 0 L990 0 C995 0 1000 5 1000 10 L1000 20 L0 20 L0 10 C0 5 5 0 10 0 Z" fill="#1e293b" />
-                                        <path d="M0 20 L1000 20 L960 35 C950 40 50 40 40 35 L0 20 Z" fill="#cbd5e1" />
-                                        <path d="M420 0 L580 0 L550 8 L450 8 Z" fill="#334155" />
-                                    </svg>
+
+                                    <div class="w-full h-[calc(100%-20px)] md:h-[calc(100%-32px)] overflow-y-auto scrollbar-hide bg-white group">
+                                        <img src="<?= htmlspecialchars($template['images']['main']) ?>"
+                                            class="w-full h-auto shadow-sm group-hover:-translate-y-[calc(100%-300px)] transition-transform duration-[4000ms] ease-in-out">
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
                         <div id="view-mobile" class="absolute inset-0 flex items-center justify-center transition-all duration-500 ease-out transform opacity-0 scale-90 pointer-events-none">
-                            <div class="relative w-[300px] h-[600px] bg-slate-900 rounded-[3rem] shadow-2xl border-[8px] border-slate-800 ring-1 ring-slate-900/50">
+                            <div class="relative w-[280px] h-[580px] md:w-[300px] md:h-[600px] bg-slate-900 rounded-[3rem] shadow-2xl border-[8px] border-slate-800">
                                 <div class="absolute top-0 left-1/2 -translate-x-1/2 w-1/3 h-7 bg-slate-900 rounded-b-2xl z-20 flex justify-center items-center">
                                     <div class="w-10 h-1 bg-slate-800 rounded-full opacity-50"></div>
                                 </div>
                                 <div class="w-full h-full bg-white rounded-[2.5rem] overflow-hidden relative">
                                     <div class="w-full h-full overflow-y-auto scrollbar-hide">
-                                        <img src="<?= htmlspecialchars($template['images']['sub2'] ?? $template['images']['main']) ?>" class="w-full h-auto min-h-full object-cover object-top">
+                                        <img src="<?= htmlspecialchars($template['images']['mobile_demo'] ?? $template['images']['main']) ?>"
+                                            class="w-full h-auto min-h-full object-cover object-top">
                                     </div>
                                     <div class="absolute top-2 left-6 text-[10px] font-bold text-slate-900 z-10">9:41</div>
                                     <div class="absolute top-2 right-6 flex gap-1 z-10">
@@ -125,9 +151,6 @@ include 'includes/header.php';
                                         <div class="w-3 h-3 bg-slate-900 rounded-full"></div>
                                     </div>
                                 </div>
-                                <div class="absolute top-24 -left-[10px] w-[10px] h-10 bg-slate-700 rounded-l-md"></div>
-                                <div class="absolute top-40 -left-[10px] w-[10px] h-16 bg-slate-700 rounded-l-md"></div>
-                                <div class="absolute top-32 -right-[10px] w-[10px] h-20 bg-slate-700 rounded-r-md"></div>
                             </div>
                         </div>
                     </div>
@@ -137,32 +160,32 @@ include 'includes/header.php';
                     <h3 class="text-xl font-bold text-slate-900 mb-4 flex items-center gap-2">
                         <i data-lucide="file-text" class="w-5 h-5 text-orange-500"></i> Mô tả chi tiết
                     </h3>
-                    
+
                     <div class="prose prose-slate max-w-none text-slate-600 leading-relaxed mb-8">
                         <?= $template['description'] ?>
                     </div>
 
-                    <?php if(!empty($template['features'])): ?>
-                    <h4 class="font-bold text-slate-900 mb-4">Tính năng nổi bật:</h4>
-                    <ul class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-8">
-                        <?php foreach ($template['features'] as $feat): ?>
-                            <li class="flex items-start gap-2 text-sm text-slate-600">
-                                <i data-lucide="check-circle-2" class="w-4 h-4 text-green-500 shrink-0 mt-0.5"></i>
-                                <?= htmlspecialchars($feat) ?>
-                            </li>
-                        <?php endforeach; ?>
-                    </ul>
+                    <?php if (!empty($template['features'])): ?>
+                        <h4 class="font-bold text-slate-900 mb-4">Tính năng nổi bật:</h4>
+                        <ul class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-8">
+                            <?php foreach ($template['features'] as $feat): ?>
+                                <li class="flex items-start gap-2 text-sm text-slate-600">
+                                    <i data-lucide="check-circle-2" class="w-4 h-4 text-green-500 shrink-0 mt-0.5"></i>
+                                    <?= htmlspecialchars($feat) ?>
+                                </li>
+                            <?php endforeach; ?>
+                        </ul>
                     <?php endif; ?>
 
-                    <?php if(!empty($template['tech_specs'])): ?>
-                    <h4 class="font-bold text-slate-900 mb-4">Công nghệ sử dụng:</h4>
-                    <div class="flex flex-wrap gap-2">
-                        <?php foreach ($template['tech_specs'] as $tech): ?>
-                            <span class="px-3 py-1 bg-slate-100 text-slate-600 text-xs font-bold rounded-md border border-slate-200">
-                                <?= htmlspecialchars($tech) ?>
-                            </span>
-                        <?php endforeach; ?>
-                    </div>
+                    <?php if (!empty($template['tech_specs'])): ?>
+                        <h4 class="font-bold text-slate-900 mb-4">Công nghệ sử dụng:</h4>
+                        <div class="flex flex-wrap gap-2">
+                            <?php foreach ($template['tech_specs'] as $tech): ?>
+                                <span class="px-3 py-1 bg-slate-100 text-slate-600 text-xs font-bold rounded-md border border-slate-200">
+                                    <?= htmlspecialchars($tech) ?>
+                                </span>
+                            <?php endforeach; ?>
+                        </div>
                     <?php endif; ?>
                 </div>
 
@@ -184,29 +207,29 @@ include 'includes/header.php';
                 </div>
 
                 <?php if (!empty($template['images']['gallery'])): ?>
-                <div class="pt-8 border-t border-slate-100">
-                    <h3 class="text-xl font-bold text-slate-900 mb-6 flex items-center gap-2">
-                        <i data-lucide="image" class="w-5 h-5 text-orange-500"></i> Ảnh thực tế (Screenshots)
-                    </h3>
-                    
-                    <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
-                        <div class="aspect-video cursor-pointer group relative overflow-hidden rounded-xl border border-slate-200 bg-slate-100" onclick="openLightbox('<?= $template['images']['main'] ?>')">
-                            <img src="<?= htmlspecialchars($template['images']['main']) ?>" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
-                            <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                <i data-lucide="zoom-in" class="w-8 h-8 text-white"></i>
-                            </div>
-                        </div>
+                    <div class="pt-8 border-t border-slate-100">
+                        <h3 class="text-xl font-bold text-slate-900 mb-6 flex items-center gap-2">
+                            <i data-lucide="image" class="w-5 h-5 text-orange-500"></i> Ảnh thực tế (Screenshots)
+                        </h3>
 
-                        <?php foreach($template['images']['gallery'] as $img): ?>
-                        <div class="aspect-video cursor-pointer group relative overflow-hidden rounded-xl border border-slate-200 bg-slate-100" onclick="openLightbox('<?= htmlspecialchars($img) ?>')">
-                            <img src="<?= htmlspecialchars($img) ?>" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
-                            <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                <i data-lucide="zoom-in" class="w-8 h-8 text-white"></i>
+                        <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                            <div class="aspect-video cursor-pointer group relative overflow-hidden rounded-xl border border-slate-200 bg-slate-100" onclick="openLightbox('<?= $template['images']['main'] ?>')">
+                                <img src="<?= htmlspecialchars($template['images']['main']) ?>" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                                <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                    <i data-lucide="zoom-in" class="w-8 h-8 text-white"></i>
+                                </div>
                             </div>
+
+                            <?php foreach ($template['images']['gallery'] as $img): ?>
+                                <div class="aspect-video cursor-pointer group relative overflow-hidden rounded-xl border border-slate-200 bg-slate-100" onclick="openLightbox('<?= htmlspecialchars($img) ?>')">
+                                    <img src="<?= htmlspecialchars($img) ?>" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                                    <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                        <i data-lucide="zoom-in" class="w-8 h-8 text-white"></i>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
                         </div>
-                        <?php endforeach; ?>
                     </div>
-                </div>
                 <?php endif; ?>
 
             </div>
@@ -233,10 +256,10 @@ include 'includes/header.php';
                             <a href="/lien-he?template=<?= $template['sku'] ?>" class="w-full py-4 bg-orange-600 hover:bg-orange-700 text-white font-bold rounded-xl shadow-lg shadow-orange-500/30 flex items-center justify-center gap-2 transition-all transform hover:-translate-y-1">
                                 <i data-lucide="shopping-bag" class="w-5 h-5"></i> Mua giao diện này
                             </a>
-                            <?php if(!empty($template['demo_url'])): ?>
-                            <a href="<?= $template['demo_url'] ?>" target="_blank" class="w-full py-3 bg-white border-2 border-slate-200 text-slate-700 font-bold rounded-xl hover:border-orange-500 hover:text-orange-600 transition-all flex items-center justify-center gap-2">
-                                <i data-lucide="eye" class="w-5 h-5"></i> Xem Demo
-                            </a>
+                            <?php if (!empty($template['demo_url'])): ?>
+                                <a href="<?= $template['demo_url'] ?>" target="_blank" class="w-full py-3 bg-white border-2 border-slate-200 text-slate-700 font-bold rounded-xl hover:border-orange-500 hover:text-orange-600 transition-all flex items-center justify-center gap-2">
+                                    <i data-lucide="eye" class="w-5 h-5"></i> Xem Demo
+                                </a>
                             <?php endif; ?>
                         </div>
 
@@ -276,34 +299,34 @@ include 'includes/header.php';
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <?php if (!empty($related_templates)): ?>
-                <?php foreach($related_templates as $item): 
-                     $has_sale = ($item['sale_price'] > 0 && $item['sale_price'] < $item['price']);
-                     $thumb = !empty($item['image_desktop']) ? $item['image_desktop'] : 'https://placehold.co/600x400?text=No+Image';
+                <?php foreach ($related_templates as $item):
+                    $has_sale = ($item['sale_price'] > 0 && $item['sale_price'] < $item['price']);
+                    $thumb = !empty($item['image_desktop']) ? $item['image_desktop'] : 'https://placehold.co/600x400?text=No+Image';
                 ?>
-                <div class="group bg-white rounded-xl overflow-hidden border border-slate-100 hover:shadow-xl hover:border-orange-200 transition-all duration-300">
-                    <a href="/kho-giao-dien/<?= htmlspecialchars($item['slug'] ?? '') ?>" class="block">
-                        
-                        <div class="relative overflow-hidden aspect-[16/10] bg-slate-200">
-                            <div class="w-full h-full bg-cover bg-top transform group-hover:scale-110 transition-transform duration-500"
-                                 style="background-image: url('<?= htmlspecialchars($thumb) ?>');"></div>
-                        </div>
+                    <div class="group bg-white rounded-xl overflow-hidden border border-slate-100 hover:shadow-xl hover:border-orange-200 transition-all duration-300">
+                        <a href="/kho-giao-dien/<?= htmlspecialchars($item['slug'] ?? '') ?>" class="block">
 
-                        <div class="p-4">
-                            <h3 class="text-sm font-bold text-slate-900 mb-1 truncate"><?= htmlspecialchars($item['name'] ?? 'Chưa có tên') ?></h3>
-                            <div class="flex items-center justify-between">
-                                <div>
-                                    <?php if($has_sale): ?>
-                                        <span class="text-orange-600 font-bold text-sm"><?= number_format($item['sale_price'], 0, ',', '.') ?>đ</span>
-                                        <span class="text-slate-400 text-xs line-through ml-1"><?= number_format($item['price'], 0, ',', '.') ?>đ</span>
-                                    <?php else: ?>
-                                        <span class="text-slate-900 font-bold text-sm"><?= number_format($item['price'], 0, ',', '.') ?>đ</span>
-                                    <?php endif; ?>
-                                </div>
-                                <span class="text-xs text-slate-500 hover:text-orange-500 flex items-center">Chi tiết <i data-lucide="arrow-right" class="w-3 h-3 ml-1"></i></span>
+                            <div class="relative overflow-hidden aspect-[16/10] bg-slate-200">
+                                <div class="w-full h-full bg-cover bg-top transform group-hover:scale-110 transition-transform duration-500"
+                                    style="background-image: url('<?= htmlspecialchars($thumb) ?>');"></div>
                             </div>
-                        </div>
-                    </a>
-                </div>
+
+                            <div class="p-4">
+                                <h3 class="text-sm font-bold text-slate-900 mb-1 truncate"><?= htmlspecialchars($item['name'] ?? 'Chưa có tên') ?></h3>
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <?php if ($has_sale): ?>
+                                            <span class="text-orange-600 font-bold text-sm"><?= number_format($item['sale_price'], 0, ',', '.') ?>đ</span>
+                                            <span class="text-slate-400 text-xs line-through ml-1"><?= number_format($item['price'], 0, ',', '.') ?>đ</span>
+                                        <?php else: ?>
+                                            <span class="text-slate-900 font-bold text-sm"><?= number_format($item['price'], 0, ',', '.') ?>đ</span>
+                                        <?php endif; ?>
+                                    </div>
+                                    <span class="text-xs text-slate-500 hover:text-orange-500 flex items-center">Chi tiết <i data-lucide="arrow-right" class="w-3 h-3 ml-1"></i></span>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
                 <?php endforeach; ?>
             <?php else: ?>
                 <div class="col-span-full text-center text-slate-500 text-sm">Chưa có giao diện liên quan nào.</div>
@@ -359,33 +382,33 @@ include 'includes/header.php';
     function openLightbox(src) {
         const modal = document.getElementById('lightbox-modal');
         const img = document.getElementById('lightbox-img');
-        
+
         img.src = src;
         modal.classList.remove('hidden');
-        
+
         setTimeout(() => {
             modal.classList.remove('opacity-0');
             img.classList.remove('scale-95');
             img.classList.add('scale-100');
         }, 10);
-        
-        document.body.style.overflow = 'hidden'; 
+
+        document.body.style.overflow = 'hidden';
     }
 
     function closeLightbox() {
         const modal = document.getElementById('lightbox-modal');
         const img = document.getElementById('lightbox-img');
-        
+
         modal.classList.add('opacity-0');
         img.classList.remove('scale-100');
         img.classList.add('scale-95');
-        
+
         setTimeout(() => {
             modal.classList.add('hidden');
             img.src = '';
-        }, 300); 
-        
-        document.body.style.overflow = ''; 
+        }, 300);
+
+        document.body.style.overflow = '';
     }
 
     document.addEventListener('keydown', function(e) {
