@@ -69,10 +69,10 @@ include 'includes/header.php';
                 </p>
 
                 <div class="flex gap-4 justify-center lg:justify-start">
-                    <a href="#demo" class="px-8 py-3.5 bg-white text-slate-900 font-bold rounded-full hover:bg-orange-50 transition-colors flex items-center gap-2">
+                    <a href="#demo" class="px-8 py-3.5 bg-orange-500 text-white font-bold rounded-full hover:bg-orange-600 transition-colors flex items-center gap-2">
                         <i data-lucide="eye" class="w-5 h-5"></i> Demo
                     </a>
-                    <a href="#chi-tiet" class="px-8 py-3.5 bg-slate-800 text-white border border-slate-700 font-bold rounded-full hover:border-orange-500 hover:text-orange-500 transition-colors flex items-center gap-2">
+                    <a href="#chi-tiet" class="px-8 py-3.5 bg-slate-800 text-white font-bold rounded-full hover:border-orange-500 hover:text-orange-500 transition-colors flex items-center gap-2">
                         <i data-lucide="info" class="w-5 h-5"></i> Chi Tiết
                     </a>
                 </div>
@@ -98,11 +98,8 @@ include 'includes/header.php';
 
             <div class="w-full lg:w-8/12 space-y-12">
 
-                <div class="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-slate-100" id="demo">
-                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
-                        <h3 class="text-xl font-bold text-slate-900 flex items-center gap-2">
-                            <i data-lucide="monitor-smartphone" class="w-5 h-5 text-orange-500"></i> Demo Giao diện
-                        </h3>
+                <div id="demo">
+                    <div class="flex items-center justify-center mb-8">
                         <div class="bg-slate-100 p-1 rounded-lg inline-flex self-start md:self-auto">
                             <button onclick="switchView('desktop')" id="btn-desktop" class="px-4 py-2 rounded-md text-sm font-bold transition-all bg-white text-orange-600 shadow-sm flex items-center gap-2">
                                 <i data-lucide="monitor" class="w-4 h-4"></i> Desktop
