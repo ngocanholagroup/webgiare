@@ -107,10 +107,33 @@
     <style>
         body { font-family: 'Inter', sans-serif; }
         html { scroll-behavior: smooth; }
+        /* Tối ưu hiển thị cho gạch chân active */
+        .nav-active-bar { width: 100% !important; }
     </style>
 </head>
 
 <body class="bg-gray-50 text-gray-800 flex flex-col min-h-screen overflow-x-hidden">
+
+    <?php
+    // Logic xác định trang hiện tại để Active Menu
+    $current_uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+    
+    // Hàm helper kiểm tra active
+    function is_active($path, $current_uri) {
+        if ($path === '/') {
+            return $current_uri === '/' ? 'text-orange-600' : 'text-gray-700';
+        }
+        return (strpos($current_uri, $path) === 0) ? 'text-orange-600' : 'text-gray-700';
+    }
+
+    // Hàm helper cho gạch chân
+    function is_active_bar($path, $current_uri) {
+        if ($path === '/') {
+            return $current_uri === '/' ? 'w-full' : 'w-0';
+        }
+        return (strpos($current_uri, $path) === 0) ? 'w-full' : 'w-0';
+    }
+    ?>
 
     <header class="fixed w-full top-0 z-50 transition-all duration-300" id="main-header">
         
@@ -137,25 +160,25 @@
                     <?php include 'logo.php'; ?>
 
                     <div class="hidden lg:flex items-center gap-8">
-                        <a href="/" class="relative text-sm font-bold text-gray-700 hover:text-orange-600 transition-colors group py-2">
+                        <a href="/" class="relative text-sm font-bold <?= is_active('/', $current_uri) ?> hover:text-orange-600 transition-colors group py-2">
                             Trang chủ
-                            <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-orange-500 transition-all duration-300 group-hover:w-full"></span>
+                            <span class="absolute bottom-0 left-0 h-0.5 bg-orange-500 transition-all duration-300 group-hover:w-full <?= is_active_bar('/', $current_uri) ?>"></span>
                         </a>
-                        <a href="/gioi-thieu" class="relative text-sm font-semibold text-gray-700 hover:text-orange-600 transition-colors group py-2">
+                        <a href="/gioi-thieu" class="relative text-sm font-semibold <?= is_active('/gioi-thieu', $current_uri) ?> hover:text-orange-600 transition-colors group py-2">
                             Giới thiệu
-                            <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-orange-500 transition-all duration-300 group-hover:w-full"></span>
+                            <span class="absolute bottom-0 left-0 h-0.5 bg-orange-500 transition-all duration-300 group-hover:w-full <?= is_active_bar('/gioi-thieu', $current_uri) ?>"></span>
                         </a>
-                        <a href="/dich-vu" class="relative text-sm font-semibold text-gray-700 hover:text-orange-600 transition-colors group py-2">
+                        <a href="/dich-vu" class="relative text-sm font-semibold <?= is_active('/dich-vu', $current_uri) ?> hover:text-orange-600 transition-colors group py-2">
                             Dịch vụ
-                            <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-orange-500 transition-all duration-300 group-hover:w-full"></span>
+                            <span class="absolute bottom-0 left-0 h-0.5 bg-orange-500 transition-all duration-300 group-hover:w-full <?= is_active_bar('/dich-vu', $current_uri) ?>"></span>
                         </a>
-                        <a href="/kho-giao-dien" class="relative text-sm font-semibold text-gray-700 hover:text-orange-600 transition-colors group py-2">
+                        <a href="/kho-giao-dien" class="relative text-sm font-semibold <?= is_active('/kho-giao-dien', $current_uri) ?> hover:text-orange-600 transition-colors group py-2">
                             Kho giao diện
-                            <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-orange-500 transition-all duration-300 group-hover:w-full"></span>
+                            <span class="absolute bottom-0 left-0 h-0.5 bg-orange-500 transition-all duration-300 group-hover:w-full <?= is_active_bar('/kho-giao-dien', $current_uri) ?>"></span>
                         </a>
-                        <a href="/tin-tuc" class="relative text-sm font-semibold text-gray-700 hover:text-orange-600 transition-colors group py-2">
+                        <a href="/tin-tuc" class="relative text-sm font-semibold <?= is_active('/tin-tuc', $current_uri) ?> hover:text-orange-600 transition-colors group py-2">
                             Tin tức
-                            <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-orange-500 transition-all duration-300 group-hover:w-full"></span>
+                            <span class="absolute bottom-0 left-0 h-0.5 bg-orange-500 transition-all duration-300 group-hover:w-full <?= is_active_bar('/tin-tuc', $current_uri) ?>"></span>
                         </a>
                     </div>
 
@@ -187,19 +210,19 @@
         </div>
 
         <div class="flex-1 overflow-y-auto p-4 flex flex-col gap-2">
-            <a href="/" class="px-4 py-3 text-orange-600 bg-orange-50 font-semibold rounded-xl flex items-center gap-3">
+            <a href="/" class="px-4 py-3 font-semibold rounded-xl flex items-center gap-3 transition-colors <?= $current_uri === '/' ? 'text-orange-600 bg-orange-50' : 'text-gray-700 hover:bg-gray-50' ?>">
                 <i data-lucide="home" class="w-5 h-5"></i> Trang chủ
             </a>
-            <a href="/kho-giao-dien" class="px-4 py-3 text-gray-700 hover:text-orange-600 hover:bg-gray-50 font-semibold rounded-xl flex items-center gap-3">
+            <a href="/kho-giao-dien" class="px-4 py-3 font-semibold rounded-xl flex items-center gap-3 transition-colors <?= strpos($current_uri, '/kho-giao-dien') === 0 ? 'text-orange-600 bg-orange-50' : 'text-gray-700 hover:bg-gray-50' ?>">
                 <i data-lucide="layout-template" class="w-5 h-5"></i> Kho giao diện
             </a>
-            <a href="/dich-vu" class="px-4 py-3 text-gray-700 hover:text-orange-600 hover:bg-gray-50 font-semibold rounded-xl flex items-center gap-3">
+            <a href="/dich-vu" class="px-4 py-3 font-semibold rounded-xl flex items-center gap-3 transition-colors <?= strpos($current_uri, '/dich-vu') === 0 ? 'text-orange-600 bg-orange-50' : 'text-gray-700 hover:bg-gray-50' ?>">
                 <i data-lucide="briefcase" class="w-5 h-5"></i> Dịch vụ
             </a>
-            <a href="/gioi-thieu" class="px-4 py-3 text-gray-700 hover:text-orange-600 hover:bg-gray-50 font-semibold rounded-xl flex items-center gap-3">
+            <a href="/gioi-thieu" class="px-4 py-3 font-semibold rounded-xl flex items-center gap-3 transition-colors <?= strpos($current_uri, '/gioi-thieu') === 0 ? 'text-orange-600 bg-orange-50' : 'text-gray-700 hover:bg-gray-50' ?>">
                 <i data-lucide="info" class="w-5 h-5"></i> Giới thiệu
             </a>
-            <a href="/tin-tuc" class="px-4 py-3 text-gray-700 hover:text-orange-600 hover:bg-gray-50 font-semibold rounded-xl flex items-center gap-3">
+            <a href="/tin-tuc" class="px-4 py-3 font-semibold rounded-xl flex items-center gap-3 transition-colors <?= strpos($current_uri, '/tin-tuc') === 0 ? 'text-orange-600 bg-orange-50' : 'text-gray-700 hover:bg-gray-50' ?>">
                 <i data-lucide="newspaper" class="w-5 h-5"></i> Tin tức
             </a>
 
