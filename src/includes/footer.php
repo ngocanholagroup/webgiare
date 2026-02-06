@@ -12,12 +12,7 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
             
             <div class="space-y-6">
-                <a href="/" class="flex items-center gap-2 group">
-                    <div class="w-10 h-10 bg-gradient-to-br from-orange-500 to-pink-500 rounded-xl flex items-center justify-center text-white shadow-lg shadow-orange-900/20 group-hover:scale-105 transition-transform">
-                        <i data-lucide="zap" class="w-6 h-6 fill-current"></i>
-                    </div>
-                    <span class="text-2xl font-bold text-white tracking-tight"><?= setting('company_name', 'HolaGroup') ?></span>
-                </a>
+                <?php include 'logo.php'; ?>
                 <p class="text-sm leading-relaxed text-slate-400">
                     Đối tác tin cậy cung cấp giải pháp chuyển đổi số toàn diện. Chúng tôi biến ý tưởng kinh doanh của bạn thành hiện thực trên môi trường số với chi phí tối ưu nhất.
                 </p>

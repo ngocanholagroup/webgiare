@@ -51,7 +51,8 @@ CREATE TABLE `templates` (
   `description` longtext,
   `price` decimal(15,0) NOT NULL DEFAULT '0',
   `sale_price` decimal(15,0) DEFAULT NULL,
-  `thumbnail` varchar(255) DEFAULT NULL,
+  `image_desktop` varchar(255) DEFAULT NULL,
+  `image_mobile` varchar(255) DEFAULT NULL,
   `demo_url` varchar(255) DEFAULT NULL,
   `score_mobile` int(3) DEFAULT 95,
   `score_desktop` int(3) DEFAULT 100,
@@ -71,8 +72,8 @@ CREATE TABLE `template_images` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `template_id` int(11) NOT NULL,
   `image_url` varchar(255) NOT NULL,
-  `type` enum('main','gallery','mobile_demo') DEFAULT 'gallery',
   `sort_order` int(11) DEFAULT 0,
+  `created_at` timestamp DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `template_id` (`template_id`),
   CONSTRAINT `fk_img_tpl` FOREIGN KEY (`template_id`) REFERENCES `templates` (`id`) ON DELETE CASCADE
@@ -168,11 +169,9 @@ CREATE TABLE `blog_categories` (
 CREATE TABLE `blog_authors` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
-  `title` varchar(255) DEFAULT NULL, -- Vd: Senior Dev
+  `title` varchar(255) DEFAULT NULL,
   `bio` text, -- Giới thiệu ngắn
   `avatar` varchar(255) DEFAULT NULL,
-  `social_facebook` varchar(255) DEFAULT NULL,
-  `social_twitter` varchar(255) DEFAULT NULL,
   `created_at` timestamp DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -276,31 +275,48 @@ CREATE TABLE `contacts` (
   `phone` varchar(20) NOT NULL,
   `email` varchar(100) DEFAULT NULL,
   
-  -- Loại dịch vụ khách chọn (website, template, seo...)
-  `service_type` varchar(50) DEFAULT NULL,
+  -- [CẬP NHẬT] Tăng lên 255 để không bị lỗi nếu tên dịch vụ dài
+  `service_type` varchar(255) DEFAULT NULL,
   
-  -- Nếu khách chọn mua template, lưu mã template vào đây (VD: THEME-001)
   `related_template` varchar(50) DEFAULT NULL,
   
   `message` text,
   
-  -- Trạng thái xử lý (Quan trọng cho Admin)
   `status` enum('new', 'contacted', 'completed', 'spam') DEFAULT 'new',
-  `admin_note` text, -- Ghi chú nội bộ của nhân viên sale
+  `admin_note` text,
   
+  `created_at` timestamp DEFAULT CURRENT_TIMESTAMP,
+  
+  PRIMARY KEY (`id`),
+  
+  -- [CẬP NHẬT] Thêm Index để bộ lọc Admin chạy nhanh
+  KEY `idx_status` (`status`),
+  KEY `idx_service` (`service_type`),
+  KEY `idx_created` (`created_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `contact_services` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
   `created_at` timestamp DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+-- Thêm vài dữ liệu mẫu
+INSERT INTO `contact_services` (`name`) VALUES 
+('Thiết kế Website Trọn gói'), 
+('Dịch vụ SEO Tổng thể'), 
+('Mua Giao diện (Template)'), 
+('Đăng ký Hosting/Domain');
+
 CREATE TABLE `system_settings` (
-  `setting_key` varchar(50) NOT NULL, -- Ví dụ: company_phone
-  `setting_value` longtext,           -- Ví dụ: 0973... (Dùng longtext để chứa cả iframe map)
-  `setting_group` varchar(50) DEFAULT 'general', -- Để phân nhóm trong Admin (liên hệ, cấu hình chung, mxh...)
-  `desc` varchar(255) DEFAULT NULL,   -- Mô tả cho Admin hiểu đây là gì
+  `setting_key` varchar(50) NOT NULL,
+  `setting_value` longtext,
+  `setting_group` varchar(50) DEFAULT 'general',
+  `desc` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`setting_key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Thêm dữ liệu mẫu (Map với giao diện của bạn)
 INSERT INTO `system_settings` (`setting_key`, `setting_value`, `setting_group`, `desc`) VALUES
 ('company_name', 'HolaGroup', 'general', 'Tên công ty'),
 ('company_address', '119 Đường Lê Bôi, Phường 7, Quận 8, TP. HCM', 'contact', 'Địa chỉ văn phòng'),
@@ -309,18 +325,17 @@ INSERT INTO `system_settings` (`setting_key`, `setting_value`, `setting_group`, 
 ('company_email_support', 'support@holagroup.com.vn', 'contact', 'Email hỗ trợ'),
 ('social_facebook', 'https://facebook.com/holagroup', 'social', 'Link Facebook'),
 ('social_zalo', 'https://zalo.me/0973157932', 'social', 'Link Zalo'),
-('map_iframe', '<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3919.954067902492!2d106.62848931480041!3d10.742998992344152!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31752e6398989f7f%3A0x7770802272a80691!2zMTE5IEzDqiBCw7RpLCBQaMaw4budbmcgNywgUXXhuq1uIDgsIFRow6BuaCBwaOG7kSBI4buTIENow60gTWluaCwgVmlldG5hbQ!5e0!3m2!1sen!2s!4v1629876543210!5m2!1sen!2s" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>', 'contact', 'Mã nhúng bản đồ Google Maps');
--- SEO Mặc định (Dùng khi controller không truyền meta)
-('default_title', 'Web Giá Rẻ - Thiết kế website trọn gói uy tín, chuyên nghiệp', 'seo', 'Tiêu đề mặc định'),
-('default_desc', 'Dịch vụ thiết kế website giá rẻ, chuẩn SEO tại TP.HCM. Kho giao diện đẹp, load nhanh, bảo hành trọn đời.', 'seo', 'Mô tả mặc định'),
-('default_keywords', 'thiết kế web giá rẻ, làm web trọn gói, web chuẩn seo, thiết kế website hcm, holagroup', 'seo', 'Từ khóa mặc định'),
-('default_share_image', 'http://yourdomain.com/assets/images/social-share-default.jpg', 'seo', 'Ảnh khi share Facebook mặc định'),
--- Logo & Slogan
-('company_slogan', 'Tech Solution', 'general', 'Slogan nhỏ dưới logo'),
-('site_logo_url', '', 'general', 'Đường dẫn ảnh Logo (Nếu để trống sẽ hiện Text)');
-('cta_title', 'Sẵn sàng bứt phá doanh thu?', 'general', 'Tiêu đề khối CTA cuối trang'),
-('cta_desc', 'Đừng để đối thủ vượt mặt bạn. Hãy để chúng tôi giúp bạn xây dựng nền tảng vững chắc ngay hôm nay.', 'general', 'Mô tả khối CTA cuối trang'),
-('cta_note', 'Tư vấn miễn phí 100% • Không phát sinh chi phí', 'general', 'Ghi chú nhỏ khối CTA');
+('map_iframe', '<iframe src=\"https://www.google.com/maps/embed...\" ...></iframe>', 'contact', 'Mã nhúng bản đồ'),
+('default_title', 'Web Giá Rẻ - Thiết kế website trọn gói', 'seo', 'Tiêu đề mặc định'),
+('default_desc', 'Dịch vụ thiết kế website giá rẻ, chuẩn SEO tại TP.HCM.', 'seo', 'Mô tả mặc định'),
+('default_keywords', 'thiết kế web giá rẻ, làm web trọn gói', 'seo', 'Từ khóa mặc định'),
+('default_share_image', '/assets/images/share.jpg', 'seo', 'Ảnh share FB mặc định'),
+('company_slogan', 'Tech Solution', 'general', 'Slogan'),
+('site_logo_url', '/assets/images/logo.png', 'general', 'Logo Website'),
+('site_favicon_url', '/assets/images/favicon.ico', 'general', 'Favicon'),
+('cta_title', 'Sẵn sàng bứt phá doanh thu?', 'general', 'Tiêu đề CTA'),
+('cta_desc', 'Đừng để đối thủ vượt mặt bạn.', 'general', 'Mô tả CTA'),
+('cta_note', 'Tư vấn miễn phí 100%', 'general', 'Ghi chú CTA');
 
 
 CREATE TABLE `pages` (
@@ -452,3 +467,22 @@ INSERT INTO `pages` (`slug`, `name`, `meta_title`, `meta_desc`, `content_json`) 
         }
     }'
 );
+
+CREATE TABLE `admins` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `username` varchar(50) NOT NULL,
+  `password` varchar(255) NOT NULL, -- Lưu chuỗi mã hóa (Hash)
+  `full_name` varchar(100) DEFAULT 'Administrator',
+  `email` varchar(100) DEFAULT NULL,
+  `avatar` varchar(255) DEFAULT NULL,
+  `last_login` datetime DEFAULT NULL,
+  `created_at` timestamp DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `username` (`username`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Thêm tài khoản Admin mặc định
+-- User: admin
+-- Pass: 123456 (Chuỗi mã hóa bên dưới chính là 123456)
+INSERT INTO `admins` (`username`, `password`, `full_name`) VALUES
+('admin', '$2y$10$aBjBQx.zyO6Ucq94qkCvLunCvo9IKphaebenL6xVWcGRCOkF2wUVm', 'Super Admin');

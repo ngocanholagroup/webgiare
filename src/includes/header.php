@@ -31,9 +31,9 @@
     <meta name="twitter:description" content="<?= $meta_desc ?? $description ?? setting('default_desc') ?>">
     <meta name="twitter:image" content="<?= $og_image ?? setting('default_share_image') ?>">
 
-    <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
+    <?php $favicon = setting('site_favicon_url', '/assets/favicon.ico'); ?>
+    <link rel="icon" href="<?= $favicon ?>" type="image/x-icon">
+    <link rel="shortcut icon" href="<?= $favicon ?>" type="image/x-icon">
 
     <?php if (isset($schema_json) && !empty($schema_json)): ?>
     <script type="application/ld+json">
@@ -134,23 +134,7 @@
             <div class="container mx-auto px-4 py-3 md:py-4">
                 <div class="flex items-center justify-between">
                     
-                    <a href="/" class="flex items-center gap-2.5 group" title="Về trang chủ">
-                        <?php if(setting('site_logo_url')): ?>
-                            <img src="<?= setting('site_logo_url') ?>" alt="<?= setting('company_name') ?>" class="h-10 w-auto">
-                        <?php else: ?>
-                            <div class="w-10 h-10 bg-gradient-to-br from-orange-500 to-pink-500 rounded-xl flex items-center justify-center text-white shadow-lg shadow-orange-500/20 group-hover:rotate-12 transition-transform duration-300">
-                                <i data-lucide="zap" class="w-6 h-6 fill-current"></i>
-                            </div>
-                            <div class="leading-tight">
-                                <span class="block text-xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-slate-900 to-slate-700">
-                                    <?= setting('company_name', 'HolaGroup') ?>
-                                </span>
-                                <span class="block text-[10px] font-bold tracking-[0.2em] text-orange-500 uppercase">
-                                    <?= setting('company_slogan', 'Tech Solution') ?>
-                                </span>
-                            </div>
-                        <?php endif; ?>
-                    </a>
+                    <?php include 'logo.php'; ?>
 
                     <div class="hidden lg:flex items-center gap-8">
                         <a href="/" class="relative text-sm font-bold text-gray-700 hover:text-orange-600 transition-colors group py-2">
