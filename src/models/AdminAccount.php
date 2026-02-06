@@ -67,17 +67,13 @@ class AdminAccount {
     public function update($id, $data) {
         $sql = "UPDATE admins SET full_name = :full_name, email = :email, avatar = :avatar";
         
-        // Kiểm tra xem trong data có key :password không (do Controller xử lý)
         if (array_key_exists(':password', $data)) {
             $sql .= ", password = :password";
         }
         
         $sql .= " WHERE id = :id";
         
-        $data[':id'] = $id; // Thêm ID vào mảng data để bind
-        
-        // Lưu ý: Controller của mình đang truyền key có dấu hai chấm (VD: ':full_name')
-        // Nên ở đây mình bind thẳng mảng $data vào execute luôn là được.
+        $data[':id'] = $id; 
         $stmt = $this->conn->prepare($sql);
         return $stmt->execute($data);
     }

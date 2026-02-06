@@ -235,18 +235,29 @@ class AdminTemplateController
         if (!isset($_SESSION['admin_logged_in'])) exit;
 
         $model = new AdminTemplate();
-        $img = $model->getGalleryImageById($imgId);
+
+        // 1. Lấy thông tin ảnh để xóa file vật lý
+        // (Cần viết thêm hàm getGalleryImageById trong Model nếu chưa có, hoặc truy vấn trực tiếp)
+        // Ở đây giả định Model có hàm này hoặc ta query nhanh
+        $stmt = Database::getConnection()->prepare("SELECT * FROM template_images WHERE id = :id");
+        $stmt->execute([':id' => $imgId]);
+        $img = $stmt->fetch();
 
         if ($img) {
-            // Xóa file vật lý
+            // Xóa file trong thư mục uploads
             $filePath = ltrim($img['image_url'], '/');
-            if (file_exists($filePath)) unlink($filePath);
+            if (file_exists($filePath)) {
+                unlink($filePath);
+            }
 
-            // Xóa DB
-            $model->deleteGalleryImage($imgId);
+            // Xóa trong Database
+            $stmtDel = Database::getConnection()->prepare("DELETE FROM template_images WHERE id = :id");
+            $stmtDel->execute([':id' => $imgId]);
         }
 
-        header('Location: /admin/template/edit/' . $img['template_id'] . '?tab=gallery');
+        // Quay lại trang Edit
+        // $_SERVER['HTTP_REFERER'] sẽ đưa user về lại đúng cái form đang sửa
+        header('Location: ' . $_SERVER['HTTP_REFERER']);
         exit;
     }
 

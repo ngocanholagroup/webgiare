@@ -9,9 +9,8 @@ class TemplateModel {
         $this->conn = Database::getConnection();
     }
 
-    // Hàm lấy danh sách (Đã sửa JOIN template_categories)
+    // Hàm lấy danh sách
     public function getAll($limit = 12, $offset = 0, $catSlug = null, $keyword = null) {
-        // SỬA: JOIN template_categories
         $sql = "SELECT t.*, c.name as cat_name, c.slug as cat_slug 
                 FROM templates t 
                 JOIN template_categories c ON t.category_id = c.id 
@@ -36,9 +35,8 @@ class TemplateModel {
         return $stmt->fetchAll();
     }
 
-    // Hàm đếm tổng (Đã sửa JOIN template_categories)
+    // Hàm đếm tổng
     public function countAll($catSlug = null, $keyword = null) {
-        // SỬA: JOIN template_categories
         $sql = "SELECT COUNT(*) as total 
                 FROM templates t 
                 JOIN template_categories c ON t.category_id = c.id 
@@ -62,10 +60,9 @@ class TemplateModel {
         return $result['total'];
     }
 
-    // Hàm lấy chi tiết (Đã sửa JOIN template_categories và các bảng phụ)
+    // [QUAN TRỌNG] Hàm lấy chi tiết - ĐÃ SỬA LỖI
     public function getBySlug($slug) {
         // 1. Lấy thông tin cơ bản
-        // SỬA: JOIN template_categories (Đây là chỗ gây lỗi 1146)
         $sql = "SELECT t.*, c.name as cat_name 
                 FROM templates t 
                 JOIN template_categories c ON t.category_id = c.id 
@@ -77,29 +74,32 @@ class TemplateModel {
 
         if (!$template) return null;
 
-        // 2. Lấy danh sách ảnh (Giữ nguyên vì tên bảng template_images không đổi)
-        $sqlImg = "SELECT type, image_url FROM template_images WHERE template_id = :id ORDER BY sort_order ASC";
+        // 2. Lấy danh sách ảnh Gallery (Bỏ cột 'type' vì bảng này không có)
+        $sqlImg = "SELECT image_url FROM template_images WHERE template_id = :id ORDER BY sort_order ASC";
         $stmtImg = $this->conn->prepare($sqlImg);
         $stmtImg->execute([':id' => $template['id']]);
-        $imagesRaw = $stmtImg->fetchAll();
+        $galleryRaw = $stmtImg->fetchAll();
 
-        // Format lại mảng ảnh
-        $template['images'] = ['gallery' => []];
-        foreach ($imagesRaw as $img) {
-            if ($img['type'] === 'main') $template['images']['main'] = $img['image_url'];
-            elseif ($img['type'] === 'mobile_demo') $template['images']['sub2'] = $img['image_url'];
-            else $template['images']['gallery'][] = $img['image_url'];
+        // 3. Cấu trúc lại mảng images chuẩn cho View
+        // Ảnh chính lấy từ bảng templates, Gallery lấy từ bảng template_images
+        $template['images'] = [
+            'main'    => !empty($template['image_desktop']) ? $template['image_desktop'] : '/assets/images/no-image.jpg',
+            'sub2'    => !empty($template['image_mobile']) ? $template['image_mobile'] : '/assets/images/no-image.jpg', // Dùng cho Mobile Demo
+            'gallery' => []
+        ];
+
+        // Đổ dữ liệu gallery vào
+        foreach ($galleryRaw as $img) {
+            $template['images']['gallery'][] = $img['image_url'];
         }
-        if (!isset($template['images']['main'])) $template['images']['main'] = '/assets/images/no-image.jpg';
 
-        // 3. Lấy tính năng (Giữ nguyên)
+        // 4. Lấy tính năng
         $sqlFeat = "SELECT feature_text FROM template_features WHERE template_id = :id ORDER BY sort_order ASC";
         $stmtFeat = $this->conn->prepare($sqlFeat);
         $stmtFeat->execute([':id' => $template['id']]);
         $template['features'] = $stmtFeat->fetchAll(PDO::FETCH_COLUMN);
 
-        // 4. Lấy công nghệ
-        // SỬA: JOIN template_techs và template_tech_map (Tên bảng mới)
+        // 5. Lấy công nghệ
         $sqlTech = "SELECT tech.name 
                     FROM template_techs tech
                     JOIN template_tech_map map ON tech.id = map.tech_id
@@ -111,7 +111,7 @@ class TemplateModel {
         return $template;
     }
 
-    // Lấy các giao diện liên quan (Cùng danh mục, trừ ID hiện tại)
+    // Lấy các giao diện liên quan
     public function getRelated($categoryId, $currentId, $limit = 4) {
         $sql = "SELECT t.*, c.name as cat_name 
                 FROM templates t 
@@ -122,5 +122,12 @@ class TemplateModel {
         $stmt = $this->conn->prepare($sql);
         $stmt->execute([':cat_id' => $categoryId, ':id' => $currentId]);
         return $stmt->fetchAll();
+    }
+
+    // Hàm tăng lượt xem cho Giao diện
+    public function increaseView($id) {
+        $sql = "UPDATE templates SET views = views + 1 WHERE id = :id";
+        $stmt = $this->conn->prepare($sql);
+        return $stmt->execute([':id' => $id]);
     }
 }

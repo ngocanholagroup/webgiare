@@ -2,8 +2,7 @@
 // views/client/blog-detail.php
 include 'includes/header.php';
 
-// Các biến đã có từ Controller: $post, $related_posts, $schema_json
-// Fallback nếu không có dữ liệu để tránh lỗi
+// Fallback nếu không có dữ liệu
 if (empty($post)) {
     echo "<div class='container mx-auto py-20 text-center'>Bài viết không tồn tại.</div>";
     include 'includes/footer.php';
@@ -18,40 +17,158 @@ if (empty($post)) {
 <?php endif; ?>
 
 <style>
-    /* Thanh tiến trình đọc */
+    /* 1. THANH TIẾN TRÌNH ĐỌC */
     #progress-bar {
         width: 0%;
         height: 4px;
-        background: linear-gradient(to right, #f97316, #fbbf24);
+        background: linear-gradient(to right, #f97316, #fbbf24); /* Orange Gradient */
         position: fixed;
         top: 0;
         left: 0;
         z-index: 9999;
         transition: width 0.1s;
     }
+
+    /* 2. SIDEBAR TOC (Mục lục) */
+    .sticky-toc { position: sticky; top: 120px; }
+    .toc-link { display: block; padding: 4px 0; color: #64748b; transition: all 0.2s; font-size: 0.9rem; }
+    .toc-link:hover, .toc-link.active { color: #ea580c; padding-left: 5px; border-left: 2px solid #ea580c; }
+
+    /* 3. NỘI DUNG BÀI VIẾT (TYPOGRAPHY) */
     
-    /* Typography cho bài viết (Tailwind Typography Plugin thay thế thủ công) */
-    .article-content h2 { font-size: 1.8rem; font-weight: 800; color: #0f172a; margin-top: 2.5rem; margin-bottom: 1rem; line-height: 1.3; }
-    .article-content h3 { font-size: 1.5rem; font-weight: 700; color: #1e293b; margin-top: 2rem; margin-bottom: 1rem; }
-    .article-content p { font-size: 1.1rem; color: #334155; line-height: 1.8; margin-bottom: 1.5rem; }
+    /* Headings */
+    .article-content h2 { 
+        font-size: 1.8rem; font-weight: 800; color: #0f172a; 
+        margin-top: 2.5rem; margin-bottom: 1rem; line-height: 1.3; 
+        scroll-margin-top: 100px; /* Để khi click mục lục không bị che mất tiêu đề */
+    }
+    .article-content h3 { 
+        font-size: 1.5rem; font-weight: 700; color: #1e293b; 
+        margin-top: 2rem; margin-bottom: 1rem; 
+    }
+    .article-content h4 {
+        font-size: 1.25rem; font-weight: 600; color: #334155;
+        margin-top: 1.5rem; margin-bottom: 0.75rem;
+    }
+
+    /* Paragraph & Text */
+    .article-content p { 
+        font-size: 1.1rem; color: #334155; line-height: 1.8; 
+        margin-bottom: 1.5rem; 
+    }
+    .article-content strong, .article-content b { font-weight: 700; color: #0f172a; }
+    .article-content em, .article-content i { font-style: italic; }
+    .article-content u { text-decoration: underline; text-underline-offset: 4px; }
+    
+    /* Links */
+    .article-content a { 
+        color: #ea580c; text-decoration: underline; font-weight: 600; 
+        text-underline-offset: 2px; transition: color 0.2s;
+    }
+    .article-content a:hover { color: #c2410c; }
+
+    /* Lists (Danh sách) */
     .article-content ul, .article-content ol { margin-bottom: 1.5rem; padding-left: 1.5rem; }
     .article-content ul { list-style: disc; }
     .article-content ol { list-style: decimal; }
-    .article-content li { margin-bottom: 0.5rem; color: #334155; }
-    .article-content blockquote { border-left: 4px solid #f97316; padding: 1.5rem; font-style: italic; background: #fff7ed; border-radius: 0 1rem 1rem 0; margin: 2rem 0; color: #475569; }
-    .article-content img { border-radius: 1rem; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); margin: 2rem auto; max-width: 100%; height: auto; display: block; }
-    .article-content a { color: #f97316; text-decoration: underline; font-weight: 600; }
-    
-    /* Sticky Sidebar */
-    .sticky-toc {
-        position: -webkit-sticky;
-        position: sticky;
-        top: 120px;
+    .article-content li { margin-bottom: 0.5rem; color: #334155; line-height: 1.6; }
+    .article-content li::marker { color: #ea580c; font-weight: bold; }
+
+    /* Blockquote (Trích dẫn) */
+    .article-content blockquote { 
+        border-left: 4px solid #f97316; 
+        padding: 1.5rem 2rem; 
+        font-style: italic; 
+        background: #fff7ed; /* Orange-50 */
+        border-radius: 0 1rem 1rem 0; 
+        margin: 2rem 0; 
+        color: #475569; 
+        position: relative;
     }
+    .article-content blockquote::before {
+        content: '"'; font-size: 4rem; position: absolute; top: -10px; left: 10px; 
+        color: #fdba74; opacity: 0.5; font-family: serif; pointer-events: none;
+    }
+
+    /* Images & Captions (Ảnh & Chú thích) */
+    .article-content figure.image { margin: 2.5rem 0; }
+    .article-content img { 
+        border-radius: 0.75rem; 
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); 
+        margin: 0 auto; 
+        max-width: 100%; height: auto; display: block; 
+    }
+    .article-content figcaption {
+        text-align: center; font-size: 0.875rem; color: #64748b; 
+        margin-top: 0.75rem; font-style: italic;
+    }
+
+    /* --- [MỚI] TABLE (Bảng biểu) --- */
+    .article-content table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 2rem 0;
+        font-size: 0.95rem;
+        overflow: hidden;
+        border-radius: 0.5rem;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .article-content thead { background-color: #f8fafc; border-bottom: 2px solid #e2e8f0; }
+    .article-content th { 
+        padding: 1rem; font-weight: 700; color: #1e293b; text-align: left; 
+    }
+    .article-content td { 
+        padding: 0.75rem 1rem; border-bottom: 1px solid #e2e8f0; color: #334155; 
+    }
+    .article-content tr:last-child td { border-bottom: none; }
+    .article-content tr:hover td { background-color: #fff7ed; } /* Hover màu cam nhạt */
     
-    /* Style cho mục lục động */
-    .toc-link { display: block; padding: 4px 0; color: #64748b; transition: all 0.2s; font-size: 0.9rem; }
-    .toc-link:hover, .toc-link.active { color: #ea580c; padding-left: 5px; border-left: 2px solid #ea580c; }
+    /* Scroll cho bảng trên mobile */
+    .article-content .table { overflow-x: auto; display: block; } 
+
+    /* --- [MỚI] CODE BLOCK (Cho dân IT) --- */
+    .article-content pre {
+        background: #1e293b; /* Slate-800 */
+        color: #f8fafc;
+        padding: 1.5rem;
+        border-radius: 0.75rem;
+        overflow-x: auto;
+        margin: 2rem 0;
+        font-family: 'Fira Code', monospace;
+        font-size: 0.9rem;
+        border: 1px solid #334155;
+    }
+    .article-content code {
+        font-family: 'Fira Code', monospace;
+        background: #f1f5f9;
+        color: #ea580c;
+        padding: 0.2rem 0.4rem;
+        border-radius: 0.25rem;
+        font-size: 0.85em;
+    }
+    .article-content pre code {
+        background: transparent; color: inherit; padding: 0; font-size: inherit;
+    }
+
+    /* --- [MỚI] VIDEO / IFRAME (Youtube) --- */
+    .article-content figure.media {
+        position: relative;
+        padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+        height: 0;
+        overflow: hidden;
+        border-radius: 0.75rem;
+        margin: 2rem 0;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+    .article-content figure.media iframe {
+        position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;
+    }
+
+    /* --- [MỚI] HR (Đường kẻ ngang) --- */
+    .article-content hr {
+        border: 0; border-top: 1px solid #e2e8f0;
+        margin: 3rem auto; width: 50%;
+    }
 </style>
 
 <div id="progress-bar"></div>
@@ -64,8 +181,8 @@ if (empty($post)) {
         <div class="max-w-4xl mx-auto text-center">
             
             <div class="inline-flex items-center gap-2 mb-6">
-                <a href="/blog?cat=<?= $post['cat_slug'] ?>" class="bg-orange-600 hover:bg-orange-700 transition text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
-                    <?= htmlspecialchars($post['cat_name']) ?>
+                <a href="/blog?cat=<?= htmlspecialchars($post['category_slug'] ?? '') ?>" class="bg-orange-600 hover:bg-orange-700 transition text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+                    <?= htmlspecialchars($post['category_name'] ?? 'Tin tức') ?>
                 </a>
                 <span class="text-slate-400 text-sm flex items-center gap-1">
                     <i data-lucide="clock" class="w-3 h-3"></i> <?= $post['reading_time'] ?? 5 ?> phút đọc
@@ -189,20 +306,35 @@ if (empty($post)) {
         <?php if(!empty($related_posts)): ?>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
             <?php foreach($related_posts as $item): ?>
-            <a href="/blog/<?= $item['slug'] ?>" class="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col h-full">
-                <div class="aspect-video bg-slate-200 overflow-hidden relative">
-                    <span class="absolute top-3 left-3 bg-white/90 backdrop-blur text-[10px] font-bold px-2 py-1 rounded text-slate-800 z-10">
-                        <?= htmlspecialchars($item['cat_name']) ?>
+            <a href="/blog/<?= $item['slug'] ?>" class="group block bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl hover:shadow-orange-500/10 hover:-translate-y-1 transition-all duration-300 flex flex-col h-full">
+                <div class="relative overflow-hidden aspect-[16/10]">
+                    <span class="absolute top-4 left-4 z-10 bg-white/90 backdrop-blur-sm text-slate-800 text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider border border-slate-200">
+                        <?= htmlspecialchars($item['category_name'] ?? 'Blog') ?>
                     </span>
-                    <img src="<?= !empty($item['thumbnail']) ? $item['thumbnail'] : 'https://placehold.co/600x400' ?>" 
-                         alt="<?= htmlspecialchars($item['title']) ?>" 
+
+                    <img src="<?= !empty($item['thumbnail']) ? $item['thumbnail'] : 'https://placehold.co/600x400' ?>"
+                         alt="<?= htmlspecialchars($item['title']) ?>"
+                         loading="lazy"
                          class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500">
                 </div>
+
                 <div class="p-6 flex flex-col flex-1">
-                    <h3 class="font-bold text-slate-900 mt-2 mb-2 line-clamp-2 group-hover:text-orange-600 transition-colors">
+                    <div class="flex items-center gap-3 text-xs text-slate-400 mb-3">
+                        <span class="flex items-center gap-1"><i data-lucide="clock" class="w-3 h-3"></i> <?= date('d/m/Y', strtotime($item['published_at'])) ?></span>
+                        <span class="flex items-center gap-1"><i data-lucide="eye" class="w-3 h-3"></i> <?= number_format($item['views'] ?? 0) ?></span>
+                    </div>
+
+                    <h3 class="text-lg font-bold text-slate-900 mb-3 line-clamp-2 group-hover:text-orange-600 transition-colors">
                         <?= htmlspecialchars($item['title']) ?>
                     </h3>
-                    <p class="text-slate-400 text-sm mt-auto"><?= date('d/m/Y', strtotime($item['published_at'])) ?></p>
+
+                    <p class="text-sm text-slate-500 line-clamp-3 mb-4"><?= htmlspecialchars($item['summary'] ?? '') ?></p>
+
+                    <div class="mt-auto pt-4 border-t border-slate-50">
+                        <span class="text-sm font-semibold text-slate-600 group-hover:text-orange-600 flex items-center gap-1">
+                            Xem chi tiết <i data-lucide="chevron-right" class="w-4 h-4 transition-transform group-hover:translate-x-1"></i>
+                        </span>
+                    </div>
                 </div>
             </a>
             <?php endforeach; ?>
@@ -214,7 +346,7 @@ if (empty($post)) {
 </section>
 
 <script>
-    // 1. Xử lý thanh tiến trình đọc
+    // 1. Progress Bar
     window.onscroll = function() {
         let winScroll = document.body.scrollTop || document.documentElement.scrollTop;
         let height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
@@ -222,7 +354,7 @@ if (empty($post)) {
         document.getElementById("progress-bar").style.width = scrolled + "%";
     };
 
-    // 2. Tự động tạo Mục lục (Table of Contents) từ thẻ H2
+    // 2. Auto TOC (Mục lục)
     document.addEventListener("DOMContentLoaded", function() {
         const content = document.getElementById('main-content');
         const tocList = document.getElementById('toc-list');
@@ -233,18 +365,13 @@ if (empty($post)) {
             
             if (headers.length > 0) {
                 headers.forEach((header, index) => {
-                    // Tạo ID cho thẻ h2 nếu chưa có
-                    if (!header.id) {
-                        header.id = 'section-' + index;
-                    }
+                    if (!header.id) header.id = 'section-' + index;
                     
-                    // Tạo link trong sidebar
                     const link = document.createElement('a');
                     link.href = '#' + header.id;
                     link.textContent = header.textContent;
                     link.className = 'toc-link';
                     
-                    // Smooth scroll khi click
                     link.addEventListener('click', function(e) {
                         e.preventDefault();
                         document.querySelector(this.getAttribute('href')).scrollIntoView({
@@ -255,7 +382,6 @@ if (empty($post)) {
                     tocList.appendChild(link);
                 });
             } else {
-                // Ẩn mục lục nếu bài viết không có thẻ H2
                 tocContainer.style.display = 'none';
             }
         }

@@ -149,7 +149,7 @@ $featured_post = $featured_post ?? null;
                             <a href="/tin-tuc/<?= $post['slug'] ?>" class="group block bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl hover:shadow-orange-500/10 hover:-translate-y-1 transition-all duration-300 flex flex-col h-full">
                                 <div class="relative overflow-hidden aspect-[16/10]">
                                     <span class="absolute top-4 left-4 z-10 bg-white/90 backdrop-blur-sm text-slate-800 text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider border border-slate-200">
-                                        <?= htmlspecialchars($post['cat_name']) ?>
+                                        <?= htmlspecialchars($post['category_name'] ?? 'Tin tức') ?>
                                     </span>
 
                                     <img src="<?= !empty($post['thumbnail']) ? $post['thumbnail'] : 'https://placehold.co/600x400' ?>"
@@ -161,7 +161,7 @@ $featured_post = $featured_post ?? null;
                                 <div class="p-6 flex flex-col flex-1">
                                     <div class="flex items-center gap-3 text-xs text-slate-400 mb-3">
                                         <span class="flex items-center gap-1"><i data-lucide="clock" class="w-3 h-3"></i> <?= date('d/m/Y', strtotime($post['published_at'])) ?></span>
-                                        <span class="flex items-center gap-1"><i data-lucide="eye" class="w-3 h-3"></i> <?= $post['views'] ?></span>
+                                        <span class="flex items-center gap-1"><i data-lucide="eye" class="w-3 h-3"></i> <?= number_format($post['views']) ?></span>
                                     </div>
 
                                     <h3 class="text-lg font-bold text-slate-900 mb-3 line-clamp-2 group-hover:text-orange-600 transition-colors">

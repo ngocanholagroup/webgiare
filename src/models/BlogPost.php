@@ -1,5 +1,4 @@
 <?php
-// src/models/BlogPost.php
 require_once __DIR__ . '/Database.php';
 
 class BlogPostModel {
@@ -9,81 +8,97 @@ class BlogPostModel {
         $this->conn = Database::getConnection();
     }
 
-    // 1. Lấy 1 bài viết nổi bật nhất (Featured Post)
+    // 1. Lấy bài viết nổi bật (Featured) mới nhất
     public function getFeaturedPost() {
-        $sql = "SELECT p.*, c.name as cat_name, c.slug as cat_slug, a.name as author_name 
+        $sql = "SELECT p.*, 
+                       c.name as category_name, c.slug as category_slug,
+                       a.name as author_name, a.avatar as author_avatar
                 FROM blog_posts p
                 JOIN blog_categories c ON p.category_id = c.id
                 JOIN blog_authors a ON p.author_id = a.id
-                WHERE p.is_featured = 1 AND p.status = 1
+                WHERE p.status = 1 AND p.is_featured = 1
                 ORDER BY p.published_at DESC 
                 LIMIT 1";
         
-        $stmt = $this->conn->query($sql);
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute();
         return $stmt->fetch();
     }
 
-    // 2. Lấy danh sách bài viết (Có Lọc + Tìm kiếm + Phân trang)
-    public function getAll($limit = 6, $offset = 0, $catSlug = null, $keyword = null, $excludeId = null) {
-        $sql = "SELECT p.*, c.name as cat_name, c.slug as cat_slug 
+    // 2. Lấy danh sách bài viết (Có lọc, tìm kiếm, phân trang)
+    public function getAll($limit, $offset, $catSlug = 'all', $keyword = null, $excludeId = null) {
+        $sql = "SELECT p.*, 
+                       c.name as category_name, c.slug as category_slug,
+                       a.name as author_name, a.avatar as author_avatar
                 FROM blog_posts p
-                JOIN blog_categories c ON p.category_id = c.id 
+                JOIN blog_categories c ON p.category_id = c.id
+                JOIN blog_authors a ON p.author_id = a.id
                 WHERE p.status = 1";
         
         $params = [];
 
-        // Nếu có ID cần loại trừ (ví dụ bài Featured đã hiện ở trên rồi thì dưới không hiện nữa)
-        if ($excludeId) {
-            $sql .= " AND p.id != :exclude_id";
-            $params[':exclude_id'] = $excludeId;
-        }
-
         // Lọc theo danh mục
-        if ($catSlug && $catSlug !== 'all') {
-            $sql .= " AND c.slug = :cat_slug";
-            $params[':cat_slug'] = $catSlug;
+        if ($catSlug !== 'all') {
+            $sql .= " AND c.slug = :catSlug";
+            $params[':catSlug'] = $catSlug;
         }
 
-        // Tìm kiếm
-        if ($keyword) {
+        // Tìm kiếm từ khóa
+        if (!empty($keyword)) {
             $sql .= " AND p.title LIKE :keyword";
             $params[':keyword'] = "%$keyword%";
         }
 
-        $sql .= " ORDER BY p.published_at DESC LIMIT " . (int)$limit . " OFFSET " . (int)$offset;
+        // Loại trừ bài viết (thường là bài Featured để không lặp lại)
+        if (!empty($excludeId)) {
+            $sql .= " AND p.id != :excludeId";
+            $params[':excludeId'] = $excludeId;
+        }
+
+        $sql .= " ORDER BY p.published_at DESC LIMIT :limit OFFSET :offset";
 
         $stmt = $this->conn->prepare($sql);
-        $stmt->execute($params);
+        
+        // Bind params
+        foreach ($params as $key => $value) {
+            $stmt->bindValue($key, $value);
+        }
+        $stmt->bindValue(':limit', (int)$limit, PDO::PARAM_INT);
+        $stmt->bindValue(':offset', (int)$offset, PDO::PARAM_INT);
+
+        $stmt->execute();
         return $stmt->fetchAll();
     }
 
-    // 3. Đếm tổng số bài (Để phân trang)
-    public function countAll($catSlug = null, $keyword = null) {
+    // 3. Đếm tổng số bài (để phân trang)
+    public function countAll($catSlug = 'all', $keyword = null) {
         $sql = "SELECT COUNT(*) as total 
-                FROM blog_posts p 
-                JOIN blog_categories c ON p.category_id = c.id 
+                FROM blog_posts p
+                JOIN blog_categories c ON p.category_id = c.id
                 WHERE p.status = 1";
+        
         $params = [];
 
-        if ($catSlug && $catSlug !== 'all') {
-            $sql .= " AND c.slug = :cat_slug";
-            $params[':cat_slug'] = $catSlug;
+        if ($catSlug !== 'all') {
+            $sql .= " AND c.slug = :catSlug";
+            $params[':catSlug'] = $catSlug;
         }
-        if ($keyword) {
+
+        if (!empty($keyword)) {
             $sql .= " AND p.title LIKE :keyword";
             $params[':keyword'] = "%$keyword%";
         }
 
         $stmt = $this->conn->prepare($sql);
         $stmt->execute($params);
-        $result = $stmt->fetch();
-        return $result['total'];
+        return $stmt->fetch()['total'];
     }
 
-    // 4. Lấy chi tiết bài viết (Kèm thông tin Tác giả đầy đủ)
+    // 4. Lấy chi tiết bài viết theo Slug
     public function getBySlug($slug) {
-        $sql = "SELECT p.*, c.name as cat_name, c.slug as cat_slug,
-                       a.name as author_name, a.avatar as author_avatar, a.bio as author_bio, a.title as author_title
+        $sql = "SELECT p.*, 
+                       c.name as category_name, c.slug as category_slug,
+                       a.name as author_name, a.avatar as author_avatar, a.bio as author_bio
                 FROM blog_posts p
                 JOIN blog_categories c ON p.category_id = c.id
                 JOIN blog_authors a ON p.author_id = a.id
@@ -91,44 +106,32 @@ class BlogPostModel {
         
         $stmt = $this->conn->prepare($sql);
         $stmt->execute([':slug' => $slug]);
-        $post = $stmt->fetch();
-
-        if ($post) {
-            // Tăng lượt xem lên 1
-            $this->incrementViews($post['id']);
-            
-            // Lấy thêm Tags của bài viết này
-            $post['tags'] = $this->getTagsByPost($post['id']);
-        }
-
-        return $post;
+        return $stmt->fetch();
     }
 
-    // 5. Lấy Tags của 1 bài viết
-    private function getTagsByPost($postId) {
-        $sql = "SELECT t.* FROM blog_tags t 
-                JOIN blog_post_tags pt ON t.id = pt.tag_id 
-                WHERE pt.post_id = :pid";
-        $stmt = $this->conn->prepare($sql);
-        $stmt->execute([':pid' => $postId]);
-        return $stmt->fetchAll();
+    // 5. Tăng lượt xem
+    public function increaseView($id) {
+        $stmt = $this->conn->prepare("UPDATE blog_posts SET views = views + 1 WHERE id = :id");
+        return $stmt->execute([':id' => $id]);
     }
 
     // 6. Lấy bài viết liên quan (Cùng danh mục)
-    public function getRelated($catId, $currentId, $limit = 3) {
-        $sql = "SELECT p.*, c.name as cat_name 
-                FROM blog_posts p 
+    public function getRelated($categoryId, $currentId, $limit = 3) {
+        $sql = "SELECT p.*, c.name as category_name, c.slug as category_slug
+                FROM blog_posts p
                 JOIN blog_categories c ON p.category_id = c.id
-                WHERE p.category_id = :cid AND p.id != :id AND p.status = 1
-                ORDER BY RAND() LIMIT " . (int)$limit;
+                WHERE p.category_id = :catId 
+                  AND p.id != :currentId 
+                  AND p.status = 1
+                ORDER BY RAND() 
+                LIMIT :limit"; // Random để bài liên quan thay đổi cho phong phú
+        
         $stmt = $this->conn->prepare($sql);
-        $stmt->execute([':cid' => $catId, ':id' => $currentId]);
+        $stmt->bindValue(':catId', $categoryId, PDO::PARAM_INT);
+        $stmt->bindValue(':currentId', $currentId, PDO::PARAM_INT);
+        $stmt->bindValue(':limit', (int)$limit, PDO::PARAM_INT);
+        
+        $stmt->execute();
         return $stmt->fetchAll();
-    }
-
-    // 7. Tăng view
-    private function incrementViews($id) {
-        $stmt = $this->conn->prepare("UPDATE blog_posts SET views = views + 1 WHERE id = :id");
-        $stmt->execute([':id' => $id]);
     }
 }

@@ -67,7 +67,7 @@
     $table_title = 'Danh sách quản trị viên';
     $create_link = '/admin/account/create';
     $create_label = 'Thêm quản trị viên';
-    $search_placeholder = 'Tìm username, tên...';
+    $search_placeholder = null;
     $pagination = ['current' => $currentPage, 'total' => $totalPages, 'url_params' => ['search' => $search]];
 
     include 'includes/data-table.php';

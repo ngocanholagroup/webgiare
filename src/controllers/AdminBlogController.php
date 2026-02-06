@@ -101,10 +101,16 @@ class AdminBlogController
     }
 
     // 5. XỬ LÝ CẬP NHẬT (UPDATE)
-    public function update($id)
+public function update($id)
     {
         if (!isset($_SESSION['admin_logged_in'])) exit;
         
+        $model = new AdminBlog();
+        
+        // 1. Lấy bài viết CŨ trong DB
+        $oldPost = $model->getPostById($id);
+        if (!$oldPost) die('Post not found');
+
         $data = $_POST;
         
         if (empty($data['slug'])) {
@@ -126,31 +132,102 @@ class AdminBlogController
             }
         }
 
+        // Lấy danh sách ảnh trong nội dung CŨ
+        $oldImages = $this->getImagesFromContent($oldPost['content']);
+        
+        // Lấy danh sách ảnh trong nội dung MỚI
+        $newImages = $this->getImagesFromContent($data['content']);
+        
+        // Tìm những ảnh có trong CŨ mà KHÔNG có trong MỚI (tức là đã bị user xóa)
+        $deletedImages = array_diff($oldImages, $newImages);
+        
+        // Tiến hành xóa file vật lý
+        foreach ($deletedImages as $img) {
+            if (file_exists($img)) {
+                unlink($img);
+            }
+        }
+
         (new AdminBlog())->updatePost($id, $data);
         header('Location: /admin/blog');
     }
 
-    // 6. XỬ LÝ XÓA (DELETE) - Bổ sung hàm này vì code cũ bạn thiếu
+    // 6. XỬ LÝ XÓA (DELETE)
     public function delete($id) 
     {
         if (!isset($_SESSION['admin_logged_in'])) exit;
         
         $model = new AdminBlog();
-        
-        // Lấy thông tin bài viết để xóa ảnh thumbnail
         $post = $model->getPostById($id);
+        
         if ($post) {
+            // 1. Xóa Thumbnail (Code cũ đã có)
             $thumb = ltrim($post['thumbnail'], '/');
             if (!empty($thumb) && file_exists($thumb)) {
                 unlink($thumb);
+            }
+
+            // 2. [MỚI] Xóa toàn bộ ảnh trong nội dung bài viết
+            $contentImages = $this->getImagesFromContent($post['content']);
+            foreach ($contentImages as $img) {
+                if (file_exists($img)) {
+                    unlink($img);
+                }
             }
         }
 
         $model->deletePost($id);
         header('Location: /admin/blog');
     }
-
     // --- HELPER FUNCTIONS ---
+
+    // [MỚI] Hàm xử lý upload ảnh từ CKEditor
+    public function uploadCKEditor()
+    {
+        // 1. Kiểm tra quyền Admin
+        if (!isset($_SESSION['admin_logged_in'])) {
+            http_response_code(403);
+            echo json_encode(['error' => ['message' => 'Unauthorized']]);
+            exit;
+        }
+
+        // 2. Kiểm tra file gửi lên (Name mặc định của CKEditor là 'upload')
+        if (!isset($_FILES['upload']) || $_FILES['upload']['error'] !== UPLOAD_ERR_OK) {
+            http_response_code(400);
+            echo json_encode(['error' => ['message' => 'Upload failed.']]);
+            exit;
+        }
+
+        $file = $_FILES['upload'];
+
+        // 3. Validate ảnh
+        $allowed = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+        $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+        
+        if (!in_array($ext, $allowed)) {
+            echo json_encode(['error' => ['message' => 'Chỉ chấp nhận file ảnh (jpg, png, gif, webp).']]);
+            exit;
+        }
+
+        // 4. Lưu file vào folder riêng cho nội dung bài viết
+        $uploadDir = 'uploads/posts_content/'; 
+        if (!file_exists($uploadDir)) {
+            mkdir($uploadDir, 0777, true);
+        }
+
+        $fileName = 'content_' . time() . '_' . rand(1000, 9999) . '.' . $ext;
+        $targetPath = $uploadDir . $fileName;
+
+        if (move_uploaded_file($file['tmp_name'], $targetPath)) {
+            // 5. Trả về JSON đúng chuẩn CKEditor 5
+            echo json_encode([
+                'url' => '/' . $targetPath // Đường dẫn tuyệt đối để hiển thị
+            ]);
+        } else {
+            echo json_encode(['error' => ['message' => 'Không thể lưu file vào server.']]);
+        }
+        exit;
+    }
 
     // Hàm upload ảnh vào folder uploads/blog/
     private function uploadImage($file)
@@ -172,6 +249,27 @@ class AdminBlogController
             return '/' . $targetPath;
         }
         return '';
+    }
+
+    // Hàm tách lấy tất cả đường dẫn ảnh trong nội dung HTML
+    private function getImagesFromContent($html)
+    {
+        $images = [];
+        // Regex tìm tất cả src="..."
+        preg_match_all('/src="([^"]+)"/', $html, $matches);
+        
+        if (!empty($matches[1])) {
+            foreach ($matches[1] as $src) {
+                // Chỉ lấy những ảnh nằm trong folder uploads của mình
+                // (Tránh xóa nhầm ảnh từ link ngoài hoặc ảnh giao diện)
+                if (strpos($src, '/uploads/posts_content/') !== false) {
+                    // Loại bỏ tên miền nếu có, chỉ lấy đường dẫn tương đối từ root
+                    $path = parse_url($src, PHP_URL_PATH);
+                    $images[] = ltrim($path, '/'); // Xóa dấu / ở đầu để dùng với hàm unlink
+                }
+            }
+        }
+        return array_unique($images);
     }
 
     // Hàm tạo slug tiếng Việt

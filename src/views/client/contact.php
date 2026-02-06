@@ -154,16 +154,29 @@ $selected_template = isset($_GET['template']) ? $_GET['template'] : '';
                         <label class="text-sm font-bold text-slate-700">Dịch vụ quan tâm</label>
                         <div class="relative">
                             <select name="service_type" class="w-full px-4 py-3 rounded-xl bg-slate-50 focus:bg-white focus:border-orange-500 focus:ring-2 focus:ring-orange-100 outline-none transition-all appearance-none text-slate-600">
-                                <option value="website" <?= empty($selected_template) ? 'selected' : '' ?>>Thiết kế Website trọn gói</option>
-                                <option value="template" <?= !empty($selected_template) ? 'selected' : '' ?>>Mua giao diện mẫu <?= !empty($selected_template) ? "($selected_template)" : "" ?></option>
-                                <option value="seo">Dịch vụ SEO / Marketing</option>
-                                <option value="custom">Lập trình theo yêu cầu</option>
-                                <option value="support">Hỗ trợ kỹ thuật</option>
+                                
+                                <option value="" disabled <?= empty($selected_template) ? 'selected' : '' ?>>-- Chọn dịch vụ --</option>
+                                
+                                <?php 
+                                // 1. Nếu đang có Template -> Hiện option ưu tiên
+                                if (!empty($selected_template)): ?>
+                                    <option value="Mua giao diện: <?= htmlspecialchars($selected_template) ?>" selected>
+                                        Mua giao diện: <?= htmlspecialchars($selected_template) ?>
+                                    </option>
+                                <?php endif; ?>
+
+                                <?php 
+                                // 2. Loop dịch vụ động từ Database (Đã truyền từ Controller)
+                                if (!empty($services)): foreach ($services as $sv): ?>
+                                    <option value="<?= htmlspecialchars($sv['name']) ?>">
+                                        <?= htmlspecialchars($sv['name']) ?>
+                                    </option>
+                                <?php endforeach; endif; ?>
+                                
                             </select>
                             <i data-lucide="chevron-down" class="absolute right-4 top-3.5 w-5 h-5 text-slate-400 pointer-events-none"></i>
                         </div>
                     </div>
-
                     <div class="space-y-2">
                         <label class="text-sm font-bold text-slate-700">Nội dung chi tiết</label>
                         <textarea name="message" rows="4" placeholder="Mô tả sơ qua về nhu cầu của bạn..." class="w-full px-4 py-3 rounded-xl bg-slate-50 focus:bg-white focus:border-orange-500 focus:ring-2 focus:ring-orange-100 outline-none transition-all resize-none"></textarea>

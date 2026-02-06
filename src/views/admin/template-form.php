@@ -1,21 +1,25 @@
 <?php include 'includes/admin-header.php'; ?>
 
 <?php
-// 1. CHUẨN BỊ DỮ LIỆU
-$isEdit = isset($template);
-$data = $template ?? [];
+// --- 1. CHUẨN BỊ DỮ LIỆU ĐẦU VÀO ---
 
-// [QUAN TRỌNG] Chuẩn bị dữ liệu Gallery để hiển thị trong Form
-// Form.php yêu cầu mảng các URL ảnh để hiển thị preview ảnh cũ
-$galleryUrls = [];
+$isEdit = isset($template); // Kiểm tra đang là chế độ Sửa hay Thêm mới
+$data = $template ?? [];    // Dữ liệu điền vào form
+
+// Xử lý dữ liệu Gallery để hiển thị ảnh cũ (kèm ID để xóa)
+$galleryData = [];
 if (!empty($gallery)) {
     foreach ($gallery as $img) {
-        $galleryUrls[] = $img['image_url'];
+        $galleryData[] = [
+            'id'  => $img['id'],        // ID để tạo link xóa
+            'src' => $img['image_url']  // Đường dẫn ảnh để hiển thị
+        ];
     }
 }
-$data['gallery_files'] = $galleryUrls; // Gán vào data để form tự nhận
+// Gán vào key 'gallery_files' để component form.php nhận diện
+$data['gallery_files'] = $galleryData; 
 
-// Chuẩn bị danh mục
+// Xử lý danh sách Danh mục cho Dropdown
 $categoryOptions = [];
 if (!empty($categories)) {
     foreach ($categories as $cat) {
@@ -23,9 +27,10 @@ if (!empty($categories)) {
     }
 }
 
-// 2. CẤU HÌNH FIELDS
+// --- 2. CẤU HÌNH CÁC TRƯỜNG NHẬP LIỆU (FIELDS) ---
+
 $form_fields = [
-    // --- Hàng 1: Cơ bản ---
+    // === NHÓM 1: THÔNG TIN CƠ BẢN ===
     [
         'label' => 'Tên giao diện',
         'name'  => 'name',
@@ -35,7 +40,7 @@ $form_fields = [
         'placeholder' => 'VD: Bất động sản cao cấp...'
     ],
     [
-        'label' => 'Mã SKU',
+        'label' => 'Mã SKU (Mã sản phẩm)',
         'name'  => 'sku',
         'type'  => 'text',
         'required' => true,
@@ -43,114 +48,118 @@ $form_fields = [
         'placeholder' => 'VD: THEME-001'
     ],
 
-    // --- Hàng 2: Ảnh chính (Bắt buộc) ---
+    // === NHÓM 2: ẢNH ĐẠI DIỆN ===
     [
         'label' => 'Ảnh Desktop (Ảnh chính)',
         'name'  => 'image_desktop',
-        'type'  => 'file',      
-        'required' => true,
+        'type'  => 'file',
+        'required' => !$isEdit, // Chỉ bắt buộc khi thêm mới
         'width' => 'col-span-12 md:col-span-6',
-        'note'  => 'Kích thước chuẩn: 1200x800px (3:2).'
+        'note'  => 'Kích thước chuẩn: 1200x800px (Tỉ lệ 3:2 hoặc 16:10).'
     ],
     [
-        'label' => 'Ảnh Mobile',
+        'label' => 'Ảnh Mobile (Demo điện thoại)',
         'name'  => 'image_mobile',
         'type'  => 'file',
-        'required' => true,
+        'required' => !$isEdit, // Chỉ bắt buộc khi thêm mới
         'width' => 'col-span-12 md:col-span-6',
-        'note'  => 'Kích thước chuẩn: 400x800px (1:2)'
+        'note'  => 'Kích thước chuẩn: 400x800px (Tỉ lệ 1:2).'
     ],
 
-    // --- Hàng 3: GALLERY (Upload nhiều ảnh) ---
+    // === NHÓM 3: THƯ VIỆN ẢNH (GALLERY) ===
     [
-        'label'    => 'Thư viện ảnh phụ (Gallery)',
-        'name'     => 'gallery_files',  // Tên field
+        'label'    => 'Thư viện ảnh phụ (Screenshots các trang con)',
+        'name'     => 'gallery_files', 
         'type'     => 'file',
-        'multiple' => true,             // [QUAN TRỌNG] Cho phép chọn nhiều file
+        'multiple' => true,  // Cho phép chọn nhiều file cùng lúc
         'width'    => 'col-span-12',
-        'note'     => 'Giữ phím Ctrl để chọn nhiều ảnh. Ảnh cũ sẽ hiển thị bên dưới.'
+        'note'     => 'Giữ phím Ctrl (hoặc Command) để chọn nhiều ảnh. Ảnh cũ đã lưu sẽ hiển thị bên dưới.'
     ],
 
-    // --- Hàng 4: Danh mục & Slug ---
+    // === NHÓM 4: PHÂN LOẠI & ĐƯỜNG DẪN ===
     [
-        'label' => 'Danh mục',
-        'name'  => 'category_id',
-        'type'  => 'select',
-        'required' => true,
-        'width' => 'col-span-12 md:col-span-6',
+        'label'   => 'Danh mục',
+        'name'    => 'category_id',
+        'type'    => 'select',
+        'required'=> true,
+        'width'   => 'col-span-12 md:col-span-6',
         'options' => $categoryOptions
     ],
     [
-        'label' => 'Slug (Đường dẫn)',
+        'label' => 'Slug (Đường dẫn SEO)',
         'name'  => 'slug',
         'type'  => 'text',
-        'required' => true,
+        'required' => false, // [QUAN TRỌNG] Không bắt buộc
         'width' => 'col-span-12 md:col-span-6',
-        'placeholder' => 'tu-dong-tao-neu-de-trong'
+        'placeholder' => 'tu-dong-tao-neu-de-trong',
+        'note' => 'Để trống hệ thống sẽ tự động tạo từ Tên giao diện.'
     ],
 
-    // --- Hàng 5: Giá cả ---
+    // === NHÓM 5: GIÁ & DEMO ===
     [
-        'label' => 'Giá gốc',
+        'label' => 'Giá gốc (VNĐ)',
         'name'  => 'price',
-        'type'  => 'text',
+        'type'  => 'text', // Dùng text để format tiền nếu cần, nhưng lưu DB là int
         'required' => true,
-        'width' => 'col-span-12 md:col-span-6',
-        'placeholder' => '0'
+        'width' => 'col-span-12 md:col-span-4',
+        'placeholder' => 'VD: 5000000'
     ],
     [
-        'label' => 'Giá khuyến mãi',
+        'label' => 'Giá khuyến mãi (VNĐ)',
         'name'  => 'sale_price',
         'type'  => 'text',
-        'width' => 'col-span-12 md:col-span-6',
-        'placeholder' => '0'
+        'width' => 'col-span-12 md:col-span-4',
+        'placeholder' => 'Để 0 nếu không giảm'
     ],
-
-    // --- Hàng 6: Khác ---
     [
-        'label' => 'Link Demo',
+        'label' => 'Link Demo Online',
         'name'  => 'demo_url',
         'type'  => 'text',
-        'width' => 'col-span-12',
-        'placeholder' => 'https://demo...'
+        'width' => 'col-span-12 md:col-span-4',
+        'placeholder' => 'https://demo.example.com'
     ],
+
+    // === NHÓM 6: CHỈ SỐ & TRẠNG THÁI ===
     [
-        'label' => 'Điểm Desktop',
+        'label' => 'Điểm PageSpeed Desktop',
         'name'  => 'score_desktop',
         'type'  => 'text',
         'width' => 'col-span-4',
         'placeholder' => '100'
     ],
     [
-        'label' => 'Điểm Mobile',
+        'label' => 'Điểm PageSpeed Mobile',
         'name'  => 'score_mobile',
         'type'  => 'text',
         'width' => 'col-span-4',
         'placeholder' => '95'
     ],
     [
-        'label' => 'Trạng thái',
-        'name'  => 'status',
-        'type'  => 'select',
-        'width' => 'col-span-4',
+        'label'   => 'Trạng thái hiển thị',
+        'name'    => 'status',
+        'type'    => 'select',
+        'width'   => 'col-span-4',
         'options' => ['1' => 'Hiện', '0' => 'Ẩn']
     ],
+
+    // === NHÓM 7: MÔ TẢ ===
     [
-        'label' => 'Mô tả',
+        'label' => 'Mô tả chi tiết',
         'name'  => 'description',
-        'type'  => 'textarea',
+        'type'  => 'textarea', // Hoặc 'editor' nếu bạn đã tích hợp CKEditor
         'width' => 'col-span-12',
-        'rows'  => 5
+        'rows'  => 6
     ]
 ];
 
-// 3. CẤU HÌNH CHUNG
-$form_title = $isEdit ? 'Cập nhật giao diện: ' . $template['name'] : 'Thêm giao diện mới';
+// --- 3. CẤU HÌNH THÔNG TIN FORM ---
+
+$form_title = $isEdit ? 'Cập nhật giao diện: ' . htmlspecialchars($template['name']) : 'Thêm giao diện mới';
 $form_action = $isEdit ? '/admin/template/update/' . $template['id'] : '/admin/template/store';
 $form_back_link = '/admin/template';
 $form_data = $data;
 
-// 4. HIỂN THỊ FORM
+// --- 4. GỌI COMPONENT HIỂN THỊ ---
 include 'includes/form.php';
 ?>
 

@@ -31,10 +31,14 @@ $form_fields = [
         'label' => 'Mô tả ngắn (Summary)', 'name' => 'summary', 'type' => 'textarea', 'rows' => 3,
         'width' => 'col-span-12', 'placeholder' => 'Hiện ở card bài viết...'
     ],
-    // --- Hàng 4: Nội dung chính ---
+// --- Hàng 4: Nội dung chính ---
     [
-        'label' => 'Nội dung chi tiết', 'name' => 'content', 'type' => 'textarea', 'rows' => 15,
-        'width' => 'col-span-12', 'required' => true
+        'label' => 'Nội dung chi tiết', 
+        'name' => 'content', 
+        'type' => 'textarea', 
+        'rows' => 15,
+        'width' => 'col-span-12', 
+        'required' => false // <--- [QUAN TRỌNG] Đổi true thành false để tránh lỗi "not focusable"
     ],
     // --- Hàng 5: Cấu hình ---
     [
@@ -63,13 +67,115 @@ $form_data = $data;
 include 'includes/form.php';
 ?>
 
-<script src="https://cdn.ckeditor.com/4.25.1-lts/standard/ckeditor.js"></script>
+<?php include 'includes/admin-footer.php'; ?>
+
+<style>
+    .ck-editor__editable_inline {
+        min-height: 400px;
+        max-height: 600px;
+    }
+</style>
+
+<script src="https://cdn.ckeditor.com/ckeditor5/41.1.0/classic/ckeditor.js"></script>
+
 <script>
-    // Tìm textarea có name="content" và thay thế bằng CKEditor
-    CKEDITOR.replace('content', {
-        height: 500,
-        filebrowserUploadUrl: '/admin/upload-ckeditor' // Nếu bạn muốn làm upload ảnh trong bài viết sau này
+    // 1. Định nghĩa Custom Upload Adapter (Giữ nguyên như cũ)
+    class MyUploadAdapter {
+        constructor(loader) {
+            this.loader = loader;
+        }
+        upload() {
+            return this.loader.file
+                .then(file => new Promise((resolve, reject) => {
+                    this._initRequest();
+                    this._initListeners(resolve, reject, file);
+                    this._sendRequest(file);
+                }));
+        }
+        abort() {
+            if (this.xhr) this.xhr.abort();
+        }
+        _initRequest() {
+            const xhr = this.xhr = new XMLHttpRequest();
+            xhr.open('POST', '/admin/upload-ckeditor', true);
+            xhr.responseType = 'json';
+        }
+        _initListeners(resolve, reject, file) {
+            const xhr = this.xhr;
+            const loader = this.loader;
+            const genericErrorText = `Không thể upload file: ${file.name}.`;
+
+            xhr.addEventListener('error', () => reject(genericErrorText));
+            xhr.addEventListener('abort', () => reject());
+            xhr.addEventListener('load', () => {
+                const response = xhr.response;
+                if (!response || response.error) {
+                    return reject(response && response.error ? response.error.message : genericErrorText);
+                }
+                resolve({ default: response.url });
+            });
+        }
+        _sendRequest(file) {
+            const data = new FormData();
+            data.append('upload', file);
+            this.xhr.send(data);
+        }
+    }
+
+    function MyCustomUploadAdapterPlugin(editor) {
+        editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
+            return new MyUploadAdapter(loader);
+        };
+    }
+
+    // 2. Khởi tạo Editor & Xử lý Submit Form
+    document.addEventListener("DOMContentLoaded", function() {
+        const textarea = document.querySelector('textarea[name="content"]');
+
+        if (textarea) {
+            ClassicEditor
+                .create(textarea, {
+                    // Plugin Upload ảnh Custom (Giữ nguyên đoạn code cũ của bạn ở trên)
+                    extraPlugins: [MyCustomUploadAdapterPlugin],
+                    
+                    // --- [CẬP NHẬT 1] THÊM NÚT CODE VÀO TOOLBAR ---
+                    toolbar: {
+                        items: [
+                            'heading', '|',
+                            'bold', 'italic', 'underline', 'code', '|', // Thêm 'code' (Inline)
+                            'link', 'bulletedList', 'numberedList', '|',
+                            'outdent', 'indent', '|',
+                            'imageUpload', 'blockQuote', 'insertTable', 'mediaEmbed', 'undo', 'redo'
+                        ]
+                    },
+
+                    // --- [CẬP NHẬT 2] THÊM TÙY CHỌN "CODE BLOCK" VÀO MENU HEADING ---
+                    heading: {
+                        options: [
+                            { model: 'paragraph', title: 'Đoạn văn (P)', class: 'ck-heading_paragraph' },
+                            { model: 'heading1', view: 'h2', title: 'Tiêu đề lớn (H2)', class: 'ck-heading_heading1' },
+                            { model: 'heading2', view: 'h3', title: 'Tiêu đề nhỏ (H3)', class: 'ck-heading_heading2' },
+                            
+                            // Thêm dòng này để tạo Code Block (Thẻ <pre>)
+                            { model: 'formatted', view: 'pre', title: 'Khối Code (Pre)', class: 'ck-heading_formatted' }
+                        ]
+                    }
+                })
+                .then(editor => {
+                    console.log('CKEditor đã sẵn sàng!');
+                    
+                    // (Giữ nguyên đoạn code fix lỗi Submit Form cũ của bạn)
+                    const form = textarea.closest('form');
+                    if (form) {
+                        form.addEventListener('submit', (e) => {
+                            const editorData = editor.getData();
+                            textarea.value = editorData;
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Lỗi khởi động CKEditor:', error);
+                });
+        }
     });
 </script>
-
-<?php include 'includes/admin-footer.php'; ?>

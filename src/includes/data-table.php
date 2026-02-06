@@ -1,23 +1,22 @@
 <?php
 /**
  * COMPONENT: DATA TABLE (TAILWIND CSS ONLY)
- * * Các biến cần thiết:
- * $table_title       : (String) Tiêu đề bảng (Optional)
- * $create_link       : (String) Link tạo mới (Optional)
- * $create_label      : (String) Nhãn nút tạo mới (Default: Thêm mới)
- * $search_placeholder: (String) Placeholder tìm kiếm
- * $table_data        : (Array)  Dữ liệu từ DB
- * $table_columns     : (Array)  Cấu hình cột
- * $pagination        : (Array)  ['current', 'total', 'url_params']
+ * Updated: Ẩn thanh tìm kiếm nếu $search_placeholder = null
  */
+
+// Kiểm tra xem có cần hiển thị thanh công cụ không (Có Search HOẶC Có nút Thêm mới)
+$show_toolbar = !empty($search_placeholder) || !empty($create_link);
 ?>
 
+<?php if ($show_toolbar): ?>
 <div class="flex flex-col md:flex-row justify-between gap-4 bg-white p-4 rounded-xl border border-slate-200 shadow-sm mb-6">
+    
+    <?php if (!empty($search_placeholder)): ?>
     <form method="GET" action="" class="relative flex-1 max-w-md">
         <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i>
         <input type="text" name="search" value="<?= htmlspecialchars($_GET['search'] ?? '') ?>" 
             class="w-full pl-10 pr-4 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all"
-            placeholder="<?= $search_placeholder ?? 'Tìm kiếm dữ liệu...' ?>">
+            placeholder="<?= $search_placeholder ?>">
             
         <?php if(isset($pagination['url_params'])): foreach($pagination['url_params'] as $key => $val): ?>
             <?php if($key !== 'search' && $key !== 'page' && !empty($val)): ?>
@@ -25,6 +24,9 @@
             <?php endif; ?>
         <?php endforeach; endif; ?>
     </form>
+    <?php else: ?>
+        <div></div>
+    <?php endif; ?>
 
     <?php if (!empty($create_link)): ?>
     <a href="<?= $create_link ?>" class="flex items-center justify-center gap-2 bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-md shadow-orange-500/20">
@@ -32,6 +34,7 @@
     </a>
     <?php endif; ?>
 </div>
+<?php endif; ?>
 
 <div class="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
     <div class="overflow-x-auto">
@@ -58,13 +61,14 @@
 
                                 switch ($col['type'] ?? 'text') {
                                     case 'index': // STT
-                                        echo '<span class="text-slate-400">' . ($index + 1 + (($pagination['current'] - 1) * 15)) . '</span>';
+                                        $currentPage = $pagination['current'] ?? 1;
+                                        echo '<span class="text-slate-400">' . ($index + 1 + (($currentPage - 1) * 15)) . '</span>';
                                         break;
 
                                     case 'money': // Tiền tệ
                                         echo '<span class="font-bold text-slate-700">' . number_format($val) . ' ₫</span>';
                                         break;
-                                        
+                                    
                                     case 'date': // Ngày
                                         echo '<span class="text-slate-500">' . date('d/m/Y', strtotime($val)) . '</span>';
                                         break;

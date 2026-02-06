@@ -66,9 +66,17 @@ class BlogController {
         $post = $this->blogModel->getBySlug($slug);
 
         if (!$post) {
-            header("HTTP/1.0 404 Not Found");
-            echo "Bài viết không tồn tại";
-            return;
+            header('Location: /404');
+            exit;
+        }
+
+        // --- [LOGIC TĂNG VIEW BLOG] ---
+        $sessionKey = 'viewed_post_' . $post['id'];
+
+        if (!isset($_SESSION[$sessionKey])) {
+            $this->blogModel->increaseView($post['id']);
+            $post['views']++; // Cộng ảo để hiển thị
+            $_SESSION[$sessionKey] = true;
         }
 
         // Lấy bài liên quan

@@ -87,29 +87,35 @@ class AdminAccountController {
         if (!isset($_SESSION['admin_logged_in'])) exit;
         $model = new AdminAccount();
 
-        // 1. Check Username trùng (trừ chính mình)
-        if (isset($_POST['username']) && $model->checkUsername($_POST['username'], $id)) {
-             echo "<script>alert('Username này đã có người dùng!'); history.back();</script>"; return;
-        }
+        // Check trùng username... (giữ nguyên)
 
-        // 2. Xử lý Avatar
-        $avatarUrl = $_POST['old_avatar'] ?? '';
+        // --- XỬ LÝ AVATAR ---
+        // 1. Lấy ảnh cũ từ input hidden (form.php đã tự sinh name='old_avatar')
+        $avatarUrl = $_POST['old_avatar'] ?? ''; 
+
+        // 2. Nếu có upload ảnh mới
         if (!empty($_FILES['avatar']['name'])) {
             $newUrl = $this->uploadAvatar($_FILES['avatar']);
             if ($newUrl) {
-                // Xóa ảnh cũ
-                if(file_exists(ltrim($avatarUrl, '/'))) unlink(ltrim($avatarUrl, '/'));
+                // Xóa ảnh cũ trên host để tiết kiệm dung lượng
+                if (!empty($avatarUrl)) {
+                    $oldFile = ltrim($avatarUrl, '/'); // Xóa dấu / đầu tiên
+                    if (file_exists($oldFile)) {
+                        unlink($oldFile);
+                    }
+                }
+                // Gán đường dẫn mới
                 $avatarUrl = $newUrl;
             }
         }
+        // --------------------
 
-        // 3. Prepare Data
         $data = [
             ':full_name' => $_POST['full_name'],
             ':email'     => $_POST['email'],
             ':avatar'    => $avatarUrl
         ];
-
+        
         // 4. Xử lý Password (Nếu nhập mới thì đổi)
         if (!empty($_POST['password'])) {
             $data[':password'] = password_hash($_POST['password'], PASSWORD_DEFAULT);

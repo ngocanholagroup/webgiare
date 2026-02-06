@@ -2,8 +2,7 @@
 // views/client/template-detail.php
 include 'includes/header.php';
 
-// Các biến $template, $related_templates, $schema_json đã được Controller truyền sang.
-// Không cần khai báo lại dữ liệu giả ở đây nữa.
+// Lưu ý: Các biến $template, $related_templates, $schema_json đã được Controller truyền sang.
 ?>
 
 <?php if(isset($schema_json)): ?>
@@ -20,6 +19,12 @@ include 'includes/header.php';
     }
     .scrollbar-hide::-webkit-scrollbar { display: none; }
     .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+    
+    /* Animation cho Lightbox */
+    .scale-enter { transform: scale(0.95); opacity: 0; }
+    .scale-enter-active { transform: scale(1); opacity: 1; transition: all 0.3s ease-out; }
+    .scale-exit { transform: scale(1); opacity: 1; }
+    .scale-exit-active { transform: scale(0.95); opacity: 0; transition: all 0.2s ease-in; }
 </style>
 
 <section class="bg-slate-900 pt-28 pb-12 lg:pt-36 lg:pb-20 relative overflow-hidden">
@@ -50,8 +55,8 @@ include 'includes/header.php';
             </div>
 
             <div class="w-full lg:w-5/12">
-                <div class="relative rounded-xl overflow-hidden shadow-2xl border-4 border-slate-800 group">
-                    <img src="<?= htmlspecialchars($template['images']['main']) ?>" alt="<?= htmlspecialchars($template['name']) ?>" class="w-full h-auto transform group-hover:scale-105 transition-transform duration-700">
+                <div class="relative rounded-xl overflow-hidden shadow-2xl border-4 border-slate-800 group aspect-[16/10]">
+                    <img src="<?= htmlspecialchars($template['images']['main']) ?>" alt="<?= htmlspecialchars($template['name']) ?>" class="w-full h-full object-cover object-top transform group-hover:scale-105 transition-transform duration-700">
                     <a href="#demo" class="absolute inset-0 bg-slate-900/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                         <div class="w-16 h-16 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center border border-white/50 text-white hover:scale-110 transition-transform">
                             <i data-lucide="play" class="w-8 h-8 fill-current"></i>
@@ -90,9 +95,9 @@ include 'includes/header.php';
 
                         <div id="view-desktop" class="relative w-full max-w-4xl transition-all duration-500 ease-out transform opacity-100 scale-100">
                             <div class="relative mx-auto">
-                                <div class="relative mx-auto w-[86%] aspect-[16/10] bg-black rounded-t-xl overflow-hidden shadow-2xl border-[4px] border-slate-800">
-                                    <div class="w-full h-full overflow-y-auto scrollbar-hide bg-white group cursor-n-resize">
-                                        <img src="<?= htmlspecialchars($template['images']['main']) ?>" class="w-full h-auto object-cover object-top transition-transform duration-[2000ms] ease-linear group-hover:-translate-y-[calc(100%-100vh)]">
+                                <div class="relative mx-auto w-[86%] aspect-[16/10] bg-white rounded-t-xl overflow-hidden shadow-2xl border-[4px] border-slate-800">
+                                    <div class="w-full h-full overflow-y-auto scrollbar-hide bg-white">
+                                        <img src="<?= htmlspecialchars($template['images']['main']) ?>" class="w-full h-auto shadow-sm">
                                     </div>
                                 </div>
                                 <div class="relative -mt-1 w-full">
@@ -111,7 +116,7 @@ include 'includes/header.php';
                                     <div class="w-10 h-1 bg-slate-800 rounded-full opacity-50"></div>
                                 </div>
                                 <div class="w-full h-full bg-white rounded-[2.5rem] overflow-hidden relative">
-                                    <div class="w-full h-full overflow-y-auto scrollbar-hide group cursor-n-resize">
+                                    <div class="w-full h-full overflow-y-auto scrollbar-hide">
                                         <img src="<?= htmlspecialchars($template['images']['sub2'] ?? $template['images']['main']) ?>" class="w-full h-auto min-h-full object-cover object-top">
                                     </div>
                                     <div class="absolute top-2 left-6 text-[10px] font-bold text-slate-900 z-10">9:41</div>
@@ -177,6 +182,33 @@ include 'includes/header.php';
                         </p>
                     </div>
                 </div>
+
+                <?php if (!empty($template['images']['gallery'])): ?>
+                <div class="pt-8 border-t border-slate-100">
+                    <h3 class="text-xl font-bold text-slate-900 mb-6 flex items-center gap-2">
+                        <i data-lucide="image" class="w-5 h-5 text-orange-500"></i> Ảnh thực tế (Screenshots)
+                    </h3>
+                    
+                    <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                        <div class="aspect-video cursor-pointer group relative overflow-hidden rounded-xl border border-slate-200 bg-slate-100" onclick="openLightbox('<?= $template['images']['main'] ?>')">
+                            <img src="<?= htmlspecialchars($template['images']['main']) ?>" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                            <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                <i data-lucide="zoom-in" class="w-8 h-8 text-white"></i>
+                            </div>
+                        </div>
+
+                        <?php foreach($template['images']['gallery'] as $img): ?>
+                        <div class="aspect-video cursor-pointer group relative overflow-hidden rounded-xl border border-slate-200 bg-slate-100" onclick="openLightbox('<?= htmlspecialchars($img) ?>')">
+                            <img src="<?= htmlspecialchars($img) ?>" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                            <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                <i data-lucide="zoom-in" class="w-8 h-8 text-white"></i>
+                            </div>
+                        </div>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+                <?php endif; ?>
+
             </div>
 
             <div class="w-full lg:w-4/12 relative">
@@ -198,7 +230,7 @@ include 'includes/header.php';
                         </div>
 
                         <div class="space-y-3 mb-6">
-                            <a href="https://zalo.me/0973157932?text=Tôi quan tâm mẫu <?= $template['sku'] ?>" target="_blank" class="w-full py-4 bg-orange-600 hover:bg-orange-700 text-white font-bold rounded-xl shadow-lg shadow-orange-500/30 flex items-center justify-center gap-2 transition-all transform hover:-translate-y-1">
+                            <a href="/lien-he?template=<?= $template['sku'] ?>" class="w-full py-4 bg-orange-600 hover:bg-orange-700 text-white font-bold rounded-xl shadow-lg shadow-orange-500/30 flex items-center justify-center gap-2 transition-all transform hover:-translate-y-1">
                                 <i data-lucide="shopping-bag" class="w-5 h-5"></i> Mua giao diện này
                             </a>
                             <?php if(!empty($template['demo_url'])): ?>
@@ -227,7 +259,9 @@ include 'includes/header.php';
                         </div>
                         <h4 class="font-bold mb-2">Cần tư vấn thêm?</h4>
                         <p class="text-slate-400 text-sm mb-4">Đội ngũ kỹ thuật sẵn sàng giải đáp mọi thắc mắc của bạn.</p>
-                        <a href="tel:0973157932" class="text-orange-400 font-bold hover:text-white transition-colors">0973.157.932</a>
+                        <a href="tel:<?= setting('company_phone') ?>" class="text-orange-400 font-bold hover:text-white transition-colors">
+                            <?= setting('company_phone', '0973.157.932') ?>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -244,15 +278,18 @@ include 'includes/header.php';
             <?php if (!empty($related_templates)): ?>
                 <?php foreach($related_templates as $item): 
                      $has_sale = ($item['sale_price'] > 0 && $item['sale_price'] < $item['price']);
+                     $thumb = !empty($item['image_desktop']) ? $item['image_desktop'] : 'https://placehold.co/600x400?text=No+Image';
                 ?>
                 <div class="group bg-white rounded-xl overflow-hidden border border-slate-100 hover:shadow-xl hover:border-orange-200 transition-all duration-300">
-                    <a href="/kho-giao-dien/<?= $item['slug'] ?>" class="block">
-                        <div class="relative overflow-hidden aspect-[4/3] bg-slate-200">
-                            <div class="w-full h-full bg-cover bg-center transform group-hover:scale-110 transition-transform duration-500"
-                                style="background-image: url('<?= htmlspecialchars($item['thumbnail']) ?>');"></div>
+                    <a href="/kho-giao-dien/<?= htmlspecialchars($item['slug'] ?? '') ?>" class="block">
+                        
+                        <div class="relative overflow-hidden aspect-[16/10] bg-slate-200">
+                            <div class="w-full h-full bg-cover bg-top transform group-hover:scale-110 transition-transform duration-500"
+                                 style="background-image: url('<?= htmlspecialchars($thumb) ?>');"></div>
                         </div>
+
                         <div class="p-4">
-                            <h3 class="text-sm font-bold text-slate-900 mb-1 truncate"><?= htmlspecialchars($item['name']) ?></h3>
+                            <h3 class="text-sm font-bold text-slate-900 mb-1 truncate"><?= htmlspecialchars($item['name'] ?? 'Chưa có tên') ?></h3>
                             <div class="flex items-center justify-between">
                                 <div>
                                     <?php if($has_sale): ?>
@@ -275,7 +312,15 @@ include 'includes/header.php';
     </div>
 </section>
 
+<div id="lightbox-modal" class="fixed inset-0 z-50 bg-black/90 hidden flex items-center justify-center p-4 backdrop-blur-sm transition-opacity opacity-0" onclick="closeLightbox()">
+    <button class="absolute top-6 right-6 text-white hover:text-orange-500 transition-colors z-50">
+        <i data-lucide="x" class="w-10 h-10"></i>
+    </button>
+    <img id="lightbox-img" src="" class="max-w-full max-h-[90vh] rounded-lg shadow-2xl scale-95 transition-transform duration-300" onclick="event.stopPropagation()">
+</div>
+
 <script>
+    // 1. Chuyển đổi Desktop/Mobile View
     function switchView(device) {
         const desktopView = document.getElementById('view-desktop');
         const mobileView = document.getElementById('view-mobile');
@@ -309,6 +354,43 @@ include 'includes/header.php';
             btnDesktop.classList.add(...inactiveClass);
         }
     }
+
+    // 2. Lightbox Script
+    function openLightbox(src) {
+        const modal = document.getElementById('lightbox-modal');
+        const img = document.getElementById('lightbox-img');
+        
+        img.src = src;
+        modal.classList.remove('hidden');
+        
+        setTimeout(() => {
+            modal.classList.remove('opacity-0');
+            img.classList.remove('scale-95');
+            img.classList.add('scale-100');
+        }, 10);
+        
+        document.body.style.overflow = 'hidden'; 
+    }
+
+    function closeLightbox() {
+        const modal = document.getElementById('lightbox-modal');
+        const img = document.getElementById('lightbox-img');
+        
+        modal.classList.add('opacity-0');
+        img.classList.remove('scale-100');
+        img.classList.add('scale-95');
+        
+        setTimeout(() => {
+            modal.classList.add('hidden');
+            img.src = '';
+        }, 300); 
+        
+        document.body.style.overflow = ''; 
+    }
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') closeLightbox();
+    });
 </script>
 
 <?php include 'includes/footer.php'; ?>

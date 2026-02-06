@@ -40,10 +40,9 @@ $router->get('/tin-tuc/{slug}', [BlogController::class, 'detail']);
 $router->get('/kho-giao-dien', [TemplateController::class, 'index']);
 $router->get('/kho-giao-dien/{slug}', [TemplateController::class, 'detail']);
 
-// Route Lien hệ hiển thị form
+// --- CLIENT: LIÊN HỆ ---
 $router->get('/lien-he', [ContactController::class, 'index']);
 $router->post('/lien-he/submit', [ContactController::class, 'submit']);
-
 
 // Route Login
 $router->get('/admin/login', [AuthController::class, 'login']);
@@ -60,7 +59,6 @@ $router->get('/admin/template/edit/{id}', [AdminTemplateController::class, 'edit
 $router->get('/admin/template/delete/{id}', [AdminTemplateController::class, 'delete']);
 $router->post('/admin/template/upload-gallery/{id}', [AdminTemplateController::class, 'uploadGallery']);
 $router->get('/admin/template/delete-image/{id}', [AdminTemplateController::class, 'deleteImage']);
-
 
 // --- QUẢN LÝ DANH MỤC TEMPLATES ---
 $router->get('/admin/category/create', [AdminTemplateCategoryController::class, 'create']);
@@ -87,6 +85,7 @@ $router->post('/admin/author/store', [AdminAuthorController::class, 'store']);
 $router->get('/admin/author/edit/{id}', [AdminAuthorController::class, 'edit']);
 $router->post('/admin/author/update/{id}', [AdminAuthorController::class, 'update']);
 $router->get('/admin/author/delete/{id}', [AdminAuthorController::class, 'delete']);
+$router->post('/admin/upload-ckeditor', [AdminBlogController::class, 'uploadCKEditor']);
 
 // --- QUẢN LÝ LIÊN HỆ (CONTACTS) ---
 $router->get('/admin/contact', [AdminContactController::class, 'index']);

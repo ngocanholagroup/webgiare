@@ -63,12 +63,30 @@ class TemplateController {
     }
 
     public function detail($slug) {
+        // 1. Lấy thông tin sản phẩm trước
         $template = $this->templateModel->getBySlug($slug);
 
         if (!$template) {
-            // Xử lý 404 tốt hơn: load view 404
-            echo "404 - Không tìm thấy giao diện";
-            return;
+            // Chuyển hướng 404 nếu không thấy
+            header('Location: /404');
+            exit;
+        }
+
+        // --- [LOGIC TĂNG VIEW MỚI] ---
+        // Tạo key session duy nhất: viewed_template_ID
+        $sessionKey = 'viewed_template_' . $template['id'];
+
+        // Kiểm tra session: Nếu chưa tồn tại key này
+        if (!isset($_SESSION[$sessionKey])) {
+            
+            // 1. Gọi Model để cộng view trong Database
+            $this->templateModel->increaseView($template['id']);
+            
+            // 2. Cập nhật biến $template hiện tại để hiển thị ra view luôn (nếu không user phải F5 mới thấy số mới)
+            $template['views']++; 
+
+            // 3. Đánh dấu vào session là "đã xem"
+            $_SESSION[$sessionKey] = true;
         }
 
         // Format giá

@@ -1,68 +1,72 @@
 <?php
-// src/controllers/ContactController.php
-require_once __DIR__ . '/../models/Contact.php';
-
 class ContactController {
-    private $contactModel;
-
-    public function __construct() {
-        $this->contactModel = new ContactModel();
-    }
-
-    // 1. Hiển thị trang liên hệ
+    
     public function index() {
-        $title = 'Liên hệ - HolaGroup';
-        
-        // Lấy template từ URL nếu có (VD: /lien-he?template=THEME-001)
-        $selected_template = $_GET['template'] ?? '';
-        
+        $model = new Contact();
+        $services = $model->getServices();
         view('client.contact', [
-            'title' => $title,
-            'selected_template' => $selected_template
+            'title' => 'Liên hệ tư vấn',
+            'services' => $services
         ]);
     }
 
-    // 2. Xử lý Form Submit
     public function submit() {
-        // Kiểm tra method POST
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            header('Location: /lien-he');
-            exit;
-        }
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            
+            // 1. Sanitize (Làm sạch dữ liệu)
+            $name    = trim(strip_tags($_POST['full_name'] ?? ''));
+            $phone   = trim(strip_tags($_POST['phone'] ?? ''));
+            $email   = trim(strip_tags($_POST['email'] ?? ''));
+            $service = trim(strip_tags($_POST['service_type'] ?? ''));
+            $msg     = trim(strip_tags($_POST['message'] ?? ''));
+            $tpl     = trim(strip_tags($_POST['template_sku'] ?? ''));
 
-        // Lấy dữ liệu
-        $full_name = trim($_POST['full_name'] ?? '');
-        $phone     = trim($_POST['phone'] ?? '');
-        $email     = trim($_POST['email'] ?? '');
-        $service   = $_POST['service_type'] ?? '';
-        $message   = trim($_POST['message'] ?? '');
-        $template  = $_POST['template_sku'] ?? null; // Input ẩn hoặc lấy từ URL
+            // 2. Validate (Kiểm tra dữ liệu)
+            $errors = [];
 
-        // Validate cơ bản
-        $errors = [];
-        if (empty($full_name)) $errors[] = "Vui lòng nhập họ tên.";
-        if (empty($phone)) $errors[] = "Vui lòng nhập số điện thoại.";
+            if (empty($name) || mb_strlen($name) < 2) {
+                $errors[] = "Họ tên không hợp lệ.";
+            }
 
-        if (!empty($errors)) {
-            // Lưu lỗi vào session hoặc truyền lại view (Ở đây làm đơn giản là alert)
-            echo "<script>alert('" . implode("\\n", $errors) . "'); window.history.back();</script>";
-            return;
-        }
+            // Regex check số điện thoại VN (đơn giản)
+            if (!preg_match('/^(0[3|5|7|8|9])+([0-9]{8})$/', $phone)) {
+                $errors[] = "Số điện thoại không đúng định dạng.";
+            }
 
-        // Lưu vào DB
-        $data = [
-            'full_name' => $full_name,
-            'phone' => $phone,
-            'email' => $email,
-            'service_type' => $service,
-            'related_template' => $template,
-            'message' => $message
-        ];
+            if (!empty($email) && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                $errors[] = "Email không hợp lệ.";
+            }
 
-        if ($this->contactModel->create($data)) {
-            echo "<script>alert('Gửi yêu cầu thành công! Chúng tôi sẽ liên hệ lại trong 15 phút.'); window.location.href='/lien-he';</script>";
-        } else {
-            echo "<script>alert('Có lỗi xảy ra. Vui lòng thử lại.'); window.history.back();</script>";
+            if (empty($service)) {
+                $errors[] = "Vui lòng chọn dịch vụ.";
+            }
+
+            if (empty($msg) || mb_strlen($msg) < 10) {
+                $errors[] = "Nội dung lời nhắn quá ngắn.";
+            }
+
+            // 3. Xử lý kết quả
+            if (!empty($errors)) {
+                // Có lỗi -> Alert lỗi đầu tiên và quay lại
+                $errorString = implode("\\n", $errors);
+                echo "<script>alert('$errorString'); history.back();</script>";
+                return;
+            }
+
+            // 4. Lưu vào DB
+            $model = new Contact();
+            $data = [
+                'full_name' => $name,
+                'phone' => $phone,
+                'email' => $email,
+                'service_type' => $service,
+                'template_sku' => $tpl,
+                'message' => $msg
+            ];
+            
+            $model->create($data);
+
+            echo "<script>alert('Gửi yêu cầu thành công! Chúng tôi sẽ liên hệ lại sớm.'); window.location='/lien-he';</script>";
         }
     }
 }

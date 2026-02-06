@@ -40,7 +40,7 @@ foreach ($groupData as $statusKey => $group):
 
         $table_title = $statusConfig[$statusKey]['title'];
         $create_link = null; 
-        $search_placeholder = 'Tìm trong tab ' . $statusConfig[$statusKey]['title'] . '...';
+        $search_placeholder = null;
         $table_data = $group['data'];
         $thisTotalPages = ceil($group['total'] / $limit);
         $pagination = ['current' => $currentPage, 'total' => $thisTotalPages, 'url_params' => ['search' => $search]];

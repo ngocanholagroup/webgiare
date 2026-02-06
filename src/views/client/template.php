@@ -129,9 +129,9 @@ $pagination = $pagination ?? ['current_page' => 1, 'total_pages' => 1];
                             </div>
                         </div>
 
-                        <div class="relative overflow-hidden aspect-[4/3] bg-slate-200 group-hover:rounded-b-none transition-all">
+                        <div class="relative overflow-hidden aspect-[16/10] bg-slate-200 group-hover:rounded-b-none transition-all">
 
-                            <img src="<?= !empty($item['thumbnail']) ? htmlspecialchars($item['thumbnail']) : 'https://placehold.co/600x400?text=No+Image' ?>"
+                            <img src="<?= !empty($item['image_desktop']) ? htmlspecialchars($item['image_desktop']) : 'https://placehold.co/600x400?text=No+Image' ?>"
                                 alt="<?= htmlspecialchars($item['name']) ?>"
                                 loading="lazy"
                                 class="w-full h-full object-cover object-top transform group-hover:scale-110 group-hover:rotate-1 transition-transform duration-700 ease-out">
