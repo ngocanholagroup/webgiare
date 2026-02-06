@@ -86,7 +86,7 @@ $steps = [
             <?= $c['hero']['description'] ?>
         </p>
 
-        <div class="flex flex-col sm:flex-row justify-center items-center gap-4">
+        <div class="flex justify-center items-center gap-4">
             <a href="<?= $c['hero']['btn_primary_link'] ?>" class="group relative px-8 py-4 bg-orange-600 rounded-full text-white font-bold shadow-xl shadow-orange-500/30 hover:bg-orange-700 hover:-translate-y-1 transition-all duration-300 overflow-hidden">
                 <div class="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]"></div>
                 <span class="flex items-center gap-2">
