@@ -98,7 +98,7 @@ $steps = [
             </a>
         </div>
 
-        <div class="mt-8 md:mt-16 relative mx-auto max-w-5xl px-4 md:px-0">
+        <div class="mt-8 md:mt-16 relative">
             <div class="relative rounded-2xl bg-slate-900 p-1.5 md:p-2 shadow-2xl ring-1 ring-slate-900/10">
                 <div class="absolute -top-px left-10 md:left-20 right-11 h-px bg-gradient-to-r from-orange-400/0 via-orange-400/70 to-orange-400/0"></div>
 
