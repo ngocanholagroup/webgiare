@@ -110,7 +110,7 @@ include 'includes/header.php';
                         </div>
                     </div>
 
-                    <div class="relative flex items-center justify-center min-h-[500px] lg:min-h-[600px] overflow-hidden">
+                    <div class="relative flex items-center justify-center overflow-hidden">
                         <div id="view-desktop" class="relative w-full max-w-6xl transition-all duration-500 ease-out transform opacity-100 scale-100 mx-auto">
                             <div class="relative mx-auto shadow-2xl">
                                 <div class="relative w-full aspect-[16/10] bg-white rounded-xl overflow-hidden border-[1px] md:border-[6px] border-slate-800">
