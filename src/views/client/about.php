@@ -246,10 +246,6 @@ include 'includes/header.php';
                     Chúng tôi không nói về những điều viển vông. Kết quả của khách hàng chính là thước đo chính xác nhất cho chất lượng dịch vụ của HolaGroup.
                 </p>
             </div>
-            
-            <a href="#" class="group flex items-center gap-2 font-bold text-slate-900 hover:text-orange-600 transition-colors">
-                Xem hồ sơ năng lực <i data-lucide="arrow-right" class="w-5 h-5 group-hover:translate-x-1 transition-transform"></i>
-            </a>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
