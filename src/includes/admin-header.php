@@ -28,6 +28,10 @@ function isActive($keyword, $uri)
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/47.4.0/ckeditor5.css">
 
+    <?php $favicon = setting('site_favicon_url', '/assets/favicon.ico'); ?>
+    <link rel="icon" href="<?= $favicon ?>" type="image/x-icon">
+    <link rel="shortcut icon" href="<?= $favicon ?>" type="image/x-icon">
+
     <script>
         tailwind.config = {
             theme: {
@@ -73,9 +77,17 @@ function isActive($keyword, $uri)
     <div class="flex-1 flex flex-col min-w-0 lg:pl-64 transition-all duration-300">
 
         <header class="h-16 bg-white/80 backdrop-blur-md border-b border-slate-200 sticky top-0 z-40 px-4 lg:px-8 flex items-center justify-between">
-            <h1 class="text-xl capitalize text-slate-800 mb-4 md:mb-0">
-                <?= htmlspecialchars($page_title) ?>
-            </h1>
+
+            <div class="flex items-center gap-4">
+                <button onclick="toggleSidebar()" class="lg:hidden p-2 -ml-2 text-slate-500 hover:text-orange-600 transition-colors">
+                    <i data-lucide="menu" class="w-6 h-6"></i>
+                </button>
+
+                <h1 class="text-xl capitalize text-slate-800 font-bold">
+                    <?= htmlspecialchars($page_title) ?>
+                </h1>
+            </div>
+
             <a href="/" target="_blank" class="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-slate-100 hover:bg-orange-50 text-slate-600 hover:text-orange-600 rounded-full text-xs font-bold transition-all">
                 <i data-lucide="globe" class="w-3.5 h-3.5"></i> Xem trang chủ
             </a>

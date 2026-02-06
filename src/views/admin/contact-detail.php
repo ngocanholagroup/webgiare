@@ -1,9 +1,9 @@
 <?php include 'includes/admin-header.php'; ?>
 
-<div class="max-w-5xl mx-auto">
-    <div class="flex items-center justify-between mb-6">
-        <a href="/admin/contact" class="text-slate-500 hover:text-slate-800 text-sm flex items-center gap-1">
-            <i data-lucide="arrow-left" class="w-4 h-4"></i> Quay lại danh sách
+<div class="w-full">
+    <div class="flex items-center justify-between mb-6 pb-4 border-b border-slate-200 w-full">
+        <a href="/admin/contact" class="flex items-center gap-1 text-sm font-semibold text-slate-500 hover:text-slate-800 transition-colors">
+            <i data-lucide="arrow-left" class="w-4 h-4"></i> Quay lại
         </a>
         
         <?php 

@@ -48,7 +48,10 @@ $router->post('/lien-he/submit', [ContactController::class, 'submit']);
 $router->get('/admin/login', [AuthController::class, 'login']);
 $router->post('/admin/login', [AuthController::class, 'handleLogin']);
 $router->get('/admin/logout', [AuthController::class, 'logout']);
-$router->get('/admin', [AdminTemplateController::class, 'index']);
+$router->get('/admin', function() {
+    header('Location: /admin/template');
+    exit;
+});
 
 // --- QUẢN LÝ GIAO DIỆN (TEMPLATES) ---
 $router->get('/admin/template', [AdminTemplateController::class, 'index']);

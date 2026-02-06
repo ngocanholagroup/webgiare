@@ -39,14 +39,7 @@ $form_fields = [
         'note'  => 'Ảnh vuông nhỏ (ico, png).'
     ],
 
-    // === PHẦN 2: LIÊN HỆ (Dùng thủ thuật tạo khoảng trống để tách biệt) ===
-    [
-        'label' => '--- THÔNG TIN LIÊN HỆ ---',
-        'name'  => 'divider_1',
-        'type'  => 'text',
-        'disabled' => true, // Hack để làm tiêu đề ngăn cách
-        'width' => 'col-span-12 bg-slate-100 font-bold text-center border-none' 
-    ],
+    // === PHẦN 2: LIÊN HỆ ===
     [
         'label' => 'Hotline / Số điện thoại',
         'name'  => 'company_phone',
@@ -91,13 +84,6 @@ $form_fields = [
     ],
 
     // === PHẦN 4: CẤU HÌNH SEO MẶC ĐỊNH ===
-    [
-        'label' => '--- CẤU HÌNH SEO MẶC ĐỊNH ---',
-        'name'  => 'divider_2',
-        'type'  => 'text',
-        'disabled' => true,
-        'width' => 'col-span-12 bg-slate-100 font-bold text-center border-none'
-    ],
     [
         'label' => 'Meta Title (Tiêu đề trang chủ)',
         'name'  => 'default_title',

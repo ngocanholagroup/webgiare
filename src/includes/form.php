@@ -16,15 +16,17 @@ if (isset($form_fields) && is_array($form_fields)) {
 }
 ?>
 
-<div class="max-w-5xl mx-auto">
+<div class="w-full">
     
     <div class="flex items-center justify-between mb-6 pb-4 border-b border-slate-200">
+        <!--
         <div>
-            <h1 class="text-xl font-bold text-slate-800"><?= $form_title ?? 'Form dữ liệu' ?></h1>
+            <h2 class="text-lg font-medium capitalize text-slate-800"><?= $form_title ?? 'Form dữ liệu' ?></h2>
             <?php if(isset($form_subtitle)): ?>
                 <p class="text-sm text-slate-500 mt-1"><?= $form_subtitle ?></p>
             <?php endif; ?>
-        </div>
+        </div> 
+        -->
         <?php if (isset($form_back_link)): ?>
             <a href="<?= $form_back_link ?>" class="flex items-center gap-1 text-sm font-semibold text-slate-500 hover:text-slate-800 transition-colors">
                 <i data-lucide="arrow-left" class="w-4 h-4"></i> Quay lại
@@ -176,7 +178,7 @@ if (isset($form_fields) && is_array($form_fields)) {
                 </a>
             <?php endif; ?>
             
-            <button type="submit" class="px-8 py-2.5 rounded-lg bg-blue-600 text-white font-bold hover:bg-blue-700 shadow-lg shadow-blue-500/30 transition-all flex items-center gap-2">
+            <button type="submit" class="bg-slate-800 text-white px-6 py-2.5 rounded-lg text-sm font-bold hover:bg-orange-600 transition-all shadow-lg shadow-slate-300 inline-flex items-center gap-2">
                 <i data-lucide="save" class="w-4 h-4"></i>
                 <?= $form_submit_label ?? 'Lưu dữ liệu' ?>
             </button>

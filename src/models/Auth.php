@@ -2,7 +2,7 @@
 // src/models/Admin.php
 require_once __DIR__ . '/Database.php';
 
-class AdminModel {
+class AuthModel {
     private $conn;
 
     public function __construct() {

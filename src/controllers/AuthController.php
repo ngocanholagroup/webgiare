@@ -1,12 +1,12 @@
 <?php
 // src/controllers/AuthController.php
-require_once __DIR__ . '/../models/Admin.php';
+require_once __DIR__ . '/../models/Auth.php';
 
 class AuthController {
-    private $adminModel;
+    private $authModel;
 
     public function __construct() {
-        $this->adminModel = new AdminModel();
+        $this->authModel = new AuthModel();
     }
 
     // Hiển thị form login (GET)
@@ -29,7 +29,7 @@ class AuthController {
         if (empty($username) || empty($password)) {
             $error = 'Vui lòng nhập đầy đủ thông tin!';
         } else {
-            $admin = $this->adminModel->authenticate($username, $password);
+            $admin = $this->authModel->authenticate($username, $password);
 
             if ($admin) {
                 // Đăng nhập thành công -> Lưu Session
