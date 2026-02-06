@@ -95,7 +95,7 @@ $featured_post = $featured_post ?? null;
 
         <div class="flex flex-col gap-12">
             <div class="w-full">
-                <div class="bg-white rounded-3xl p-8 shadow-sm">
+                <div class="bg-white rounded-3xl p-4 md:p-6 shadow-sm">
                     <h4 class="text-lg font-bold text-slate-900 mb-6 border-b border-slate-100 pb-2">Từ khóa hot</h4>
                     <div class="flex flex-wrap gap-2">
                         <?php
@@ -113,29 +113,32 @@ $featured_post = $featured_post ?? null;
 
                 <?php if ($featured_post && $pagination['current_page'] == 1 && empty($keyword)): ?>
                     <a href="/tin-tuc/<?= $featured_post['slug'] ?>" class="group block relative rounded-3xl overflow-hidden bg-white shadow-xl hover:shadow-2xl transition-all duration-300 mb-12">
-                        <div class="relative aspect-video overflow-hidden">
-                            <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/20 to-transparent z-10"></div>
+                        <div class="relative aspect-[4/5] md:aspect-video overflow-hidden">
+                            <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/60 to-transparent z-10"></div>
 
                             <img src="<?= !empty($featured_post['thumbnail']) ? $featured_post['thumbnail'] : 'https://placehold.co/800x400' ?>"
                                 alt="<?= htmlspecialchars($featured_post['title']) ?>"
                                 class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700">
 
-                            <div class="absolute top-6 left-6 z-20">
-                                <span class="bg-orange-600 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow-lg">Tiêu điểm</span>
+                            <div class="absolute top-4 left-4 md:top-6 md:left-6 z-20">
+                                <span class="bg-orange-600 text-white text-[10px] md:text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow-lg">Tiêu điểm</span>
                             </div>
 
-                            <div class="absolute bottom-0 left-0 w-full p-6 md:p-8 z-20">
-                                <div class="flex items-center gap-4 text-slate-300 text-sm mb-3">
-                                    <span class="flex items-center gap-1"><i data-lucide="calendar" class="w-4 h-4 text-orange-500"></i> <?= date('d/m/Y', strtotime($featured_post['published_at'])) ?></span>
-                                    <span class="flex items-center gap-1"><i data-lucide="user" class="w-4 h-4 text-orange-500"></i> <?= htmlspecialchars($featured_post['author_name'] ?? 'Admin') ?></span>
+                            <div class="absolute bottom-0 left-0 w-full p-5 md:p-8 z-20">
+                                <div class="flex items-center gap-3 md:gap-4 text-slate-300 text-xs md:text-sm mb-2 md:mb-3">
+                                    <span class="flex items-center gap-1"><i data-lucide="calendar" class="w-3.5 h-3.5 md:w-4 md:h-4 text-orange-500"></i> <?= date('d/m/Y', strtotime($featured_post['published_at'])) ?></span>
+                                    <span class="flex items-center gap-1"><i data-lucide="user" class="w-3.5 h-3.5 md:w-4 md:h-4 text-orange-500"></i> <?= htmlspecialchars($featured_post['author_name'] ?? 'Admin') ?></span>
                                 </div>
-                                <h2 class="text-2xl md:text-3xl font-extrabold text-white mb-3 leading-tight group-hover:text-orange-400 transition-colors">
+
+                                <h2 class="text-xl md:text-3xl font-extrabold text-white mb-3 leading-tight group-hover:text-orange-400 transition-colors line-clamp-3 md:line-clamp-none">
                                     <?= htmlspecialchars($featured_post['title']) ?>
                                 </h2>
+
                                 <p class="text-slate-300 line-clamp-2 md:line-clamp-none mb-4 hidden md:block">
                                     <?= htmlspecialchars($featured_post['summary']) ?>
                                 </p>
-                                <span class="inline-flex items-center text-white font-bold border-b-2 border-orange-500 group-hover:text-orange-400 transition-colors pb-1">
+
+                                <span class="inline-flex items-center text-sm md:text-base text-white font-bold border-b-2 border-orange-500 group-hover:text-orange-400 transition-colors pb-1">
                                     Đọc tiếp <i data-lucide="arrow-right" class="w-4 h-4 ml-2"></i>
                                 </span>
                             </div>

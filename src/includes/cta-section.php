@@ -67,15 +67,14 @@ $cta_note  = $cta_note  ?? setting('cta_note', 'Cam kết phản hồi trong vò
                 <span>Liên hệ tư vấn ngay</span>
                 <i data-lucide="rocket" class="w-5 h-5 group-hover:animate-bounce"></i> </a>
             
-            <a href="tel:<?= setting('company_phone') ?>" class="px-8 py-4 bg-white/5 hover:bg-white/10 text-white font-bold rounded-full backdrop-blur-md border border-white/20 transition-all flex items-center justify-center gap-3 hover:border-white/40">
+            <a href="tel:<?= setting('company_phone') ?>" class="px-8 py-4 bg-white/5 hover:bg-white/10 text-white font-bold rounded-full backdrop-blur-md transition-all flex items-center justify-center gap-3 hover:border-white/40">
                 <i data-lucide="phone-call" class="w-5 h-5 text-green-400"></i>
                 <span>Gọi <?= setting('company_phone') ?></span>
             </a>
         </div>
 
         <?php if($cta_note): ?>
-        <div class="mt-8 inline-flex items-center gap-2 text-sm text-slate-400 font-medium bg-slate-800/50 px-4 py-2 rounded-full backdrop-blur-sm border border-slate-700/50">
-            <i data-lucide="shield-check" class="w-4 h-4 text-green-500"></i>
+        <div class="mt-8 inline-flex items-center gap-2 text-sm text-slate-400 font-medium bg-slate-800/50 px-4 py-2 rounded-full backdrop-blur-sm">
             <?= $cta_note ?>
         </div>
         <?php endif; ?>

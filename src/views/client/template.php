@@ -85,7 +85,7 @@ $pagination = $pagination ?? ['current_page' => 1, 'total_pages' => 1];
 <section class="py-16 bg-slate-50 min-h-screen relative">
     <div class="container mx-auto px-4 relative z-10">
 
-        <div class="sticky top-[80px] z-30 mb-12 py-4 bg-slate-50/95 backdrop-blur-sm transition-all">
+        <div class="mb-12 py-4 bg-slate-50/95 backdrop-blur-sm transition-all">
             <div class="flex overflow-x-auto gap-3 p-2 scrollbar-hide md:justify-center">
                 <a href="<?= buildUrl('cat', 'all') ?>"
                     class="group flex items-center gap-2 px-6 py-3 rounded-full text-sm capitalize transition-all whitespace-nowrap
