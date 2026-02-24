@@ -1,14 +1,62 @@
-# Hệ điều hành
-.DS_Store
-Thumbs.db
+# Git Ignore File for HolaGroup Web Project
 
-# IDE (VS Code, PHPStorm...)
-.idea/
-.vscode/
-*.swp
+# Uploads & Generated Files
+uploads/
+uploads/blog/
+uploads/posts_content/
+uploads/templates/
+uploads/temp/
+*.log
 
-# Docker (nếu bạn có map volume local, tránh commit data DB lên git)
-docker/mysql-data/
-
-# Environment variables (Bảo mật)
+# Environment & Config
 .env
+.env.local
+.env.production
+config.php
+
+# Cache & Temporary
+cache/
+temp/
+*.tmp
+*.swp
+*.swo
+
+# IDE & Editor
+.vscode/
+.idea/
+*.sublime-*
+.DS_Store
+
+# OS
+.DS_Store?
+Thumbs.db
+*.desktop
+
+# Backup Files
+*.backup
+*.bak
+*.old
+
+# Node Modules (nếu có)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Composer
+/vendor/
+composer.lock
+
+# Logs
+*.log
+error.log
+access.log
+
+# Build Output
+/dist/
+/build/
+
+# Database
+*.sql
+*.sqlite
+*.db

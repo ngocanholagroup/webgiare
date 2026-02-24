@@ -29,17 +29,17 @@
                         </a>
                     </li>
                     <li>
-                        <a href="/dich-vu" class="flex items-center gap-2 hover:text-orange-500 hover:translate-x-1 transition-all duration-300 group">
+                        <a href="/dich-vu#service-web" class="flex items-center gap-2 hover:text-orange-500 hover:translate-x-1 transition-all duration-300 group">
                             <i data-lucide="chevron-right" class="w-4 h-4 text-slate-600 group-hover:text-orange-500"></i> Thiết kế Website trọn gói
                         </a>
                     </li>
                     <li>
-                        <a href="/dich-vu" class="flex items-center gap-2 hover:text-orange-500 hover:translate-x-1 transition-all duration-300 group">
+                        <a href="/dich-vu#service-seo" class="flex items-center gap-2 hover:text-orange-500 hover:translate-x-1 transition-all duration-300 group">
                             <i data-lucide="chevron-right" class="w-4 h-4 text-slate-600 group-hover:text-orange-500"></i> Dịch vụ SEO tổng thể
                         </a>
                     </li>
                     <li>
-                        <a href="/dich-vu" class="flex items-center gap-2 hover:text-orange-500 hover:translate-x-1 transition-all duration-300 group">
+                        <a href="/dich-vu#service-hosting" class="flex items-center gap-2 hover:text-orange-500 hover:translate-x-1 transition-all duration-300 group">
                             <i data-lucide="chevron-right" class="w-4 h-4 text-slate-600 group-hover:text-orange-500"></i> Hosting & Tên miền
                         </a>
                     </li>

@@ -2,6 +2,9 @@
 -- PHẦN 1: CHỌN DATABASE VÀ RESET DỮ LIỆU CŨ
 -- --------------------------------------------------------
 
+SET NAMES utf8mb4;
+SET CHARACTER SET utf8mb4;
+
 -- Chọn database (Đảm bảo bạn đã tạo database này trước)
 -- CREATE DATABASE IF NOT EXISTS webgiare_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE webgiare_db;
@@ -331,7 +334,6 @@ INSERT INTO `contact_services` (`name`) VALUES
 ('Đăng ký Hosting/Domain');
 
 -- 13. SYSTEM SETTINGS
--- [FIX] Sửa lỗi cú pháp ở map_iframe
 INSERT INTO `system_settings` (`setting_key`, `setting_value`, `setting_group`, `desc`) VALUES
 ('company_name', 'HolaGroup', 'general', 'Tên công ty'),
 ('company_address', '119 Đường Lê Bôi, Phường 7, Quận 8, TP. HCM', 'contact', 'Địa chỉ văn phòng'),
@@ -340,7 +342,10 @@ INSERT INTO `system_settings` (`setting_key`, `setting_value`, `setting_group`, 
 ('company_email_support', 'support@holagroup.com.vn', 'contact', 'Email hỗ trợ'),
 ('social_facebook', 'https://facebook.com/holagroup', 'social', 'Link Facebook'),
 ('social_zalo', 'https://zalo.me/0973157932', 'social', 'Link Zalo'),
-('map_iframe', '<iframe src=\"https://www.google.com/maps/embed...\" width=\"600\" height=\"450\" style=\"border:0;\" allowfullscreen=\"\" loading=\"lazy\"></iframe>', 'contact', 'Mã nhúng bản đồ'),
+('social_tiktok', 'https://tiktok.com/@holagroup', 'social', 'Link TikTok chính thức'),
+('social_google', 'https://google.com/holagroup', 'social', 'Link Google Business chính thức'),
+('social_twitter', 'https://twitter.com/holagroup', 'social', 'Link Twitter chính thức'),
+('map_iframe', '<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3920.111160173042!2d106.63431517476585!3d10.725908960124094!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31752f00553773f5%3A0x73266ca7e85d3a46!2sHola%20Group!5e0!3m2!1svi!2s!4v1771922722391!5m2!1svi!2s" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>', 'contact', 'Mã nhúng bản đồ'),
 ('default_title', 'Web Giá Rẻ - Thiết kế website trọn gói', 'seo', 'Tiêu đề mặc định'),
 ('default_desc', 'Dịch vụ thiết kế website giá rẻ, chuẩn SEO tại TP.HCM.', 'seo', 'Mô tả mặc định'),
 ('default_keywords', 'thiết kế web giá rẻ, làm web trọn gói', 'seo', 'Từ khóa mặc định'),
@@ -442,7 +447,7 @@ INSERT INTO `pages` (`slug`, `name`, `meta_title`, `meta_desc`, `content_json`) 
                 "desc": "Website giới thiệu cơ bản...",
                 "features": ["Giao diện theo mẫu", "Hosting 1GB", "Bảo mật SSL"],
                 "btn_text": "Chọn gói này",
-                "btn_link": "https://zalo.me/0973157932?text=TuvanGoiBasic"
+                "btn_link": "https://zalo.me/0778764017?text=TuvanGoiBasic"
             },
             "pro": {
                 "name": "Kinh doanh",
@@ -450,7 +455,7 @@ INSERT INTO `pages` (`slug`, `name`, `meta_title`, `meta_desc`, `content_json`) 
                 "desc": "Đầy đủ tính năng bán hàng...",
                 "features": ["Giao diện Premium", "Chuẩn SEO Pro", "Hosting NVMe 5GB", "Backup hàng ngày"],
                 "btn_text": "Đăng ký ngay",
-                "btn_link": "https://zalo.me/0973157932?text=TuvanGoiPro"
+                "btn_link": "https://zalo.me/0778764017?text=TuvanGoiPro"
             },
             "enterprise": {
                 "name": "Doanh nghiệp lớn",
@@ -458,7 +463,7 @@ INSERT INTO `pages` (`slug`, `name`, `meta_title`, `meta_desc`, `content_json`) 
                 "desc": "Thiết kế riêng độc quyền...",
                 "features": ["Thiết kế UI/UX riêng", "Server riêng (VPS)", "Code tính năng riêng"],
                 "btn_text": "Chat tư vấn",
-                "btn_link": "https://zalo.me/0973157932?text=TuvanGoiEnterprise"
+                "btn_link": "https://zalo.me/0778764017?text=TuvanGoiEnterprise"
             }
         },
         "cta": {
@@ -467,4 +472,78 @@ INSERT INTO `pages` (`slug`, `name`, `meta_title`, `meta_desc`, `content_json`) 
             "note": "Tư vấn miễn phí 100% • Không mua không sao"
         }
     }'
+), (
+    'dich-vu',
+    'Dịch vụ',
+    'WebGiaRe cung cấp các dịch vụ thiết kế website, hosting, SEO và marketing online cho doanh nghiệp.',
+    'Dịch vụ thiết kế website, hosting, SEO và marketing online',
+    '{
+    "hero": {
+        "badge": "Hệ sinh thái dịch vụ",
+        "title_line_1": "Giải pháp toàn diện cho",
+        "title_highlight": "Doanh nghiệp số",
+        "description": "Từ thiết kế website, hạ tầng hosting đến marketing online. Chúng tôi cung cấp mọi thứ bạn cần để vận hành doanh nghiệp trên Internet.",
+        "btn_primary_text": "Khám phá dịch vụ",
+        "btn_primary_link": "#dich-vu-chinh"
+    },
+    "main_services": {
+        "web": {
+            "title": "Thiết kế Website Trọn gói",
+            "desc": "Không chỉ đẹp, website của chúng tôi được tối ưu hóa để <strong>bán hàng</strong>. Giao diện chuẩn UX/UI, tương thích mọi thiết bị và tốc độ tải trang dưới 1s.",
+            "features": [
+                "Website Bán hàng / Thương mại điện tử",
+                "Website Giới thiệu công ty / Landing Page",
+                "Web App / Hệ thống quản lý (SaaS)"
+            ],
+            "btn_text": "Xem kho giao diện mẫu",
+            "btn_url": "/kho-giao-dien"
+        },
+        "seo": {
+            "title": "SEO & Marketing Online",
+            "desc": "Website đẹp mà không ai biết đến thì vô nghĩa. Chúng tôi đưa website của bạn lên <strong>Top Google</strong>, tiếp cận đúng khách hàng mục tiêu và gia tăng tỷ lệ chuyển đổi.",
+            "features": [
+                "Dịch vụ SEO tổng thể (Từ khóa & Traffic)",
+                "Tối ưu Google Maps (Local SEO)",
+                "Viết bài chuẩn SEO & Chăm sóc Fanpage"
+            ],
+            "btn_text": "Nhận kế hoạch SEO miễn phí",
+            "btn_url": "/lien-he"
+        },
+        "hosting": {
+            "title": "Tên miền & Hosting Cao cấp",
+            "desc": "Hạ tầng mạnh mẽ là nền tảng của một website thành công. Chúng tôi cung cấp Hosting tốc độ cao, ổn định 99.9% và bảo mật tuyệt đối.",
+            "features": [
+                "Đăng ký Tên miền Quốc tế & Việt Nam",
+                "Cloud Hosting SSD NVMe siêu tốc",
+                "Email Doanh nghiệp theo tên miền"
+            ],
+            "btn_text": "Liên hệ báo giá Hosting",
+            "btn_url": "/lien-he"
+        }
+    },
+    "aux_intro": {
+        "subtitle": "Mở rộng tiềm năng",
+        "title": "Hệ sinh thái dịch vụ bổ trợ",
+        "desc": "Giải pháp toàn diện giúp doanh nghiệp vận hành trơn tru và phát triển thương hiệu đồng bộ."
+    },
+    "aux_services": {
+        "logo": {
+            "title": "Thiết kế Logo & Branding",
+            "desc": "Xây dựng bộ nhận diện thương hiệu chuyên nghiệp (Logo, Card, Banner...), tạo ấn tượng thị giác mạnh mẽ ngay từ cái nhìn đầu tiên."
+        },
+        "maintenance": {
+            "title": "Chăm sóc & Bảo trì Web",
+            "desc": "Dịch vụ \\"Bảo hiểm\\" cho website: Cập nhật nội dung, vá lỗi bảo mật, backup dữ liệu định kỳ giúp website luôn an toàn và tươi mới."
+        },
+        "software": {
+            "title": "Gia công phần mềm",
+            "desc": "Lập trình các tính năng đặc thù (CRM, HRM...), tích hợp API, cổng thanh toán hoặc viết tool tự động hóa theo yêu cầu riêng."
+        }
+    },
+    "cta": {
+        "title": "Bạn chưa biết nên bắt đầu từ đâu?",
+        "desc": "Đừng lo lắng, hãy để chuyên gia của chúng tôi tư vấn giải pháp phù hợp nhất với ngân sách và mục tiêu của bạn.",
+        "note": "Tư vấn miễn phí 1:1 • Hoàn toàn không phát sinh chi phí"
+    }
+}'
 );

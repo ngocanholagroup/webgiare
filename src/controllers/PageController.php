@@ -27,7 +27,7 @@ class PageController {
 
     // Xử lý trang dịch vụ (Route: /dich-vu)
     public function services() {
-        $this->renderPage('services', 'client.services');
+        $this->renderPage('dich-vu', 'client.services');
     }
 
     // --- Hàm xử lý chung (Private) ---

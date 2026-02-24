@@ -82,6 +82,7 @@
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <script>
         tailwind.config = {
@@ -148,7 +149,24 @@
                     </a>
                 </div>
                 <div class="flex items-center gap-4">
-                    <a href="/tin-tuc" class="opacity-80 hover:opacity-100 hover:text-orange-400 transition">Tin tức & Sự kiện</a>
+                    <div class="flex items-center gap-2 text-xs">
+                        <i data-lucide="clock" class="w-3.5 h-3.5"></i>
+                        <span>Mon-Sun: 00:00 - 23:59</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <a href="<?= setting('social_facebook') ?>" target="_blank" class="opacity-80 hover:opacity-100 hover:text-orange-400 transition">
+                            <i class="fab fa-facebook-f w-4 h-4 flex items-center justify-center"></i>
+                        </a>
+                        <a href="<?= setting('social_google', 'https://google.com') ?>" target="_blank" class="opacity-80 hover:opacity-100 hover:text-orange-400 transition">
+                            <i class="fab fa-google w-4 h-4 flex items-center justify-center"></i>
+                        </a>
+                        <a href="<?= setting('social_twitter', 'https://twitter.com') ?>" target="_blank" class="opacity-80 hover:opacity-100 hover:text-orange-400 transition">
+                            <i class="fab fa-x-twitter w-4 h-4 flex items-center justify-center"></i>
+                        </a>
+                        <a href="<?= setting('social_tiktok', 'https://tiktok.com') ?>" target="_blank" class="opacity-80 hover:opacity-100 hover:text-orange-400 transition">
+                            <i class="fab fa-tiktok w-4 h-4 flex items-center justify-center"></i>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>

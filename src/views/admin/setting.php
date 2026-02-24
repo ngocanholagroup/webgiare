@@ -72,15 +72,38 @@ $form_fields = [
     // === PHẦN 3: MẠNG XÃ HỘI ===
     [
         'label' => 'Link Facebook Fanpage',
-        'name'  => 'social_facebook',
-        'type'  => 'text',
+        'name' => 'social_facebook',
+        'type' => 'text',
         'width' => 'col-span-12 md:col-span-6',
+        'placeholder' => 'https://facebook.com/holagroup'
     ],
     [
-        'label' => 'Link Zalo OA / Cá nhân',
-        'name'  => 'social_zalo',
-        'type'  => 'text',
+        'label' => 'Link Twitter',
+        'name' => 'social_twitter',
+        'type' => 'text',
         'width' => 'col-span-12 md:col-span-6',
+        'placeholder' => 'https://twitter.com/holagroup'
+    ],
+    [
+        'label' => 'Link TikTok',
+        'name' => 'social_tiktok',
+        'type' => 'text',
+        'width' => 'col-span-12 md:col-span-6',
+        'placeholder' => 'https://tiktok.com/@holagroup'
+    ],
+    [
+        'label' => 'Link Google Business',
+        'name' => 'social_google',
+        'type' => 'text',
+        'width' => 'col-span-12 md:col-span-6',
+        'placeholder' => 'https://google.com/holagroup'
+    ],
+    [
+        'label' => 'Link Zalo',
+        'name' => 'social_zalo',
+        'type' => 'text',
+        'width' => 'col-span-12 md:col-span-6',
+        'placeholder' => 'https://zalo.me/0973157932'
     ],
 
     // === PHẦN 4: CẤU HÌNH SEO MẶC ĐỊNH ===

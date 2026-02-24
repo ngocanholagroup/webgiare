@@ -24,9 +24,7 @@ $router->get('/gioi-thieu', function() {
     view('client.about', ['title' => 'Giới thiệu - HolaGroup']);
 });
 
-$router->get('/dich-vu', function() {
-    view('client.services', ['title' => 'Dịch vụ - HolaGroup']);
-});
+$router->get('/dich-vu', [PageController::class, 'services']);
 
 $router->get('/chinh-sach', function() {
     view('client.policy', ['title' => 'Điều khoản sử dụng - HolaGroup']);
@@ -89,6 +87,7 @@ $router->get('/admin/author/edit/{id}', [AdminAuthorController::class, 'edit']);
 $router->post('/admin/author/update/{id}', [AdminAuthorController::class, 'update']);
 $router->get('/admin/author/delete/{id}', [AdminAuthorController::class, 'delete']);
 $router->post('/admin/upload-ckeditor', [AdminBlogController::class, 'uploadCKEditor']);
+$router->post('/admin/upload-tinymce', [AdminBlogController::class, 'uploadTinyMCE']);
 
 // --- QUẢN LÝ LIÊN HỆ (CONTACTS) ---
 $router->get('/admin/contact', [AdminContactController::class, 'index']);

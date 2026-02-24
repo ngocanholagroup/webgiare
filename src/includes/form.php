@@ -64,7 +64,8 @@ if (isset($form_fields) && is_array($form_fields)) {
                         case 'textarea': ?>
                             <textarea name="<?= $key ?>" rows="<?= $field['rows'] ?? 4 ?>" 
                                 <?= $required ? 'required' : '' ?> <?= $disabled ? 'disabled' : '' ?>
-                                class="w-full px-4 py-2.5 text-sm border border-slate-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all placeholder-slate-400"
+                                id="<?= $field['id'] ?? '' ?>"
+                                class="w-full px-4 py-2.5 text-sm border border-slate-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all placeholder-slate-400 <?= $field['class'] ?? '' ?>"
                                 placeholder="<?= $placeholder ?>"><?= htmlspecialchars($val) ?></textarea>
                             <?php break; ?>
 
@@ -72,6 +73,8 @@ if (isset($form_fields) && is_array($form_fields)) {
                             <div class="relative">
                                 <select name="<?= $key ?>" 
                                     <?= $required ? 'required' : '' ?> <?= $disabled ? 'disabled' : '' ?>
+                                    id="<?= $field['id'] ?? '' ?>"
+                                    class="w-full px-4 py-2.5 text-sm border border-slate-300 rounded-lg focus:outline-none focus:border-blue-500 bg-white appearance-none cursor-pointer <?= $field['class'] ?? '' ?>">
                                     class="w-full px-4 py-2.5 text-sm border border-slate-300 rounded-lg focus:outline-none focus:border-blue-500 bg-white appearance-none cursor-pointer">
                                     <?php foreach ($field['options'] as $optVal => $optLabel): ?>
                                         <option value="<?= $optVal ?>" <?= (string)$val === (string)$optVal ? 'selected' : '' ?>>

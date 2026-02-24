@@ -29,22 +29,86 @@ class AdminBlogController
         // Data cho Tab 3: Tác giả
         $authors = $model->getAuthorsWithStats();
 
-        $tabs = [
-            ['id' => 'tab-posts', 'label' => 'Bài viết', 'icon' => 'file-text'],
-            ['id' => 'tab-categories', 'label' => 'Danh mục', 'icon' => 'folder-open'],
-            ['id' => 'tab-authors', 'label' => 'Tác giả', 'icon' => 'users']
-        ];
-
         view('admin.blog', [
             'title' => 'Quản lý Blog',
-            'page_tabs' => $tabs,
             'posts' => $posts,
             'categories' => $categories,
             'authors' => $authors,
+            'page' => $page,
             'totalPages' => $totalPages,
-            'currentPage' => $page,
-            'search' => $search
+            'search' => $search,
+            'totalRecords' => $totalRecords
         ]);
+    }
+
+    // 2. UPLOAD ẢNH CHO TINYMCE
+    public function uploadTinyMCE()
+    {
+        if (!isset($_SESSION['admin_logged_in'])) {
+            header('HTTP/1.1 403 Forbidden');
+            echo json_encode(['error' => 'Unauthorized']);
+            exit;
+        }
+
+        if (!isset($_FILES['file']) || $_FILES['file']['error'] !== UPLOAD_ERR_OK) {
+            header('HTTP/1.1 400 Bad Request');
+            echo json_encode(['error' => 'No file uploaded']);
+            exit;
+        }
+
+        $file = $_FILES['file'];
+        $allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+        $maxSize = 5 * 1024 * 1024; // 5MB
+
+        // Validate file type
+        if (!in_array($file['type'], $allowedTypes)) {
+            header('HTTP/1.1 400 Bad Request');
+            echo json_encode(['error' => 'Invalid file type. Only JPEG, PNG, GIF, WebP allowed.']);
+            exit;
+        }
+
+        // Validate file size
+        if ($file['size'] > $maxSize) {
+            header('HTTP/1.1 400 Bad Request');
+            echo json_encode(['error' => 'File too large. Maximum size is 10MB.']);
+            exit;
+        }
+
+        // Create upload directory if not exists
+        $uploadDir = 'uploads/blog/';
+        if (!is_dir($uploadDir)) {
+            mkdir($uploadDir, 0755, true);
+        }
+
+        // Create additional upload directories
+        $additionalDirs = [
+            'uploads/posts_content/',
+            'uploads/templates/',
+            'uploads/temp/'
+        ];
+        
+        foreach ($additionalDirs as $dir) {
+            if (!is_dir($dir)) {
+                mkdir($dir, 0755, true);
+            }
+        }
+
+        // Generate unique filename
+        $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
+        $filename = 'blog_' . time() . '_' . uniqid() . '.' . $extension;
+        $filepath = $uploadDir . $filename;
+
+        // Move uploaded file
+        if (move_uploaded_file($file['tmp_name'], $filepath)) {
+            // Return file URL
+            $fileUrl = '/' . $filepath;
+            header('Content-Type: application/json');
+            echo json_encode(['location' => $fileUrl]);
+        } else {
+            header('HTTP/1.1 500 Internal Server Error');
+            echo json_encode(['error' => 'Failed to move uploaded file']);
+        }
+        exit;
     }
 
     // 2. FORM TẠO MỚI
@@ -199,26 +263,6 @@ public function update($id)
         }
 
         $file = $_FILES['upload'];
-
-        // 3. Validate ảnh
-        $allowed = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
-        $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
-        
-        if (!in_array($ext, $allowed)) {
-            echo json_encode(['error' => ['message' => 'Chỉ chấp nhận file ảnh (jpg, png, gif, webp).']]);
-            exit;
-        }
-
-        // 4. Lưu file vào folder riêng cho nội dung bài viết
-        $uploadDir = 'uploads/posts_content/'; 
-        if (!file_exists($uploadDir)) {
-            mkdir($uploadDir, 0777, true);
-        }
-
-        $fileName = 'content_' . time() . '_' . rand(1000, 9999) . '.' . $ext;
-        $targetPath = $uploadDir . $fileName;
-
-        if (move_uploaded_file($file['tmp_name'], $targetPath)) {
             // 5. Trả về JSON đúng chuẩn CKEditor 5
             echo json_encode([
                 'url' => '/' . $targetPath // Đường dẫn tuyệt đối để hiển thị

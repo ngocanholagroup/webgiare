@@ -36,9 +36,11 @@ $form_fields = [
         'label' => 'Nội dung chi tiết', 
         'name' => 'content', 
         'type' => 'textarea', 
-        'rows' => 15,
+        'rows' => 20,
         'width' => 'col-span-12', 
-        'required' => false // <--- [QUAN TRỌNG] Đổi true thành false để tránh lỗi "not focusable"
+        'required' => false,
+        'class' => 'tinymce-editor',
+        'id' => 'content-editor'
     ],
     // --- Hàng 5: Cấu hình ---
     [
@@ -69,113 +71,316 @@ include 'includes/form.php';
 
 <?php include 'includes/admin-footer.php'; ?>
 
-<style>
-    .ck-editor__editable_inline {
-        min-height: 400px;
-        max-height: 600px;
-    }
-</style>
-
-<script src="https://cdn.ckeditor.com/ckeditor5/41.1.0/classic/ckeditor.js"></script>
+<!-- TinyMCE Editor - Self Hosted Version -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/7.8.0/tinymce.min.js"></script>
 
 <script>
-    // 1. Định nghĩa Custom Upload Adapter (Giữ nguyên như cũ)
-    class MyUploadAdapter {
-        constructor(loader) {
-            this.loader = loader;
-        }
-        upload() {
-            return this.loader.file
-                .then(file => new Promise((resolve, reject) => {
-                    this._initRequest();
-                    this._initListeners(resolve, reject, file);
-                    this._sendRequest(file);
-                }));
-        }
-        abort() {
-            if (this.xhr) this.xhr.abort();
-        }
-        _initRequest() {
-            const xhr = this.xhr = new XMLHttpRequest();
-            xhr.open('POST', '/admin/upload-ckeditor', true);
-            xhr.responseType = 'json';
-        }
-        _initListeners(resolve, reject, file) {
-            const xhr = this.xhr;
-            const loader = this.loader;
-            const genericErrorText = `Không thể upload file: ${file.name}.`;
-
-            xhr.addEventListener('error', () => reject(genericErrorText));
-            xhr.addEventListener('abort', () => reject());
-            xhr.addEventListener('load', () => {
-                const response = xhr.response;
-                if (!response || response.error) {
-                    return reject(response && response.error ? response.error.message : genericErrorText);
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM loaded, initializing TinyMCE...');
+    
+    // Kiểm tra xem TinyMCE có được load không
+    if (typeof tinymce === 'undefined') {
+        console.error('TinyMCE not loaded!');
+        return;
+    }
+    
+    console.log('TinyMCE loaded:', tinymce);
+    
+    // Khởi tạo TinyMCE cho tất cả textarea có class 'tinymce-editor'
+    tinymce.init({
+        selector: 'textarea.tinymce-editor',
+        
+        // Cấu hình cơ bản
+        height: 800, // Tăng chiều cao lên 800px
+        menubar: true,
+        language: 'en', // Sử dụng tiếng Anh để tránh lỗi language pack
+        
+        // Theme và skin
+        skin: 'oxide',
+        content_css: 'default',
+        
+        // License key cho open source
+        license_key: 'gpl',
+        
+        // Đảm bảo editor không bị read-only
+        editable: true,
+        readonly: false,
+        
+        // Disable các tính năng gây lỗi kernel.js
+        autoresize: false,
+        
+        // Plugins - Các tính năng giống Word (loại bỏ các plugin gây lỗi)
+        plugins: [
+            'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
+            'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+            'insertdatetime', 'media', 'table', 'help', 'wordcount', 'visualchars',
+            'emoticons', 'codesample', 'pagebreak', 'nonbreaking',
+            'directionality', 'quickbars'
+        ],
+        
+        // Toolbar - Thanh công cụ giống Word
+        toolbar: 'undo redo | formatselect | bold italic underline strikethrough | ' +
+                'alignleft aligncenter alignright alignjustify | ' +
+                'bullist numlist outdent indent | ' +
+                'forecolor backcolor removeformat | ' +
+                'link image media table codesample | ' +
+                'charmap emoticons | ' +
+                'fullscreen preview print help',
+        
+        // Menu bar
+        menu: {
+            file: { title: 'Tệp', items: 'newdocument restoredraft | preview | print ' },
+            edit: { title: 'Chỉnh sửa', items: 'undo redo | cut copy paste | selectall | searchreplace' },
+            view: { title: 'Xem', items: 'code | visualaid visualchars visualblocks | preview fullscreen' },
+            insert: { title: 'Chèn', items: 'image link media template codesample inserttable | charmap emoticons hr | pagebreak nonbreaking anchor toc | insertdatetime' },
+            format: { title: 'Định dạng', items: 'bold italic underline strikethrough superscript subscript codeformat | formats | fontfamily fontsize | align lineheight | forecolor backcolor | removeformat' },
+            tools: { title: 'Công cụ', items: 'spellchecker spellcheckerlanguage | code wordcount' },
+            table: { title: 'Bảng', items: 'inserttable | cell row column | tableprops deletetable' },
+            help: { title: 'Trợ giúp', items: 'help' }
+        },
+        
+        // Style formats
+        style_formats: [
+            { title: 'Tiêu đề 1', format: 'h1' },
+            { title: 'Tiêu đề 2', format: 'h2' },
+            { title: 'Tiêu đề 3', format: 'h3' },
+            { title: 'Tiêu đề 4', format: 'h4' },
+            { title: 'Đoạn văn', format: 'p' },
+            { title: 'Trích dẫn', format: 'blockquote' },
+            { title: 'Code', format: 'code' },
+            { title: 'Code Sample', format: 'codesample' }
+        ],
+        
+        // Font sizes
+        fontsize_formats: '8pt 10pt 12pt 14pt 16pt 18pt 20pt 24pt 28pt 32pt 36pt 48pt 60pt 72pt',
+        
+        // Font families
+        font_family_formats: 'Arial=arial,helvetica,sans-serif; ' +
+            'Calibri=calibri,arial,sans-serif; ' +
+            'Times New Roman=times new roman,times,serif; ' +
+            'Verdana=verdana,geneva,sans-serif; ' +
+            'Tahoma=tahoma,arial,helvetica,sans-serif; ' +
+            'Courier New=courier new,courier,monospace',
+        
+        // Content style
+        content_style: 'body { font-family: Arial, sans-serif; font-size: 14px; line-height: 1.6; }' +
+            'h1 { font-size: 2em; font-weight: bold; margin: 0.67em 0; }' +
+            'h2 { font-size: 1.5em; font-weight: bold; margin: 0.75em 0; }' +
+            'h3 { font-size: 1.17em; font-weight: bold; margin: 0.83em 0; }' +
+            'blockquote { border-left: 4px solid #ccc; padding-left: 1em; margin: 1em 0; color: #666; }' +
+            'code { background: #f4f4f4; padding: 2px 4px; border-radius: 3px; font-family: monospace; }' +
+            'pre { background: #f4f4f4; padding: 10px; border-radius: 5px; overflow-x: auto; }',
+        
+        // Image upload
+        images_upload_handler: function (blobInfo, success, failure) {
+            console.log('Starting image upload...', blobInfo.filename());
+            
+            // Tạo FormData
+            var formData = new FormData();
+            formData.append('file', blobInfo.blob(), blobInfo.filename());
+            
+            // Gửi request
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/admin/upload-tinymce');
+            xhr.withCredentials = false;
+            
+            xhr.onload = function() {
+                console.log('Upload response status:', xhr.status);
+                console.log('Upload response text:', xhr.responseText);
+                
+                if (xhr.status === 200) {
+                    try {
+                        var response = JSON.parse(xhr.responseText);
+                        console.log('Parsed response:', response);
+                        
+                        if (response && response.location) {
+                            console.log('Upload successful! URL:', response.location);
+                            success(response.location);
+                        } else {
+                            console.error('Invalid response format:', response);
+                            failure('Server response missing location URL');
+                        }
+                    } catch (e) {
+                        console.error('JSON parse error:', e);
+                        failure('Failed to parse server response');
+                    }
+                } else {
+                    console.error('Server error:', xhr.status, xhr.responseText);
+                    failure('Server error: ' + xhr.status);
                 }
-                resolve({ default: response.url });
+            };
+            
+            xhr.onerror = function() {
+                console.error('Network error during upload');
+                failure('Network error: Failed to upload image');
+            };
+            
+            xhr.send(formData);
+            return true; // Quan trọng: return true để TinyMCE biết xử lý bất đồng bộ
+        },
+        
+        // Other settings
+        branding: false,
+        promotion: false,
+        statusbar: true,
+        elementpath: true,
+        
+        // Auto-save
+        autosave_ask_before_unload: true,
+        autosave_interval: '30s',
+        autosave_prefix: '{path}{query}-{id}-',
+        autosave_restore_when_empty: false,
+        autosave_retention: '2m',
+        
+        // Paste settings
+        paste_data_images: true,
+        paste_as_text: false,
+        paste_merge_formats: true,
+        paste_auto_cleanup_on_paste: true,
+        paste_remove_spans: true,
+        paste_remove_styles: true,
+        paste_retain_style_properties: 'color,font-size,font-family,background-color,background',
+        
+        // Table settings
+        table_default_attributes: {
+            'border': '1'
+        },
+        table_default_styles: {
+            'border-collapse': 'collapse',
+            'width': '100%'
+        },
+        
+        // Code sample settings
+        codesample_languages: [
+            { text: 'HTML/XML', value: 'markup' },
+            { text: 'JavaScript', value: 'javascript' },
+            { text: 'CSS', value: 'css' },
+            { text: 'PHP', value: 'php' },
+            { text: 'SQL', value: 'sql' },
+            { text: 'Python', value: 'python' },
+            { text: 'Java', value: 'java' },
+            { text: 'C/C++', value: 'cpp' }
+        ],
+        
+        // Setup callback
+        setup: function(editor) {
+            console.log('Setting up editor:', editor);
+            
+            // Đảm bảo textarea không bị disabled
+            var textarea = editor.targetElm;
+            if (textarea) {
+                textarea.removeAttribute('readonly');
+                textarea.removeAttribute('disabled');
+            }
+            
+            // Custom commands
+            editor.ui.registry.addButton('customSave', {
+                text: 'Lưu bài viết',
+                tooltip: 'Lưu bài viết',
+                onAction: function() {
+                    document.querySelector('form').submit();
+                }
             });
-        }
-        _sendRequest(file) {
-            const data = new FormData();
-            data.append('upload', file);
-            this.xhr.send(data);
-        }
-    }
-
-    function MyCustomUploadAdapterPlugin(editor) {
-        editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
-            return new MyUploadAdapter(loader);
-        };
-    }
-
-    // 2. Khởi tạo Editor & Xử lý Submit Form
-    document.addEventListener("DOMContentLoaded", function() {
-        const textarea = document.querySelector('textarea[name="content"]');
-
-        if (textarea) {
-            ClassicEditor
-                .create(textarea, {
-                    // Plugin Upload ảnh Custom (Giữ nguyên đoạn code cũ của bạn ở trên)
-                    extraPlugins: [MyCustomUploadAdapterPlugin],
-                    
-                    // --- [CẬP NHẬT 1] THÊM NÚT CODE VÀO TOOLBAR ---
-                    toolbar: {
-                        items: [
-                            'heading', '|',
-                            'bold', 'italic', 'underline', 'code', '|', // Thêm 'code' (Inline)
-                            'link', 'bulletedList', 'numberedList', '|',
-                            'outdent', 'indent', '|',
-                            'imageUpload', 'blockQuote', 'insertTable', 'mediaEmbed', 'undo', 'redo'
-                        ]
-                    },
-
-                    // --- [CẬP NHẬT 2] THÊM TÙY CHỌN "CODE BLOCK" VÀO MENU HEADING ---
-                    heading: {
-                        options: [
-                            { model: 'paragraph', title: 'Đoạn văn (P)', class: 'ck-heading_paragraph' },
-                            { model: 'heading1', view: 'h2', title: 'Tiêu đề lớn (H2)', class: 'ck-heading_heading1' },
-                            { model: 'heading2', view: 'h3', title: 'Tiêu đề nhỏ (H3)', class: 'ck-heading_heading2' },
-                            
-                            // Thêm dòng này để tạo Code Block (Thẻ <pre>)
-                            { model: 'formatted', view: 'pre', title: 'Khối Code (Pre)', class: 'ck-heading_formatted' }
-                        ]
-                    }
-                })
-                .then(editor => {
-                    console.log('CKEditor đã sẵn sàng!');
-                    
-                    // (Giữ nguyên đoạn code fix lỗi Submit Form cũ của bạn)
-                    const form = textarea.closest('form');
-                    if (form) {
-                        form.addEventListener('submit', (e) => {
-                            const editorData = editor.getData();
-                            textarea.value = editorData;
-                        });
-                    }
-                })
-                .catch(error => {
-                    console.error('Lỗi khởi động CKEditor:', error);
-                });
+            
+            // Add save button to toolbar
+            editor.ui.registry.addMenuItem('customSave', {
+                text: 'Lưu bài viết',
+                icon: 'save',
+                onAction: function() {
+                    document.querySelector('form').submit();
+                }
+            });
+        },
+        
+        // Initialize callback
+        init_instance_callback: function(editor) {
+            console.log('TinyMCE editor initialized successfully!');
+            // Không cần setEditable cho phiên bản này
         }
     });
+});
 </script>
+
+<style>
+/* Custom styles for TinyMCE */
+.tox-tinymce {
+    border-radius: 8px !important;
+    border: 1px solid #d1d5db !important;
+    min-height: 800px !important;
+}
+
+.tox-toolbar__group {
+    border-right: 1px solid #e5e7eb !important;
+}
+
+.tox-toolbar__group:last-child {
+    border-right: none !important;
+}
+
+.tox-statusbar {
+    border-top: 1px solid #e5e7eb !important;
+}
+
+/* Editor content area - tăng font size và line height */
+.tox-edit-area iframe {
+    font-size: 16px !important;
+    line-height: 1.8 !important;
+    padding: 20px !important;
+}
+
+/* Toolbar - làm lớn hơn */
+.tox-toolbar {
+    padding: 8px !important;
+}
+
+.tox-toolbar .tox-toolbar__group {
+    padding: 0 8px !important;
+}
+
+.tox-toolbar .tox-tbtn {
+    height: 36px !important;
+    padding: 0 12px !important;
+    font-size: 14px !important;
+}
+
+/* Menu bar */
+.tox-menubar {
+    background: #f8f9fa !important;
+    border-bottom: 1px solid #e5e7eb !important;
+    padding: 8px 16px !important;
+}
+
+.tox-mbtn {
+    height: 32px !important;
+    padding: 0 12px !important;
+    font-size: 13px !important;
+}
+
+/* Content styles */
+.tox-edit-area {
+    font-family: 'Segoe UI', Arial, sans-serif !important;
+}
+
+/* Form styling */
+.form-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Status bar */
+.tox-statusbar {
+    font-size: 12px !important;
+    padding: 8px 16px !important;
+}
+
+/* Path indicator */
+.tox-statusbar__path {
+    font-size: 12px !important;
+}
+
+/* Word count */
+.tox-statusbar__wordcount {
+    font-size: 12px !important;
+}
+</style>
