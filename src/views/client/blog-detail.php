@@ -226,7 +226,12 @@ if (empty($post)) {
             
             <div class="hidden lg:flex flex-col gap-4 w-12 sticky-toc h-fit">
                 <a href="https://www.facebook.com/sharer/sharer.php?u=<?= urlencode("http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]") ?>" target="_blank" class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hover:bg-[#1877F2] hover:text-white transition-colors" title="Share Facebook"><i data-lucide="facebook" class="w-5 h-5"></i></a>
-                <a href="#" class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hover:bg-orange-500 hover:text-white transition-colors" title="Copy Link"><i data-lucide="link" class="w-5 h-5"></i></a>
+                <div class="relative">
+                    <button onclick="copyLink()" class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hover:bg-orange-500 hover:text-white transition-colors" title="Copy Link"><i data-lucide="link" class="w-5 h-5"></i></button>
+                    <div id="copy-tooltip" class="absolute left-1/2 -top-8 -translate-x-1/2 bg-slate-900 text-white text-[12px] px-2 py-1 rounded-lg whitespace-nowrap opacity-0 pointer-events-none transition-opacity duration-200 z-50">
+                        <span id="tooltip-text">Copy link</span>
+                    </div>
+                </div>
             </div>
 
             <div class="w-full lg:w-8/12">
@@ -386,6 +391,88 @@ if (empty($post)) {
             }
         }
     });
+
+    // 3. Copy Link Function
+    function copyLink() {
+        const currentUrl = window.location.href;
+        const tooltip = document.getElementById('copy-tooltip');
+        const tooltipText = document.getElementById('tooltip-text');
+        
+        // Try modern clipboard API first
+        if (navigator.clipboard && window.isSecureContext) {
+            navigator.clipboard.writeText(currentUrl).then(() => {
+                showTooltipSuccess();
+            }).catch(() => {
+                fallbackCopy(currentUrl);
+            });
+        } else {
+            // Fallback for older browsers
+            fallbackCopy(currentUrl);
+        }
+    }
+
+    function fallbackCopy(text) {
+        const textArea = document.createElement('textarea');
+        textArea.value = text;
+        textArea.style.position = 'fixed';
+        textArea.style.left = '-999999px';
+        textArea.style.top = '-999999px';
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        
+        try {
+            document.execCommand('copy');
+            showTooltipSuccess();
+        } catch (err) {
+            console.error('Failed to copy text: ', err);
+            showTooltipError();
+        }
+        
+        document.body.removeChild(textArea);
+    }
+
+    function showTooltipSuccess() {
+        const tooltip = document.getElementById('copy-tooltip');
+        const tooltipText = document.getElementById('tooltip-text');
+        
+        // Change tooltip content and style
+        tooltipText.textContent = 'Đã copy!';
+        tooltip.classList.remove('opacity-0');
+        tooltip.classList.add('bg-green-500');
+        
+        // Hide after 2 seconds
+        setTimeout(() => {
+            tooltip.classList.add('opacity-0');
+            tooltip.classList.remove('bg-green-500');
+            
+            // Reset text after transition
+            setTimeout(() => {
+                tooltipText.textContent = 'Copy link';
+            }, 200);
+        }, 2000);
+    }
+
+    function showTooltipError() {
+        const tooltip = document.getElementById('copy-tooltip');
+        const tooltipText = document.getElementById('tooltip-text');
+        
+        // Change tooltip content and style
+        tooltipText.textContent = 'Lỗi!';
+        tooltip.classList.remove('opacity-0');
+        tooltip.classList.add('bg-red-500');
+        
+        // Hide after 2 seconds
+        setTimeout(() => {
+            tooltip.classList.add('opacity-0');
+            tooltip.classList.remove('bg-red-500');
+            
+            // Reset text after transition
+            setTimeout(() => {
+                tooltipText.textContent = 'Copy link';
+            }, 200);
+        }, 2000);
+    }
 </script>
 
 <?php include 'includes/footer.php'; ?>
