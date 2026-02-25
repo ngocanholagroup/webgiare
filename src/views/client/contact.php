@@ -201,7 +201,7 @@ $selected_template = isset($_GET['template']) ? $_GET['template'] : '';
     
     <?= setting('map_iframe') ?>
     
-    <div class="hidden md:block absolute top-10 left-10 bg-white p-6 rounded-2xl shadow-2xl max-w-xs">
+    <div class="hidden md:block absolute top-10 right-10 bg-white p-6 rounded-2xl shadow-2xl max-w-xs">
         <div class="flex items-center gap-3 mb-2">
             <div class="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center text-white font-bold">H</div>
             <span class="font-bold text-slate-900"><?= setting('company_name', 'HolaGroup') ?> Office</span>

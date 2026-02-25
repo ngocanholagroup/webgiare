@@ -54,7 +54,7 @@
     $create_link = '/admin/blog/create';
     $create_label = 'Viết bài mới';
     $search_placeholder = null;
-    $pagination = ['current' => $currentPage, 'total' => $totalPages, 'url_params' => ['search' => $search]];
+    $pagination = ['current' => $page, 'total' => $totalPages, 'url_params' => ['search' => $search]];
 
     include 'includes/data-table.php';
     ?>

@@ -49,7 +49,7 @@ if (!function_exists('isActive')) {
 <aside id="sidebar" class="fixed inset-y-0 left-0 z-50 w-64 bg-slate-900 text-white transform -translate-x-full lg:translate-x-0 sidebar-transition flex flex-col border-r border-slate-800 shadow-2xl">
     
     <div class="h-16 flex items-center justify-between px-6 border-b border-slate-800 bg-slate-900/50 backdrop-blur-md relative">
-        <?php include 'logo.php';?>
+        <div class="text-xl font-bold text-orange-500">HOLA GROUP</div>
         
         <button onclick="toggleSidebar()" class="lg:hidden text-slate-400 hover:text-white absolute right-4">
             <i data-lucide="x" class="w-6 h-6"></i>
@@ -67,7 +67,7 @@ if (!function_exists('isActive')) {
         
         <a href="/admin/blog" class="flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium transition-all <?= isActive('/admin/blog', $currentUri) ?>">
             <i data-lucide="newspaper" class="w-5 h-5"></i>
-            Blog
+            Blogs
         </a>
 
         <a href="/admin/contact" class="flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium transition-all <?= isActive('/admin/contact', $currentUri) ?>">
@@ -79,24 +79,24 @@ if (!function_exists('isActive')) {
                     </span>
                 <?php endif; ?>
             </div>
-            Liên hệ
+            Liên Hệ
         </a>
 
         <p class="px-2 text-xs font-bold text-slate-500 uppercase tracking-widest mb-4 mt-8">Hệ thống</p>
 
         <a href="/admin/page" class="flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium transition-all <?= isActive('/admin/page', $currentUri) ?>">
             <i data-lucide="file" class="w-5 h-5"></i>
-            Trang tĩnh
+            Trang Tĩnh
         </a>
 
         <a href="/admin/account" class="flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium transition-all <?= isActive('/admin/account', $currentUri) ?>">
             <i data-lucide="users" class="w-5 h-5"></i>
-            Tài khoản Admin
+            Admin
         </a>
         
         <a href="/admin/setting" class="flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium transition-all <?= isActive('/admin/setting', $currentUri) ?>">
             <i data-lucide="settings" class="w-5 h-5"></i>
-            Cài đặt chung
+            Cài Đặt
         </a>
     </div>
 

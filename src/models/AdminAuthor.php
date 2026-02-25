@@ -12,10 +12,13 @@ class AdminAuthor {
     public function create($data) {
         $sql = "INSERT INTO blog_authors (name, title, bio, avatar) VALUES (:name, :title, :bio, :avatar)";
         $stmt = $this->conn->prepare($sql);
-        return $stmt->execute([
+        $stmt->execute([
             ':name' => $data['name'], ':title' => $data['title'],
             ':bio' => $data['bio'], ':avatar' => $data['avatar']
         ]);
+        
+        // Return last inserted ID
+        return $this->conn->lastInsertId();
     }
 
     public function update($id, $data) {

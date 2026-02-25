@@ -18,6 +18,7 @@ class Contact {
                 VALUES (:name, :phone, :email, :service, :template, :message, 'new')";
         
         $stmt = $this->conn->prepare($sql);
+        
         return $stmt->execute([
             ':name'     => $data['full_name'],
             ':phone'    => $data['phone'],

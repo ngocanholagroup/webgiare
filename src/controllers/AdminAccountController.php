@@ -122,7 +122,8 @@ class AdminAccountController {
         }
 
         $model->update($id, $data);
-        header('Location: /admin/account');
+        // Ở lại trang sửa sau khi cập nhật
+        header('Location: /admin/account/edit/' . $id);
     }
 
     public function delete($id) {

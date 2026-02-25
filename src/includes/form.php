@@ -34,7 +34,7 @@ if (isset($form_fields) && is_array($form_fields)) {
         <?php endif; ?>
     </div>
 
-    <form action="<?= $form_action ?>" method="POST" <?= $hasFile ? 'enctype="multipart/form-data"' : '' ?> 
+    <form id="main-form" action="<?= $form_action ?>" method="POST" <?= $hasFile ? 'enctype="multipart/form-data"' : '' ?> 
           class="bg-white p-6 md:p-8 rounded-xl border border-slate-200 shadow-sm">
 
         <div class="grid grid-cols-12 gap-6">
@@ -175,16 +175,7 @@ if (isset($form_fields) && is_array($form_fields)) {
         </div>
 
         <div class="mt-8 pt-6 border-t border-slate-100 flex justify-end gap-3">
-            <?php if(isset($form_back_link)): ?>
-                <a href="<?= $form_back_link ?>" class="px-6 py-2.5 rounded-lg border border-slate-300 text-slate-600 font-bold hover:bg-slate-50 transition-colors">
-                    Hủy bỏ
-                </a>
-            <?php endif; ?>
-            
-            <button type="submit" class="bg-slate-800 text-white px-6 py-2.5 rounded-lg text-sm font-bold hover:bg-orange-600 transition-all shadow-lg shadow-slate-300 inline-flex items-center gap-2">
-                <i data-lucide="save" class="w-4 h-4"></i>
-                <?= $form_submit_label ?? 'Lưu dữ liệu' ?>
-            </button>
+            <!-- Hide original cancel button when fixed save button is present -->
         </div>
 
     </form>

@@ -104,11 +104,8 @@ class AdminContactController {
         
         $model->update($id, $data);
         
-        // Quay lại trang danh sách đúng tab đó
-        $tabMap = ['new' => 'new', 'contacted' => 'contacted', 'completed' => 'completed', 'spam' => 'spam'];
-        $tab = $tabMap[$_POST['status']] ?? 'new';
-        
-        header('Location: /admin/contact?tab=' . $tab);
+        // Ở lại trang sửa sau khi cập nhật
+        header('Location: /admin/contact/detail/' . $id);
     }
 
     // Xóa liên hệ

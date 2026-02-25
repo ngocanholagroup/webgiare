@@ -32,8 +32,8 @@ class AdminBlogCategoryController {
         $model = new AdminBlogCategory();
         $model->create($data);
 
-        // Quay về trang Blog, tab Categories
-        header('Location: /admin/blog?tab=categories');
+        // Quay về trang sửa danh mục vừa tạo
+        header('Location: /admin/blog?tab=categories/edit/' . (new AdminBlogCategory())->getLastInsertId());
     }
 
     // 3. Form Sửa (Edit)

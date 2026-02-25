@@ -82,7 +82,7 @@ class AdminBlog
         $sql = "INSERT INTO blog_posts (category_id, author_id, title, slug, summary, content, thumbnail, reading_time, is_featured, status) 
             VALUES (:cat, :auth, :title, :slug, :sum, :cont, :thumb, :read, :feat, :stat)";
         $stmt = $this->conn->prepare($sql);
-        return $stmt->execute([
+        $stmt->execute([
             ':cat' => $data['category_id'],
             ':auth' => $data['author_id'],
             ':title' => $data['title'],
@@ -94,6 +94,9 @@ class AdminBlog
             ':feat' => $data['is_featured'],
             ':stat' => $data['status']
         ]);
+        
+        // Return ID of the inserted record
+        return $this->conn->lastInsertId();
     }
 
     public function updatePost($id, $data)

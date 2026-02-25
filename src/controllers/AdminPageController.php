@@ -54,7 +54,8 @@ class AdminPageController {
 
         $model = new AdminPage();
         $model->update($id, $data);
-
-        header('Location: /admin/page');
+        
+        // Ở lại trang sửa sau khi cập nhật
+        header('Location: /admin/page/edit/' . $id);
     }
 }

@@ -70,7 +70,7 @@ class AdminBlogController
         // Validate file size
         if ($file['size'] > $maxSize) {
             header('HTTP/1.1 400 Bad Request');
-            echo json_encode(['error' => 'File too large. Maximum size is 10MB.']);
+            echo json_encode(['error' => 'File too large. Maximum size is 5MB.']);
             exit;
         }
 
@@ -111,7 +111,7 @@ class AdminBlogController
         exit;
     }
 
-    // 2. FORM TẠO MỚI
+    // 3. FORM TẠO MỚI
     public function create()
     {
         if (!isset($_SESSION['admin_logged_in'])) header('Location: /admin/login');
@@ -124,7 +124,7 @@ class AdminBlogController
         ]);
     }
 
-    // 3. XỬ LÝ LƯU (STORE)
+    // 4. XỬ LÝ LƯU (STORE)
     public function store()
     {
         if (!isset($_SESSION['admin_logged_in'])) exit;
@@ -142,11 +142,14 @@ class AdminBlogController
             $data['thumbnail'] = $this->uploadImage($_FILES['thumbnail']);
         }
 
-        (new AdminBlog())->createPost($data);
-        header('Location: /admin/blog');
+        // Tạo bài viết mới
+        $postId = (new AdminBlog())->createPost($data);
+        
+        // Chuyển hướng sang trang sửa bài vừa tạo
+        header('Location: /admin/blog/edit/' . $postId);
     }
 
-    // 4. FORM SỬA (EDIT)
+    // 5. FORM SỬA (EDIT)
     public function edit($id)
     {
         if (!isset($_SESSION['admin_logged_in'])) header('Location: /admin/login');
@@ -164,8 +167,8 @@ class AdminBlogController
         ]);
     }
 
-    // 5. XỬ LÝ CẬP NHẬT (UPDATE)
-public function update($id)
+    // 6. XỬ LÝ CẬP NHẬT (UPDATE)
+    public function update($id)
     {
         if (!isset($_SESSION['admin_logged_in'])) exit;
         
@@ -213,10 +216,12 @@ public function update($id)
         }
 
         (new AdminBlog())->updatePost($id, $data);
-        header('Location: /admin/blog');
+        
+        // Ở lại trang sửa sau khi cập nhật
+        header('Location: /admin/blog/edit/' . $id);
     }
 
-    // 6. XỬ LÝ XÓA (DELETE)
+    // 7. XỬ LÝ XÓA (DELETE)
     public function delete($id) 
     {
         if (!isset($_SESSION['admin_logged_in'])) exit;
@@ -243,6 +248,7 @@ public function update($id)
         $model->deletePost($id);
         header('Location: /admin/blog');
     }
+
     // --- HELPER FUNCTIONS ---
 
     // [MỚI] Hàm xử lý upload ảnh từ CKEditor
@@ -263,7 +269,40 @@ public function update($id)
         }
 
         $file = $_FILES['upload'];
-            // 5. Trả về JSON đúng chuẩn CKEditor 5
+        
+        // 3. Validate file type
+        $allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+        $finfo = finfo_open(FILEINFO_MIME_TYPE);
+        $mimeType = finfo_file($finfo, $file['tmp_name']);
+        finfo_close($finfo);
+        
+        if (!in_array($mimeType, $allowedTypes)) {
+            http_response_code(400);
+            echo json_encode(['error' => ['message' => 'Invalid file type. Only JPEG, PNG, GIF, WebP allowed.']]);
+            exit;
+        }
+        
+        // 4. Validate file size (max 5MB)
+        if ($file['size'] > 5 * 1024 * 1024) {
+            http_response_code(400);
+            echo json_encode(['error' => ['message' => 'File too large. Max size is 5MB.']]);
+            exit;
+        }
+        
+        // 5. Create upload directory if not exists
+        $uploadDir = 'uploads/blog/';
+        if (!is_dir($uploadDir)) {
+            mkdir($uploadDir, 0755, true);
+        }
+        
+        // 6. Generate unique filename
+        $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
+        $filename = time() . '_' . uniqid() . '.' . $extension;
+        $targetPath = $uploadDir . $filename;
+        
+        // 7. Move file to target directory
+        if (move_uploaded_file($file['tmp_name'], $targetPath)) {
+            // 8. Trả về JSON đúng chuẩn CKEditor 5
             echo json_encode([
                 'url' => '/' . $targetPath // Đường dẫn tuyệt đối để hiển thị
             ]);

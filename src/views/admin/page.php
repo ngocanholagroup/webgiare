@@ -39,7 +39,7 @@
                 // Nút Sửa thiết kế giống các trang khác
                 return '<a href="/admin/page/edit/'.$row['id'].'" 
                            class="text-blue-600 hover:text-blue-800 hover:bg-blue-50 px-3 py-1.5 rounded-md text-sm font-medium transition-colors inline-flex items-center gap-1.5">
-                            <i data-lucide="layout" class="w-4 h-4"></i> Thiết kế
+                            Thiết kế
                         </a>';
             }
         ]

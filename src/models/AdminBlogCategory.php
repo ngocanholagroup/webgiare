@@ -20,10 +20,13 @@ class AdminBlogCategory {
     public function create($data) {
         $sql = "INSERT INTO blog_categories (name, slug) VALUES (:name, :slug)";
         $stmt = $this->conn->prepare($sql);
-        return $stmt->execute([
+        $stmt->execute([
             ':name' => $data['name'],
             ':slug' => $data['slug']
         ]);
+        
+        // Return last inserted ID
+        return $this->conn->lastInsertId();
     }
 
     // Cập nhật

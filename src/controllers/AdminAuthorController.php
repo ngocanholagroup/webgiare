@@ -20,7 +20,7 @@ class AdminAuthorController {
         $data = $_POST;
         $data['avatar'] = !empty($_FILES['avatar']['name']) ? $this->uploadImage($_FILES['avatar']) : '';
         (new AdminAuthor())->create($data);
-        header('Location: /admin/blog?tab=authors');
+        header('Location: /admin/blog?tab=authors/edit/' . (new AdminAuthor())->getLastInsertId());
     }
 
     public function edit($id) {
