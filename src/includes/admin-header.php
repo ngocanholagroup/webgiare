@@ -1,4 +1,13 @@
 <?php
+// 0. SECURITY: Check Session Timeout & CSRF
+if (!SecurityHelper::checkSessionTimeout()) {
+    header('Location: /admin/login?expired=1');
+    exit;
+}
+
+// Generate CSRF Token for all forms
+SecurityHelper::generateCSRFToken();
+
 // 1. XỬ LÝ TIÊU ĐỀ (Dynamic Title)
 // Lấy biến $title từ Controller truyền qua, nếu không có thì dùng mặc định
 $page_title = $title ?? 'Admin Portal - HolaGroup';
@@ -102,8 +111,17 @@ function isActive($keyword, $uri)
                 <div class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
                     <div class="container mx-auto px-4 md:px-6">
                         <div class="flex space-x-1 mt-2 overflow-x-auto no-scrollbar">
-                            <?php foreach ($page_tabs as $index => $tab):
-                                $isActive = $index === 0 ? 'active' : ''; // Tab đầu tiên active
+                                <?php foreach ($page_tabs as $index => $tab):
+                                // Xác định tab active ban đầu: so sánh cả id đầy đủ (tab-...) và giá trị $current_tab không có tiền tố
+                                $isActive = '';
+                                if (isset($current_tab)) {
+                                    if ($current_tab === $tab['id'] || ('tab-' . $current_tab) === $tab['id']) {
+                                        $isActive = 'active';
+                                    }
+                                }
+                                if ($isActive === '' && $index === 0) {
+                                    $isActive = 'active'; // fallback: tab đầu tiên
+                                }
                             ?>
                                 <button onclick="switchTab('<?= $tab['id'] ?>')"
                                     id="btn-<?= $tab['id'] ?>"

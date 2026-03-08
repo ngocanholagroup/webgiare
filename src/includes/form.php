@@ -37,6 +37,9 @@ if (isset($form_fields) && is_array($form_fields)) {
     <form id="main-form" action="<?= $form_action ?>" method="POST" <?= $hasFile ? 'enctype="multipart/form-data"' : '' ?> 
           class="bg-white p-6 md:p-8 rounded-xl border border-slate-200 shadow-sm">
 
+        <!-- CSRF Token Protection -->
+        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(SecurityHelper::getCSRFToken() ?? '') ?>">
+
         <div class="grid grid-cols-12 gap-6">
             <?php foreach ($form_fields as $field):
                 $key = $field['name'];

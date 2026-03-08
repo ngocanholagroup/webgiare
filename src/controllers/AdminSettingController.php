@@ -18,6 +18,12 @@ class AdminSettingController {
     public function save() {
         if (!isset($_SESSION['admin_logged_in'])) exit;
 
+        // CSRF Token validation
+        if (!SecurityHelper::verifyCSRFToken()) {
+            http_response_code(403);
+            die('CSRF Token không hợp lệ!');
+        }
+
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $model = new AdminSetting();
             $data = $_POST; // Dữ liệu text
@@ -55,6 +61,9 @@ class AdminSettingController {
                 // Chỉ update những key có trong DB (để tránh lỗi) hoặc update tất cả tùy logic
                 $model->updateSetting($key, $value);
             }
+            
+            // Log settings update
+            // Logger::getInstance()->logUpdate('SETTING', 0, ['settings' => count($data)]);
 
             header('Location: /admin/setting?msg=success');
         }
@@ -62,15 +71,42 @@ class AdminSettingController {
 
     // Helper Upload đơn giản
     private function uploadFile($file, $targetDir) {
-        if ($file['error'] !== UPLOAD_ERR_OK) return false;
-        if (!file_exists($targetDir)) mkdir($targetDir, 0777, true);
+        // Debug: Log thông tin file
+        error_log("Upload attempt: " . print_r($file, true));
+        error_log("Target dir: " . $targetDir);
         
-        $fileName = time() . '_' . basename($file['name']);
-        $targetPath = $targetDir . $fileName;
+        // Validate file upload
+        $validation = FileUploadValidator::validate($file, 'image');
+        if (!$validation['valid']) {
+            $error_msg = implode(', ', $validation['errors']);
+            error_log("Validation failed: " . $error_msg);
+            $_SESSION['upload_error'] = $error_msg;
+            return false;
+        }
+
+        if (!file_exists($targetDir)) {
+            mkdir($targetDir, 0777, true);
+            error_log("Created directory: " . $targetDir);
+        }
+        
+        // Generate safe filename
+        $safeFilename = FileUploadValidator::generateSafeFilename($file['name']);
+        if (!$safeFilename) {
+            error_log("Invalid file extension: " . $file['name']);
+            $_SESSION['upload_error'] = 'Invalid file extension';
+            return false;
+        }
+
+        $targetPath = $targetDir . $safeFilename;
+        error_log("Target path: " . $targetPath);
 
         if (move_uploaded_file($file['tmp_name'], $targetPath)) {
+            error_log("Upload successful: " . $targetPath);
             return '/' . $targetPath;
+        } else {
+            error_log("Upload failed: move_uploaded_file returned false");
+            $_SESSION['upload_error'] = 'Failed to move uploaded file';
+            return false;
         }
-        return false;
     }
 }

@@ -1,6 +1,13 @@
 <?php
 // src/helpers.php
-require_once __DIR__ . '/models/Setting.php'; 
+require_once __DIR__ . '/models/Setting.php';
+require_once __DIR__ . '/SecurityHelper.php';
+require_once __DIR__ . '/Validator.php';
+require_once __DIR__ . '/Logger.php';
+require_once __DIR__ . '/FileUploadValidator.php';
+require_once __DIR__ . '/SecurityHeaders.php';    // Priority 3
+require_once __DIR__ . '/RateLimiter.php';         // Priority 3
+require_once __DIR__ . '/APIKeyAuth.php';          // Priority 3
 
 if (!function_exists('setting')) {
     function setting($key, $default = '') {

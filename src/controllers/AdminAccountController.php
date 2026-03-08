@@ -6,7 +6,7 @@ class AdminAccountController {
     public function index() {
         if (!isset($_SESSION['admin_logged_in'])) { header('Location: /admin/login'); exit; }
 
-        $search = $_GET['search'] ?? '';
+        $search = htmlspecialchars($_GET['search'] ?? '');
         $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
         $limit = 10;
         $offset = ($page - 1) * $limit;
@@ -35,9 +35,15 @@ class AdminAccountController {
 
     public function store() {
         if (!isset($_SESSION['admin_logged_in'])) exit;
+        
+        // Validate CSRF Token
+        if (!SecurityHelper::verifyCSRFToken()) {
+            http_response_code(403);
+            die('CSRF Token không hợp lệ!');
+        }
 
-        $username = $_POST['username'];
-        $password = $_POST['password'];
+        $username = htmlspecialchars($_POST['username'] ?? '');
+        $password = $_POST['password'] ?? '';
         $model = new AdminAccount();
 
         // 1. Validate
@@ -63,8 +69,12 @@ class AdminAccountController {
             ':avatar'    => $avatarUrl
         ];
         
-        $model->create($data);
-        header('Location: /admin/account');
+        $newId = $model->create($data);
+        
+        // Log create action
+        Logger::getInstance()->logCreate('ADMIN_ACCOUNT', $newId, ['username' => $username, 'email' => $_POST['email']]);
+        
+        header('Location: /admin/account/edit/' . $newId);
     }
 
     public function edit($id) {
@@ -85,6 +95,13 @@ class AdminAccountController {
 
     public function update($id) {
         if (!isset($_SESSION['admin_logged_in'])) exit;
+        
+        // Validate CSRF Token
+        if (!SecurityHelper::verifyCSRFToken()) {
+            http_response_code(403);
+            die('CSRF Token không hợp lệ!');
+        }
+
         $model = new AdminAccount();
 
         // Check trùng username... (giữ nguyên)
@@ -122,6 +139,10 @@ class AdminAccountController {
         }
 
         $model->update($id, $data);
+        
+        // Log update action
+        Logger::getInstance()->logUpdate('ADMIN_ACCOUNT', $id, ['username' => $model->getById($id)['username'], 'email' => $_POST['email']]);
+        
         // Ở lại trang sửa sau khi cập nhật
         header('Location: /admin/account/edit/' . $id);
     }
@@ -144,18 +165,35 @@ class AdminAccountController {
         }
 
         $model->delete($id);
+        
+        // Log delete action
+        Logger::getInstance()->logDelete('ADMIN_ACCOUNT', $id, ['username' => $admin['username'] ?? 'Unknown']);
+        
         header('Location: /admin/account');
     }
 
     // Helper Upload Avatar
     private function uploadAvatar($file) {
-        if ($file['error'] !== UPLOAD_ERR_OK) return '';
+        // Validate file upload
+        $validation = FileUploadValidator::validate($file, 'image');
+        if (!$validation['valid']) {
+            $_SESSION['upload_error'] = implode(', ', $validation['errors']);
+            return '';
+        }
+
         $targetDir = "uploads/avatars/";
         if (!file_exists($targetDir)) mkdir($targetDir, 0777, true);
         
-        $fileName = time() . '_' . rand(1000, 9999) . '.' . pathinfo($file['name'], PATHINFO_EXTENSION);
-        if (move_uploaded_file($file['tmp_name'], $targetDir . $fileName)) {
-            return '/' . $targetDir . $fileName;
+        // Generate safe filename
+        $safeFilename = FileUploadValidator::generateSafeFilename($file['name']);
+        if (!$safeFilename) {
+            $_SESSION['upload_error'] = 'Invalid file extension';
+            return '';
+        }
+
+        if (move_uploaded_file($file['tmp_name'], $targetDir . $safeFilename)) {
+            Logger::getInstance()->logUpload('ADMIN_AVATAR', $safeFilename, ['size' => $file['size']]);
+            return '/' . $targetDir . $safeFilename;
         }
         return '';
     }

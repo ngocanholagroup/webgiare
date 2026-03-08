@@ -1,7 +1,18 @@
 <?php
 // src/index.php
 ob_start();
+
+// Configure session security BEFORE starting session (Priority 3)
+require_once __DIR__ . '/SecurityHeaders.php';
+SecurityHeaders::configureSessionCookie();
+
+// NOW start session
 session_start();
+
+// Apply security headers immediately (Priority 3)
+require_once __DIR__ . '/autoload.php';
+SecurityHeaders::applyHeaders();
+SecurityHeaders::verifySessionSecurity();
 
 // 1. NẠP AUTOLOAD (QUAN TRỌNG: Phải nạp đầu tiên)
 require_once __DIR__ . '/autoload.php';

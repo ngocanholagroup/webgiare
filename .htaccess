@@ -1,0 +1,115 @@
+# Root .htaccess - Security & HTTPS enforcement
+# Last updated: Priority 3 Security Hardening
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
+
+    # 1. FORCE HTTPS (Redirect HTTP to HTTPS)
+    # Only for production environment
+    # Uncomment in production:
+    # RewriteCond %{HTTPS} off
+    # RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+    # 2. SECURITY HEADERS via .htaccess
+    # These complement the SecurityHeaders class
+    
+    # Strict-Transport-Security (HSTS) - Force HTTPS for 1 year
+    Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+    
+    # X-Content-Type-Options - Prevent MIME sniffing
+    Header always set X-Content-Type-Options "nosniff"
+    
+    # X-Frame-Options - Prevent clickjacking
+    Header always set X-Frame-Options "SAMEORIGIN"
+    
+    # X-XSS-Protection - Enable XSS filtering
+    Header always set X-XSS-Protection "1; mode=block"
+    
+    # Referrer-Policy - Control referrer information
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    
+    # Permissions-Policy - Restrict browser features
+    Header always set Permissions-Policy "geolocation=(), microphone=(), camera=(), payment=()"
+    
+    # Content-Security-Policy (CSP) - Prevent XSS via inline scripts
+    Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdn.ckeditor.com; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; img-src 'self' data: https:; font-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com; connect-src 'self' https:; object-src 'none'; frame-ancestors 'self';"
+
+    # 3. BLOCK SENSITIVE FILES & FOLDERS
+    RewriteCond %{REQUEST_URI} ^/(\.|package\.json|composer\.json|\.env|\.git)
+    RewriteRule ^ - [F,L]
+
+    RewriteCond %{REQUEST_FILENAME} -f
+    RewriteCond %{REQUEST_FILENAME} -d
+    RewriteRule ^ - [L]
+
+    # 4. ROUTE ALL REQUESTS TO index.php (for Router)
+    RewriteRule ^(.*)$ index.php?url=$1 [QSA,L]
+</IfModule>
+
+# 5. DISABLE DIRECTORY LISTING
+Options -Indexes
+
+# 6. FILE ACCESS RESTRICTIONS
+<FilesMatch "(^#.*#|\.(bak|conf|dist|fla|in[ci]|log|psd|sh|sql|sw[op])|~)$">
+    # Deny access to backup and temporary files
+    Order allow,deny
+    Allow from all
+    Deny from all
+</FilesMatch>
+
+# 7. DISABLE FILE UPLOAD EXECUTION
+<FilesMatch "\.(php|php3|php4|php5|php6|php7|phtml|pht|phps|phar)$">
+    Order Deny,Allow
+    Deny from all
+</FilesMatch>
+
+# 8. COMPRESSION & PERFORMANCE
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/plain
+    AddOutputFilterByType DEFLATE text/html
+    AddOutputFilterByType DEFLATE text/xml
+    AddOutputFilterByType DEFLATE text/css
+    AddOutputFilterByType DEFLATE text/javascript
+    AddOutputFilterByType DEFLATE application/xml
+    AddOutputFilterByType DEFLATE application/xhtml+xml
+    AddOutputFilterByType DEFLATE application/rss+xml
+    AddOutputFilterByType DEFLATE application/javascript
+    AddOutputFilterByType DEFLATE application/x-javascript
+    AddOutputFilterByType DEFLATE application/json
+</IfModule>
+
+# 9. BROWSER CACHING
+<IfModule mod_expires.c>
+    ExpiresActive On
+    
+    # Images
+    ExpiresByType image/jpeg "access plus 1 year"
+    ExpiresByType image/gif "access plus 1 year"
+    ExpiresByType image/png "access plus 1 year"
+    ExpiresByType image/webp "access plus 1 year"
+    
+    # Media files
+    ExpiresByType video/mp4 "access plus 1 year"
+    ExpiresByType audio/mpeg "access plus 1 year"
+    
+    # CSS & JS
+    ExpiresByType text/css "access plus 1 month"
+    ExpiresByType application/javascript "access plus 1 month"
+    
+    # Fonts
+    ExpiresByType font/ttf "access plus 1 year"
+    ExpiresByType font/otf "access plus 1 year"
+    ExpiresByType font/woff "access plus 1 year"
+    ExpiresByType font/woff2 "access plus 1 year"
+    
+    # Default
+    ExpiresDefault "access plus 2 days"
+</IfModule>
+
+# 10. PREVENT HOTLINKING (Optional)
+# <IfModule mod_rewrite.c>
+#     RewriteCond %{HTTP_REFERER} !^$
+#     RewriteCond %{HTTP_REFERER} !^https?://([a-z0-9]+([-.]?[a-z0-9]+)*\.)?example\.com(/|$) [NC]
+#     RewriteRule \.(jpg|jpeg|png|gif|webp)$ - [F,NC]
+# </IfModule>

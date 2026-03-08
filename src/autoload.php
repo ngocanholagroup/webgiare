@@ -1,6 +1,9 @@
 <?php
 // src/autoload.php
 
+// Load SecurityHelper immediately (needed before session checks)
+require_once __DIR__ . '/SecurityHelper.php';
+
 spl_autoload_register(function ($className) {
     // Định nghĩa các đường dẫn cơ bản map với namespace hoặc folder
     $paths = [

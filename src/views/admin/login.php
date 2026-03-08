@@ -73,6 +73,13 @@
 
             <div class="px-8 pb-10">
                 
+                <?php 
+                // Check for session expired
+                if (isset($_GET['expired'])) {
+                    $error = 'Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại.';
+                }
+                ?>
+                
                 <?php if(!empty($error)): ?>
                 <div class="mb-6 bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-xl flex items-center gap-3 text-sm font-medium animate-pulse">
                     <i data-lucide="alert-circle" class="w-5 h-5 shrink-0"></i>
@@ -81,6 +88,9 @@
                 <?php endif; ?>
 
                 <form id="loginForm" action="/admin/login" method="POST" class="space-y-5">
+                    
+                    <!-- CSRF Token -->
+                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(SecurityHelper::getCSRFToken() ?? '') ?>">
                     
                     <div>
                         <label class="block text-sm font-bold text-slate-700 mb-1.5 ml-1">Tài khoản</label>

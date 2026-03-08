@@ -16,6 +16,12 @@ class AdminBlogCategoryController {
     public function store() {
         if (!isset($_SESSION['admin_logged_in'])) exit;
         
+        // CSRF Token validation
+        if (!SecurityHelper::verifyCSRFToken()) {
+            http_response_code(403);
+            die('CSRF Token không hợp lệ!');
+        }
+        
         $data = $_POST;
         
         // Validate
@@ -30,10 +36,13 @@ class AdminBlogCategoryController {
         }
 
         $model = new AdminBlogCategory();
-        $model->create($data);
+        $newId = $model->create($data);
+        
+        // Log create action
+        Logger::getInstance()->logCreate('BLOG_CATEGORY', $newId, ['name' => $data['name']]);
 
-        // Quay về trang sửa danh mục vừa tạo
-        header('Location: /admin/blog?tab=categories/edit/' . (new AdminBlogCategory())->getLastInsertId());
+        // Redirect to edit page
+        header('Location: /admin/blog-category/edit/' . $newId);
     }
 
     // 3. Form Sửa (Edit)
@@ -55,6 +64,12 @@ class AdminBlogCategoryController {
     public function update($id) {
         if (!isset($_SESSION['admin_logged_in'])) exit;
         
+        // CSRF Token validation
+        if (!SecurityHelper::verifyCSRFToken()) {
+            http_response_code(403);
+            die('CSRF Token không hợp lệ!');
+        }
+        
         $data = $_POST;
         if (empty($data['slug'])) {
             $data['slug'] = $this->createSlug($data['name']);
@@ -62,8 +77,11 @@ class AdminBlogCategoryController {
 
         $model = new AdminBlogCategory();
         $model->update($id, $data);
+        
+        // Log update action
+        Logger::getInstance()->logUpdate('BLOG_CATEGORY', $id, ['name' => $data['name']]);
 
-        header('Location: /admin/blog?tab=categories');
+        header('Location: /admin/blog-category/edit/' . $id);
     }
 
     // 5. Xóa
@@ -71,9 +89,14 @@ class AdminBlogCategoryController {
         if (!isset($_SESSION['admin_logged_in'])) exit;
         
         $model = new AdminBlogCategory();
+        $category = $model->getById($id);
+        
         $model->delete($id);
         
-        header('Location: /admin/blog?tab=categories');
+        // Log delete action
+        Logger::getInstance()->logDelete('BLOG_CATEGORY', $id, ['name' => $category['name'] ?? 'Unknown']);
+        
+        header('Location: /admin/blog');
     }
 
     // Helper tạo slug

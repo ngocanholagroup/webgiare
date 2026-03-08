@@ -61,7 +61,8 @@ class AdminAccount {
         $sql = "INSERT INTO admins (username, password, full_name, email, avatar) 
                 VALUES (:username, :password, :full_name, :email, :avatar)";
         $stmt = $this->conn->prepare($sql);
-        return $stmt->execute($data);
+        $stmt->execute($data);
+        return $this->conn->lastInsertId();
     }
 
     public function update($id, $data) {

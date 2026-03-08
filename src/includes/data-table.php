@@ -92,13 +92,13 @@ $show_toolbar = !empty($search_placeholder) || !empty($create_link);
                                         
                                         echo "<div class='flex items-center justify-end gap-1'>";
                                         if(!empty($col['edit_url'])) 
-                                            echo "<a href='{$edit_url}' class='text-blue-600 hover:text-blue-800 hover:underline font-medium'>Sửa</a>";
+                                            echo "<a href='" . htmlspecialchars($edit_url) . "' class='text-blue-600 hover:text-blue-800 hover:underline font-medium'>Sửa</a>";
                                         
                                         if(!empty($col['edit_url']) && !empty($col['delete_url'])) 
                                             echo "<span class='text-slate-300 mx-2'>/</span>";
                                         
                                         if(!empty($col['delete_url'])) 
-                                            echo "<button onclick=\"if(confirm('Bạn chắc chắn muốn xóa?')) window.location.href='{$delete_url}'\" class='text-red-600 hover:text-red-800 hover:underline font-medium'>Xóa</button>";
+                                            echo "<button onclick=\"if(confirm('Bạn chắc chắn muốn xóa?')) window.location.href='" . htmlspecialchars($delete_url) . "'\" class='text-red-600 hover:text-red-800 hover:underline font-medium'>Xóa</button>";
                                         echo "</div>";
                                         break;
                                     
@@ -131,7 +131,7 @@ $show_toolbar = !empty($search_placeholder) || !empty($create_link);
                                 </div>
                                 <p class="text-sm font-medium">Không tìm thấy dữ liệu nào.</p>
                                 <?php if(!empty($_GET['search'])): ?>
-                                    <a href="<?= strtok($_SERVER["REQUEST_URI"], '?') ?>" class="text-orange-600 text-xs mt-2 hover:underline">Xóa bộ lọc</a>
+                                    <a href="<?= htmlspecialchars(strtok($_SERVER["REQUEST_URI"], '?')) ?>" class="text-orange-600 text-xs mt-2 hover:underline">Xóa bộ lọc</a>
                                 <?php endif; ?>
                             </div>
                         </td>

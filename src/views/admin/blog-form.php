@@ -48,8 +48,8 @@ $form_fields = [
         'width' => 'col-span-6 md:col-span-3', 'options' => $authOpts
     ],
     [
-        'label' => 'Thời gian đọc (phút)', 'name' => 'reading_time', 'type' => 'text',
-        'width' => 'col-span-6 md:col-span-3', 'placeholder' => '5'
+        'label' => 'Thời gian đọc (phút)', 'name' => 'reading_time', 'type' => 'number',
+        'width' => 'col-span-6 md:col-span-3', 'placeholder' => '5', 'min' => '1', 'max' => '999'
     ],
     [
         'label' => 'Nổi bật', 'name' => 'is_featured', 'type' => 'select',

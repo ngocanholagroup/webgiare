@@ -1,6 +1,17 @@
+<?php 
+// Xử lý active tab cho PHP render ban đầu
+$current_tab = $active_tab ?? 'posts';
+// Định nghĩa các tab để `admin-header.php` có thể hiển thị navigation
+$page_tabs = [
+    ['id' => 'tab-posts', 'label' => 'Bài viết', 'icon' => 'file-text'],
+    ['id' => 'tab-categories', 'label' => 'Danh mục', 'icon' => 'list'],
+    ['id' => 'tab-authors', 'label' => 'Tác giả', 'icon' => 'users']
+];
+?>
+
 <?php include 'includes/admin-header.php'; ?>
 
-<div id="tab-posts" class="tab-panel active space-y-6">
+<div id="tab-posts" class="tab-panel <?= $current_tab === 'posts' ? 'active' : '' ?> space-y-6">
     <?php
     $post_columns = [
         ['label' => '#', 'type' => 'index', 'width' => '50px'],
@@ -60,7 +71,7 @@
     ?>
 </div>
 
-<div id="tab-categories" class="tab-panel space-y-6">
+<div id="tab-categories" class="tab-panel <?= $current_tab === 'categories' ? 'active' : '' ?> space-y-6">
     <?php
     // (Giữ nguyên phần Blog Categories)
     $cat_columns = [
@@ -83,7 +94,7 @@
     ?>
 </div>
 
-<div id="tab-authors" class="tab-panel space-y-6">
+<div id="tab-authors" class="tab-panel <?= $current_tab === 'authors' ? 'active' : '' ?> space-y-6">
     <?php
     // (Giữ nguyên phần Authors)
     $auth_columns = [

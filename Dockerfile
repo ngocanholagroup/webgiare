@@ -1,7 +1,19 @@
 FROM php:8.2-apache
 
-# Cài đặt extension
+# Cài đặt dependencies cho GD và extensions
+RUN apt-get update && apt-get install -y \
+    zlib1g-dev \
+    libpng-dev \
+    libjpeg62-turbo-dev \
+    libfreetype6-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Cài đặt PHP extensions
 RUN docker-php-ext-install mysqli pdo pdo_mysql
+
+# Cài đặt và cấu hình GD
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install gd
 
 # Bật mod_rewrite
 RUN a2enmod rewrite

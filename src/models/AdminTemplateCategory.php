@@ -33,11 +33,12 @@ class AdminTemplateCategory {
     public function create($data) {
         $sql = "INSERT INTO template_categories (name, slug, description) VALUES (:name, :slug, :description)";
         $stmt = $this->conn->prepare($sql);
-        return $stmt->execute([
+        $stmt->execute([
             ':name' => $data['name'],
             ':slug' => $data['slug'],
             ':description' => $data['description']
         ]);
+        return $this->conn->lastInsertId();
     }
 
     // Cập nhật

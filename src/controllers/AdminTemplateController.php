@@ -60,6 +60,13 @@ class AdminTemplateController
     public function store()
     {
         if (!isset($_SESSION['admin_logged_in'])) exit;
+        
+        // CSRF Token validation
+        if (!SecurityHelper::verifyCSRFToken()) {
+            http_response_code(403);
+            die('CSRF Token không hợp lệ!');
+        }
+
         $model = new AdminTemplate();
         $data = $_POST;
 
@@ -70,17 +77,17 @@ class AdminTemplateController
         $data['image_mobile']  = !empty($_FILES['image_mobile']['name'])  ? $this->uploadImage($_FILES['image_mobile'])  : '';
 
         // 2. Tạo Template
-        // Lưu ý: Hàm create() của Model cần trả về ID vừa tạo để ta upload gallery cho nó
-        // Bạn cần sửa model: return $this->conn->lastInsertId();
-        $model->create($data);
-        $newTemplateId = $model->getLastId(); // Giả sử bạn viết thêm hàm lấy ID mới nhất hoặc sửa hàm create trả về ID
+        $newTemplateId = $model->create($data);
+        
+        // Log create action
+        Logger::getInstance()->logCreate('TEMPLATE', $newTemplateId, ['name' => $data['name']]);
 
         // 3. Xử lý Upload Gallery (Nếu có)
         if ($newTemplateId && !empty($_FILES['gallery_files']['name'][0])) {
             $this->processGalleryUpload($newTemplateId, $_FILES['gallery_files']);
         }
 
-        header('Location: /admin/template');
+        header('Location: /admin/template/edit/' . $newTemplateId);
     }
 
     // 4. FORM SỬA (EDIT)
@@ -114,6 +121,13 @@ class AdminTemplateController
     public function update($id)
     {
         if (!isset($_SESSION['admin_logged_in'])) exit;
+        
+        // CSRF Token validation
+        if (!SecurityHelper::verifyCSRFToken()) {
+            http_response_code(403);
+            die('CSRF Token không hợp lệ!');
+        }
+
         $model = new AdminTemplate();
         $data = $_POST;
 
@@ -140,13 +154,16 @@ class AdminTemplateController
 
         // 2. Cập nhật Template
         $model->update($id, $data);
+        
+        // Log update action
+        Logger::getInstance()->logUpdate('TEMPLATE', $id, ['name' => $data['name']]);
 
         // 3. Xử lý Upload Gallery (Upload thêm)
         if (!empty($_FILES['gallery_files']['name'][0])) {
             $this->processGalleryUpload($id, $_FILES['gallery_files']);
         }
 
-        header('Location: /admin/template');
+        header('Location: /admin/template/edit/' . $id);
     }
 
     // --- HELPER: Xử lý loop upload gallery ---
@@ -195,6 +212,10 @@ class AdminTemplateController
 
         // --- XÓA TRONG DATABASE ---
         $model->delete($id);
+        
+        // Log delete action
+        Logger::getInstance()->logDelete('TEMPLATE', $id, ['name' => $tpl['name'] ?? 'Unknown']);
+        
         header('Location: /admin/template');
     }
 
@@ -202,6 +223,12 @@ class AdminTemplateController
     public function uploadGallery($id)
     {
         if (!isset($_SESSION['admin_logged_in'])) exit;
+        
+        // CSRF Token validation
+        if (!SecurityHelper::verifyCSRFToken()) {
+            http_response_code(403);
+            die('CSRF Token không hợp lệ!');
+        }
 
         if (!empty($_FILES['gallery_files']['name'][0])) {
             $model = new AdminTemplate();
@@ -221,6 +248,7 @@ class AdminTemplateController
                     $url = $this->uploadImage($singleFile);
                     if ($url) {
                         $model->addGalleryImage($id, $url);
+                        Logger::getInstance()->logUpload('TEMPLATE_GALLERY', basename($url), ['size' => $singleFile['size']]);
                     }
                 }
             }
@@ -253,6 +281,9 @@ class AdminTemplateController
             // Xóa trong Database
             $stmtDel = Database::getConnection()->prepare("DELETE FROM template_images WHERE id = :id");
             $stmtDel->execute([':id' => $imgId]);
+            
+            // Log delete action
+            Logger::getInstance()->logDelete('TEMPLATE_GALLERY_IMAGE', $imgId, ['url' => $img['image_url']]);
         }
 
         // Quay lại trang Edit
@@ -264,17 +295,27 @@ class AdminTemplateController
     // --- HELPER: UPLOAD FILE ---
     private function uploadImage($file)
     {
-        if ($file['error'] !== UPLOAD_ERR_OK) return '';
+        // Validate file upload
+        $validation = FileUploadValidator::validate($file, 'image');
+        if (!$validation['valid']) {
+            $_SESSION['upload_error'] = implode(', ', $validation['errors']);
+            return '';
+        }
 
         $targetDir = "uploads/templates/";
         if (!file_exists($targetDir)) mkdir($targetDir, 0777, true);
 
-        // Đổi tên file: time_random.ext
-        $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
-        $fileName = time() . '_' . rand(1000, 9999) . '.' . $extension;
-        $targetPath = $targetDir . $fileName;
+        // Generate safe filename
+        $safeFilename = FileUploadValidator::generateSafeFilename($file['name']);
+        if (!$safeFilename) {
+            $_SESSION['upload_error'] = 'Invalid file extension';
+            return '';
+        }
+
+        $targetPath = $targetDir . $safeFilename;
 
         if (move_uploaded_file($file['tmp_name'], $targetPath)) {
+            Logger::getInstance()->logUpload('TEMPLATE_IMAGE', $safeFilename, ['size' => $file['size']]);
             return '/' . $targetPath;
         }
         return '';

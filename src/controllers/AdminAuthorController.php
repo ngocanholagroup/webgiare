@@ -2,11 +2,27 @@
 class AdminAuthorController {
     // Helper upload ảnh (tái sử dụng từ TemplateController hoặc viết vào BaseController)
     private function uploadImage($file) {
-        if ($file['error'] !== UPLOAD_ERR_OK) return '';
+        // Validate file upload
+        $validation = FileUploadValidator::validate($file, 'image');
+        if (!$validation['valid']) {
+            $_SESSION['upload_error'] = implode(', ', $validation['errors']);
+            return '';
+        }
+
         $targetDir = "uploads/authors/";
         if (!file_exists($targetDir)) mkdir($targetDir, 0777, true);
-        $fileName = time() . '_' . rand(1000, 9999) . '.' . pathinfo($file['name'], PATHINFO_EXTENSION);
-        if (move_uploaded_file($file['tmp_name'], $targetDir . $fileName)) return '/' . $targetDir . $fileName;
+        
+        // Generate safe filename
+        $safeFilename = FileUploadValidator::generateSafeFilename($file['name']);
+        if (!$safeFilename) {
+            $_SESSION['upload_error'] = 'Invalid file extension';
+            return '';
+        }
+
+        if (move_uploaded_file($file['tmp_name'], $targetDir . $safeFilename)) {
+            Logger::getInstance()->logUpload('AUTHOR_AVATAR', $safeFilename, ['size' => $file['size']]);
+            return '/' . $targetDir . $safeFilename;
+        }
         return '';
     }
 
@@ -17,10 +33,22 @@ class AdminAuthorController {
 
     public function store() {
         if (!isset($_SESSION['admin_logged_in'])) exit;
+        
+        // CSRF Token validation
+        if (!SecurityHelper::verifyCSRFToken()) {
+            http_response_code(403);
+            die('CSRF Token không hợp lệ!');
+        }
+
         $data = $_POST;
         $data['avatar'] = !empty($_FILES['avatar']['name']) ? $this->uploadImage($_FILES['avatar']) : '';
-        (new AdminAuthor())->create($data);
-        header('Location: /admin/blog?tab=authors/edit/' . (new AdminAuthor())->getLastInsertId());
+        $model = new AdminAuthor();
+        $newId = $model->create($data);
+        
+        // Log create action
+        Logger::getInstance()->logCreate('AUTHOR', $newId, ['name' => $data['name']]);
+        
+        header('Location: /admin/blog/author/edit/' . $newId);
     }
 
     public function edit($id) {
@@ -32,6 +60,13 @@ class AdminAuthorController {
 
     public function update($id) {
         if (!isset($_SESSION['admin_logged_in'])) exit;
+        
+        // CSRF Token validation
+        if (!SecurityHelper::verifyCSRFToken()) {
+            http_response_code(403);
+            die('CSRF Token không hợp lệ!');
+        }
+
         $data = $_POST;
         $data['avatar'] = $_POST['old_avatar'] ?? '';
         if (!empty($_FILES['avatar']['name'])) {
@@ -42,7 +77,11 @@ class AdminAuthorController {
             }
         }
         (new AdminAuthor())->update($id, $data);
-        header('Location: /admin/blog?tab=authors');
+        
+        // Log update action
+        Logger::getInstance()->logUpdate('AUTHOR', $id, ['name' => $data['name']]);
+        
+        header('Location: /admin/blog/author/edit/' . $id);
     }
 
     public function delete($id) {
@@ -51,6 +90,10 @@ class AdminAuthorController {
         $author = $model->getById($id);
         if ($author && file_exists(ltrim($author['avatar'], '/'))) unlink(ltrim($author['avatar'], '/'));
         $model->delete($id);
-        header('Location: /admin/blog?tab=authors');
+        
+        // Log delete action
+        Logger::getInstance()->logDelete('AUTHOR', $id, ['name' => $author['name'] ?? 'Unknown']);
+        
+        header('Location: /admin/blog');
     }
 }

@@ -11,8 +11,8 @@ class PageController {
 
     // Xử lý trang chủ (Route: /)
     public function home() {
-        // Slug trong DB là 'home', View file là 'client/home.php'
-        $this->renderPage('home', 'client.home');
+        // Slug trong DB là 'trang-chu', View file là 'client/home.php'
+        $this->renderPage('trang-chu', 'client.home');
     }
 
     // Xử lý trang giới thiệu (Route: /gioi-thieu)

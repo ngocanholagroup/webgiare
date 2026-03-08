@@ -114,7 +114,7 @@ class AdminTemplate
             ':sku'         => $data['sku'],
             ':description' => $data['description'],
             ':price'       => $data['price'],
-            ':sale_price'  => $data['sale_price'],
+            ':sale_price'  => !empty($data['sale_price']) ? $data['sale_price'] : null,
             ':image_desktop' => $data['image_desktop'], // Mới
             ':image_mobile'  => $data['image_mobile'],  // Mới
             ':demo_url'    => $data['demo_url'],
@@ -152,7 +152,7 @@ class AdminTemplate
             ':sku'         => $data['sku'],
             ':description' => $data['description'],
             ':price'       => $data['price'],
-            ':sale_price'  => $data['sale_price'],
+            ':sale_price'  => !empty($data['sale_price']) ? $data['sale_price'] : null,
             ':image_desktop' => $data['image_desktop'], // Mới
             ':image_mobile'  => $data['image_mobile'],  // Mới
             ':demo_url'    => $data['demo_url'],

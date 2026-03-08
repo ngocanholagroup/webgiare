@@ -49,7 +49,8 @@ class ContactController {
             if (!empty($errors)) {
                 // Có lỗi -> Alert lỗi đầu tiên và quay lại
                 $errorString = implode("\\n", $errors);
-                echo "<script>alert('$errorString'); history.back();</script>";
+                $safeErrorString = addslashes(str_replace(["'", '"', "\n", "\r"], ["\\'", '\\"', '\\n', '\\r'], $errorString));
+                echo "<script>alert('$safeErrorString'); history.back();</script>";
                 return;
             }
 

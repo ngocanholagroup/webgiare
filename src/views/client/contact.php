@@ -3,7 +3,12 @@
 include 'includes/header.php';
 
 // Kiểm tra tham số template từ URL
-$selected_template = isset($_GET['template']) ? $_GET['template'] : '';
+$selected_template = isset($_GET['template']) ? trim($_GET['template']) : '';
+// Validate template - chỉ cho phép alphanumeric, space, và ký tự đặc biệt cơ bản
+if (!empty($selected_template) && !preg_match('/^[a-zA-Z0-9\s\-_.,()]+$/', $selected_template)) {
+    $selected_template = ''; // Reset nếu có ký tự nguy hiểm
+}
+
 ?>
 
 <style>

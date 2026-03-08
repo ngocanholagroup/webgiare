@@ -37,6 +37,12 @@ class AdminPageController {
 
     public function update($id) {
         if (!isset($_SESSION['admin_logged_in'])) exit;
+        
+        // CSRF Token validation
+        if (!SecurityHelper::verifyCSRFToken()) {
+            http_response_code(403);
+            die('CSRF Token không hợp lệ!');
+        }
 
         // 1. Lấy dữ liệu cơ bản
         $data = [
@@ -54,6 +60,9 @@ class AdminPageController {
 
         $model = new AdminPage();
         $model->update($id, $data);
+        
+        // Log update action
+        Logger::getInstance()->logUpdate('PAGE', $id, ['name' => $data['name']]);
         
         // Ở lại trang sửa sau khi cập nhật
         header('Location: /admin/page/edit/' . $id);

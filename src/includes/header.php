@@ -6,30 +6,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-    <title><?= $meta_title ?? $title ?? setting('default_title') ?></title>
+    <title><?= htmlspecialchars($meta_title ?? $title ?? setting('default_title'), ENT_QUOTES, 'UTF-8') ?></title>
     
-    <meta name="description" content="<?= $meta_desc ?? $description ?? setting('default_desc') ?>">
-    <meta name="keywords" content="<?= $meta_keywords ?? setting('default_keywords') ?>">
-    <meta name="robots" content="<?= $meta_robots ?? 'index, follow' ?>">
-    <meta name="author" content="<?= $meta_author ?? setting('company_name', 'HolaGroup') ?>">
-    <meta name="copyright" content="<?= setting('company_name', 'HolaGroup') ?>">
+    <meta name="description" content="<?= htmlspecialchars($meta_desc ?? $description ?? setting('default_desc'), ENT_QUOTES, 'UTF-8') ?>">
+    <meta name="keywords" content="<?= htmlspecialchars($meta_keywords ?? setting('default_keywords'), ENT_QUOTES, 'UTF-8') ?>">
+    <meta name="robots" content="<?= htmlspecialchars($meta_robots ?? 'index, follow', ENT_QUOTES, 'UTF-8') ?>">
+    <meta name="author" content="<?= htmlspecialchars($meta_author ?? setting('company_name', 'HolaGroup'), ENT_QUOTES, 'UTF-8') ?>">
+    <meta name="copyright" content="<?= htmlspecialchars(setting('company_name', 'HolaGroup'), ENT_QUOTES, 'UTF-8') ?>">
 
-    <link rel="canonical" href="<?= $meta_canonical ?? "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]" ?>" />
+    <link rel="canonical" href="<?= $meta_canonical ?? (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http') . "://$_SERVER[HTTP_HOST]" . htmlspecialchars($_SERVER['REQUEST_URI'], ENT_QUOTES, 'UTF-8') ?>" />
 
-    <meta property="og:type" content="<?= $og_type ?? 'website' ?>">
-    <meta property="og:url" content="<?= $meta_canonical ?? "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]" ?>">
-    <meta property="og:site_name" content="<?= setting('company_name', 'HolaGroup') ?>">
-    <meta property="og:title" content="<?= $meta_title ?? $title ?? setting('default_title') ?>">
-    <meta property="og:description" content="<?= $meta_desc ?? $description ?? setting('default_desc') ?>">
-    <meta property="og:image" content="<?= $og_image ?? setting('default_share_image') ?>">
+    <meta property="og:type" content="<?= htmlspecialchars($og_type ?? 'website', ENT_QUOTES, 'UTF-8') ?>">
+    <meta property="og:url" content="<?= $meta_canonical ?? (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http') . "://$_SERVER[HTTP_HOST]" . htmlspecialchars($_SERVER['REQUEST_URI'], ENT_QUOTES, 'UTF-8') ?>" />
+    <meta property="og:site_name" content="<?= htmlspecialchars(setting('company_name', 'HolaGroup'), ENT_QUOTES, 'UTF-8') ?>">
+    <meta property="og:title" content="<?= htmlspecialchars($meta_title ?? $title ?? setting('default_title'), ENT_QUOTES, 'UTF-8') ?>">
+    <meta property="og:description" content="<?= htmlspecialchars($meta_desc ?? $description ?? setting('default_desc'), ENT_QUOTES, 'UTF-8') ?>">
+    <meta property="og:image" content="<?= htmlspecialchars($og_image ?? setting('default_share_image'), ENT_QUOTES, 'UTF-8') ?>">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta property="og:locale" content="vi_VN">
 
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="<?= $meta_title ?? $title ?? setting('default_title') ?>">
-    <meta name="twitter:description" content="<?= $meta_desc ?? $description ?? setting('default_desc') ?>">
-    <meta name="twitter:image" content="<?= $og_image ?? setting('default_share_image') ?>">
+    <meta name="twitter:title" content="<?= htmlspecialchars($meta_title ?? $title ?? setting('default_title'), ENT_QUOTES, 'UTF-8') ?>">
+    <meta name="twitter:description" content="<?= htmlspecialchars($meta_desc ?? $description ?? setting('default_desc'), ENT_QUOTES, 'UTF-8') ?>">
+    <meta name="twitter:image" content="<?= htmlspecialchars($og_image ?? setting('default_share_image'), ENT_QUOTES, 'UTF-8') ?>">
 
     <?php $favicon = setting('site_favicon_url', '/assets/favicon.ico'); ?>
     <link rel="icon" href="<?= $favicon ?>" type="image/x-icon">
@@ -47,27 +47,27 @@
       "@type": "ProfessionalService",
       "name": "<?= setting('company_name', 'HolaGroup') ?>",
       "image": "<?= setting('default_share_image') ?>",
-      "@id": "http://<?= $_SERVER['HTTP_HOST'] ?>",
-      "url": "http://<?= $_SERVER['HTTP_HOST'] ?>",
+      "@id": "<?= (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http') . "://$_SERVER[HTTP_HOST'] ?>",
+      "url": "<?= (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http') . "://$_SERVER[HTTP_HOST'] ?>",
       "telephone": "<?= setting('company_phone') ?>",
       "priceRange": "$$",
       "address": {
         "@type": "PostalAddress",
         "streetAddress": "<?= setting('company_address') ?>",
-        "addressLocality": "Hồ Chí Minh",
-        "postalCode": "700000",
-        "addressCountry": "VN"
+        "addressLocality": "<?= setting('company_city', 'Hồ Chí Minh') ?>",
+        "postalCode": "<?= setting('company_postal_code', '700000') ?>",
+        "addressCountry": "<?= setting('company_country', 'VN') ?>"
       },
       "geo": {
         "@type": "GeoCoordinates",
-        "latitude": 10.762622,
-        "longitude": 106.660172
+        "latitude": <?= setting('company_latitude', '10.762622') ?>,
+        "longitude": <?= setting('company_longitude', '106.660172') ?>
       },
       "openingHoursSpecification": {
         "@type": "OpeningHoursSpecification",
         "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
-        "opens": "08:00",
-        "closes": "18:00"
+        "opens": "<?= setting('company_open_time', '08:00') ?>",
+        "closes": "<?= setting('company_close_time', '18:00') ?>"
       },
       "sameAs": [
         "<?= setting('social_facebook') ?>",

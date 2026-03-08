@@ -1,6 +1,14 @@
 <?php include 'includes/admin-header.php'; ?>
 
 <?php
+// Debug: Hiển thị lỗi upload nếu có
+if (isset($_SESSION['upload_error'])) {
+    echo '<div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">';
+    echo '<strong>Lỗi upload:</strong> ' . htmlspecialchars($_SESSION['upload_error']);
+    echo '</div>';
+    unset($_SESSION['upload_error']); // Xóa sau khi hiển thị
+}
+
 // 1. CHUẨN BỊ DỮ LIỆU
 // $settings từ controller trả về dạng ['company_name' => 'ABC', ...]
 // Ta gán nó vào $form_data để form.php tự điền value

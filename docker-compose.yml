@@ -12,37 +12,50 @@ services:
     volumes:
       - ./src:/var/www/html # Mount code từ máy thật vào container để sửa code live
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     networks:
       - webgiare_net
+    env_file:
+      - .env
     environment:
-      - DB_HOST=db
-      - DB_NAME=webgiare_db
-      - DB_USER=user_dev
-      - DB_PASS=userpassword
+      - DB_HOST=${DB_HOST}
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASS=${DB_PASS}
 
   # 2. Database (MySQL)
   db:
     image: mysql:8.0
     container_name: webgiare_db
+    env_file:
+      - .env
     environment:
-      MYSQL_ROOT_PASSWORD: rootpassword  # Mật khẩu root
-      MYSQL_DATABASE: webgiare_db        # Tên database tạo sẵn
-      MYSQL_USER: user_dev               # User thường
-      MYSQL_PASSWORD: userpassword       # Mật khẩu user thường
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASS}
     volumes:
       - db_data:/var/lib/mysql           # Giữ dữ liệu không bị mất khi tắt container
+      - ./docker/init.sql:/docker-entrypoint-initdb.d/init.sql  # Script khởi tạo DB
     networks:
       - webgiare_net
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   # 3. Quản trị DB (phpMyAdmin)
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
     container_name: webgiare_pma
+    env_file:
+      - .env
     environment:
-      PMA_HOST: db                       # Tên service mysql ở trên
+      PMA_HOST: db
       PMA_USER: root
-      PMA_PASSWORD: rootpassword
+      PMA_PASSWORD: ${MYSQL_ROOT_PASSWORD}
     ports:
       - "8081:80" # Truy cập phpMyAdmin qua http://localhost:8081
     depends_on:

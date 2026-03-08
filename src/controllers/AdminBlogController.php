@@ -29,6 +29,13 @@ class AdminBlogController
         // Data cho Tab 3: Tác giả
         $authors = $model->getAuthorsWithStats();
 
+        // Định nghĩa các tabs
+        $page_tabs = [
+            ['id' => 'posts', 'label' => 'Bài viết', 'icon' => 'file-text'],
+            ['id' => 'categories', 'label' => 'Danh mục', 'icon' => 'folder'],
+            ['id' => 'authors', 'label' => 'Tác giả', 'icon' => 'users']
+        ];
+
         view('admin.blog', [
             'title' => 'Quản lý Blog',
             'posts' => $posts,
@@ -37,7 +44,9 @@ class AdminBlogController
             'page' => $page,
             'totalPages' => $totalPages,
             'search' => $search,
-            'totalRecords' => $totalRecords
+            'totalRecords' => $totalRecords,
+            'page_tabs' => $page_tabs,
+            'active_tab' => 'posts'
         ]);
     }
 
@@ -129,7 +138,28 @@ class AdminBlogController
     {
         if (!isset($_SESSION['admin_logged_in'])) exit;
         
+        // CSRF Token validation
+        if (!SecurityHelper::verifyCSRFToken()) {
+            http_response_code(403);
+            die('CSRF Token không hợp lệ!');
+        }
+        
         $data = $_POST;
+        
+        // Validate reading_time - must be integer, default to 5 if empty
+        $data['reading_time'] = !empty($data['reading_time']) ? 
+            (int)trim($data['reading_time']) : 5;
+        
+        // Validate other required fields
+        if (empty($data['title'])) {
+            die('Tiêu đề bài viết là bắt buộc!');
+        }
+        if (empty($data['category_id'])) {
+            die('Danh mục là bắt buộc!');
+        }
+        if (empty($data['author_id'])) {
+            die('Tác giả là bắt buộc!');
+        }
         
         // Tạo slug tự động
         if (empty($data['slug'])) {
@@ -144,6 +174,9 @@ class AdminBlogController
 
         // Tạo bài viết mới
         $postId = (new AdminBlog())->createPost($data);
+        
+        // Log create action
+        Logger::getInstance()->logCreate('BLOG_POST', $postId, ['title' => $data['title']]);
         
         // Chuyển hướng sang trang sửa bài vừa tạo
         header('Location: /admin/blog/edit/' . $postId);
@@ -171,6 +204,12 @@ class AdminBlogController
     public function update($id)
     {
         if (!isset($_SESSION['admin_logged_in'])) exit;
+        
+        // CSRF Token validation
+        if (!SecurityHelper::verifyCSRFToken()) {
+            http_response_code(403);
+            die('CSRF Token không hợp lệ!');
+        }
         
         $model = new AdminBlog();
         
@@ -217,6 +256,9 @@ class AdminBlogController
 
         (new AdminBlog())->updatePost($id, $data);
         
+        // Log update action
+        Logger::getInstance()->logUpdate('BLOG_POST', $id, ['title' => $data['title']]);
+        
         // Ở lại trang sửa sau khi cập nhật
         header('Location: /admin/blog/edit/' . $id);
     }
@@ -246,6 +288,10 @@ class AdminBlogController
         }
 
         $model->deletePost($id);
+        
+        // Log delete action
+        Logger::getInstance()->logDelete('BLOG_POST', $id, ['title' => $post['title'] ?? 'Unknown']);
+        
         header('Location: /admin/blog');
     }
 
@@ -270,39 +316,36 @@ class AdminBlogController
 
         $file = $_FILES['upload'];
         
-        // 3. Validate file type
-        $allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
-        $finfo = finfo_open(FILEINFO_MIME_TYPE);
-        $mimeType = finfo_file($finfo, $file['tmp_name']);
-        finfo_close($finfo);
-        
-        if (!in_array($mimeType, $allowedTypes)) {
+        // 3. Validate file using FileUploadValidator
+        $validation = FileUploadValidator::validate($file, 'image');
+        if (!$validation['valid']) {
             http_response_code(400);
-            echo json_encode(['error' => ['message' => 'Invalid file type. Only JPEG, PNG, GIF, WebP allowed.']]);
+            echo json_encode(['error' => ['message' => implode(', ', $validation['errors'])]]);
             exit;
         }
         
-        // 4. Validate file size (max 5MB)
-        if ($file['size'] > 5 * 1024 * 1024) {
-            http_response_code(400);
-            echo json_encode(['error' => ['message' => 'File too large. Max size is 5MB.']]);
-            exit;
-        }
-        
-        // 5. Create upload directory if not exists
-        $uploadDir = 'uploads/blog/';
+        // 4. Create upload directory if not exists
+        $uploadDir = 'uploads/posts_content/';
         if (!is_dir($uploadDir)) {
             mkdir($uploadDir, 0755, true);
         }
         
-        // 6. Generate unique filename
-        $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
-        $filename = time() . '_' . uniqid() . '.' . $extension;
-        $targetPath = $uploadDir . $filename;
+        // 5. Generate safe filename
+        $safeFilename = FileUploadValidator::generateSafeFilename($file['name']);
+        if (!$safeFilename) {
+            http_response_code(400);
+            echo json_encode(['error' => ['message' => 'Invalid file extension']]);
+            exit;
+        }
         
-        // 7. Move file to target directory
+        $targetPath = $uploadDir . $safeFilename;
+        
+        // 6. Move file to target directory
         if (move_uploaded_file($file['tmp_name'], $targetPath)) {
-            // 8. Trả về JSON đúng chuẩn CKEditor 5
+            // Log upload
+            Logger::getInstance()->logUpload('CKEDITOR_IMAGE', $safeFilename, ['size' => $file['size']]);
+            
+            // 7. Trả về JSON đúng chuẩn CKEditor 5
             echo json_encode([
                 'url' => '/' . $targetPath // Đường dẫn tuyệt đối để hiển thị
             ]);
@@ -315,7 +358,12 @@ class AdminBlogController
     // Hàm upload ảnh vào folder uploads/blog/
     private function uploadImage($file)
     {
-        if ($file['error'] !== UPLOAD_ERR_OK) return '';
+        // Validate file upload
+        $validation = FileUploadValidator::validate($file, 'image');
+        if (!$validation['valid']) {
+            $_SESSION['upload_error'] = implode(', ', $validation['errors']);
+            return '';
+        }
 
         $targetDir = "uploads/blog/";
         // Tự tạo thư mục nếu chưa có
@@ -323,12 +371,18 @@ class AdminBlogController
             mkdir($targetDir, 0777, true);
         }
 
-        // Đổi tên file để tránh trùng: time_random.ext
-        $ext = pathinfo($file['name'], PATHINFO_EXTENSION);
-        $fileName = time() . '_' . rand(1000, 9999) . '.' . $ext;
-        $targetPath = $targetDir . $fileName;
+        // Generate safe filename
+        $safeFilename = FileUploadValidator::generateSafeFilename($file['name']);
+        if (!$safeFilename) {
+            $_SESSION['upload_error'] = 'Invalid file extension';
+            return '';
+        }
+
+        $targetPath = $targetDir . $safeFilename;
 
         if (move_uploaded_file($file['tmp_name'], $targetPath)) {
+            // Log file upload
+            Logger::getInstance()->logUpload('BLOG_IMAGE', $safeFilename, ['size' => $file['size']]);
             return '/' . $targetPath;
         }
         return '';

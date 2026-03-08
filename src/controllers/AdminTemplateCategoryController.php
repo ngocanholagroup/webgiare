@@ -17,6 +17,12 @@ class AdminTemplateCategoryController {
     public function store() {
         if (!isset($_SESSION['admin_logged_in'])) exit;
         
+        // CSRF Token validation
+        if (!SecurityHelper::verifyCSRFToken()) {
+            http_response_code(403);
+            die('CSRF Token không hợp lệ!');
+        }
+        
         $data = $_POST;
         
         // Validate cơ bản
@@ -32,10 +38,13 @@ class AdminTemplateCategoryController {
         }
 
         $model = new AdminTemplateCategory();
-        $model->create($data);
+        $newId = $model->create($data);
+        
+        // Log create action
+        Logger::getInstance()->logCreate('TEMPLATE_CATEGORY', $newId, ['name' => $data['name']]);
 
-        // Quay về trang danh sách (Tab 2 của trang Template)
-        header('Location: /admin/template?tab=category');
+        // Chuyển hướng sang trang sửa danh mục vừa tạo
+        header('Location: /admin/category/edit/' . $newId);
     }
 
     // 3. Form Sửa (Edit)
@@ -57,6 +66,12 @@ class AdminTemplateCategoryController {
     public function update($id) {
         if (!isset($_SESSION['admin_logged_in'])) exit;
         
+        // CSRF Token validation
+        if (!SecurityHelper::verifyCSRFToken()) {
+            http_response_code(403);
+            die('CSRF Token không hợp lệ!');
+        }
+        
         $data = $_POST;
         if (empty($data['slug'])) {
             $data['slug'] = $this->createSlug($data['name']);
@@ -64,8 +79,11 @@ class AdminTemplateCategoryController {
 
         $model = new AdminTemplateCategory();
         $model->update($id, $data);
+        
+        // Log update action
+        Logger::getInstance()->logUpdate('TEMPLATE_CATEGORY', $id, ['name' => $data['name']]);
 
-        header('Location: /admin/template?tab=category');
+        header('Location: /admin/category/edit/' . $id);
     }
 
     // 5. Xóa
@@ -73,9 +91,14 @@ class AdminTemplateCategoryController {
         if (!isset($_SESSION['admin_logged_in'])) exit;
         
         $model = new AdminTemplateCategory();
+        $category = $model->getById($id);
+        
         $model->delete($id);
         
-        header('Location: /admin/template?tab=category');
+        // Log delete action
+        Logger::getInstance()->logDelete('TEMPLATE_CATEGORY', $id, ['name' => $category['name'] ?? 'Unknown']);
+        
+        header('Location: /admin/template');
     }
 
     // Helper tạo slug (Copy từ TemplateController sang để độc lập)

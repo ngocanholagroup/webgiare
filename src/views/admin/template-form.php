@@ -146,9 +146,12 @@ $form_fields = [
     [
         'label' => 'Mô tả chi tiết',
         'name'  => 'description',
-        'type'  => 'textarea', // Hoặc 'editor' nếu bạn đã tích hợp CKEditor
+        'type'  => 'textarea',
         'width' => 'col-span-12',
-        'rows'  => 6
+        'rows'  => 15,
+        'required' => false,
+        'class' => 'tinymce-editor',
+        'id' => 'description-editor'
     ]
 ];
 

@@ -83,16 +83,16 @@ class AdminBlog
             VALUES (:cat, :auth, :title, :slug, :sum, :cont, :thumb, :read, :feat, :stat)";
         $stmt = $this->conn->prepare($sql);
         $stmt->execute([
-            ':cat' => $data['category_id'],
-            ':auth' => $data['author_id'],
-            ':title' => $data['title'],
-            ':slug' => $data['slug'],
-            ':sum' => $data['summary'],
+            ':cat' => (int)$data['category_id'],
+            ':auth' => (int)$data['author_id'],
+            ':title' => trim($data['title']),
+            ':slug' => trim($data['slug']),
+            ':sum' => trim($data['summary']),
             ':cont' => $data['content'],
             ':thumb' => $data['thumbnail'],
-            ':read' => $data['reading_time'],
-            ':feat' => $data['is_featured'],
-            ':stat' => $data['status']
+            ':read' => (int)$data['reading_time'],
+            ':feat' => (int)($data['is_featured'] ?? 0),
+            ':stat' => (int)($data['status'] ?? 1)
         ]);
         
         // Return ID of the inserted record

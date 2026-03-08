@@ -64,9 +64,17 @@ class AdminContactController {
     
     public function storeService() {
         if (!isset($_SESSION['admin_logged_in'])) exit;
+        
+        // CSRF Token validation
+        if (!SecurityHelper::verifyCSRFToken()) {
+            http_response_code(403);
+            die('CSRF Token không hợp lệ!');
+        }
+
         if (!empty($_POST['name'])) {
             $model = new AdminContact();
             $model->addService($_POST['name']);
+            Logger::getInstance()->logCreate('CONTACT_SERVICE', 0, ['name' => $_POST['name']]);
         }
         header('Location: /admin/contact'); // Quay lại trang Contact
     }
@@ -75,6 +83,7 @@ class AdminContactController {
         if (!isset($_SESSION['admin_logged_in'])) exit;
         $model = new AdminContact();
         $model->deleteService($id);
+        Logger::getInstance()->logDelete('CONTACT_SERVICE', $id, ['id' => $id]);
         header('Location: /admin/contact');
     }
 
@@ -96,6 +105,12 @@ class AdminContactController {
     public function update($id) {
         if (!isset($_SESSION['admin_logged_in'])) exit;
         
+        // CSRF Token validation
+        if (!SecurityHelper::verifyCSRFToken()) {
+            http_response_code(403);
+            die('CSRF Token không hợp lệ!');
+        }
+        
         $model = new AdminContact();
         $data = [
             'status' => $_POST['status'],
@@ -103,6 +118,9 @@ class AdminContactController {
         ];
         
         $model->update($id, $data);
+        
+        // Log update action
+        Logger::getInstance()->logUpdate('CONTACT', $id, ['status' => $data['status']]);
         
         // Ở lại trang sửa sau khi cập nhật
         header('Location: /admin/contact/detail/' . $id);
@@ -112,7 +130,9 @@ class AdminContactController {
     public function delete($id) {
         if (!isset($_SESSION['admin_logged_in'])) exit;
         $model = new AdminContact();
+        $contact = $model->getById($id);
         $model->delete($id);
+        Logger::getInstance()->logDelete('CONTACT', $id, ['email' => $contact['email'] ?? 'Unknown']);
         header('Location: /admin/contact');
     }
 }
