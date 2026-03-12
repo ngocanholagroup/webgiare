@@ -19,7 +19,8 @@ class AdminBlog
         }
         $stmt = $this->conn->prepare($sql);
         $stmt->execute($params);
-        return $stmt->fetch()['total'];
+        $row = $stmt->fetch();
+        return $row['total'] ?? 0;
     }
 
     public function getAllPosts($limit, $offset, $search = '')
@@ -143,5 +144,27 @@ class AdminBlog
     public function resetFeatured() {
         $stmt = $this->conn->prepare("UPDATE blog_posts SET is_featured = 0");
         return $stmt->execute();
+    }
+
+    // --- 4. THỐNG KÊ (STATS) ---
+    public function getTotalViews()
+    {
+        $stmt = $this->conn->query("SELECT SUM(views) as total FROM blog_posts");
+        if ($stmt) {
+            $row = $stmt->fetch();
+            return $row['total'] ?? 0;
+        }
+        return 0;
+    }
+
+    public function getTopViewedPosts($limit = 5)
+    {
+        $stmt = $this->conn->prepare("SELECT title, slug, views, published_at FROM blog_posts ORDER BY views DESC LIMIT :limit");
+        if ($stmt) {
+            $stmt->bindValue(':limit', (int)$limit, PDO::PARAM_INT);
+            $stmt->execute();
+            return $stmt->fetchAll() ?: [];
+        }
+        return [];
     }
 }

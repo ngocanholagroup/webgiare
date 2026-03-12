@@ -14,6 +14,11 @@ require_once __DIR__ . '/autoload.php';
 SecurityHeaders::applyHeaders();
 SecurityHeaders::verifySessionSecurity();
 
+// 0. COMPOSER AUTOLOAD (Load thư viện bên thứ 3)
+if (file_exists(__DIR__ . '/vendor/autoload.php')) {
+    require_once __DIR__ . '/vendor/autoload.php';
+}
+
 // 1. NẠP AUTOLOAD (QUAN TRỌNG: Phải nạp đầu tiên)
 require_once __DIR__ . '/autoload.php';
 

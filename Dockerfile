@@ -6,6 +6,9 @@ RUN apt-get update && apt-get install -y \
     libpng-dev \
     libjpeg62-turbo-dev \
     libfreetype6-dev \
+    git \
+    unzip \
+    zip \
     && rm -rf /var/lib/apt/lists/*
 
 # Cài đặt PHP extensions
@@ -32,5 +35,8 @@ RUN echo '    AllowOverride All' >> /etc/apache2/apache2.conf
 RUN echo '    Require all granted' >> /etc/apache2/apache2.conf
 RUN echo '</Directory>' >> /etc/apache2/apache2.conf
 # ---------------------
+
+# Cài đặt Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www/html

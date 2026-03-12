@@ -102,20 +102,20 @@ $form_fields = [
     
     // === PHẦN 4: ANALYTICS & MARKETING ===
     [
-        'label' => 'Google Analytics ID (GA4)',
+        'label' => 'GA4 Measurement ID (Tracking Code)',
         'name' => 'google_analytics_id',
         'type' => 'text',
         'width' => 'col-span-12 md:col-span-6',
         'placeholder' => 'G-XXXXXXXXXX',
-        'note' => 'Nhập Measurement ID (G-XXXXXXXXXX). <a href="https://analytics.google.com/" target="_blank" class="text-blue-600 hover:underline font-medium">Truy cập Dashboard Google Analytics</a> để xem báo cáo chi tiết.'
+        'note' => '<span class="text-red-600 font-bold">* Bắt buộc:</span> Dùng để đếm lượt truy cập (Tracking). Lấy trong Admin GA4 -> Data Streams.'
     ],
     [
-        'label' => 'Google Tag Manager ID (GTM)',
-        'name' => 'google_tag_manager_id',
+        'label' => 'GA4 Property ID (Cho Báo Cáo Admin)',
+        'name' => 'ga4_property_id',
         'type' => 'text',
         'width' => 'col-span-12 md:col-span-6',
-        'placeholder' => 'GTM-XXXXXXX',
-        'note' => 'Nhập Container ID nếu dùng GTM (Tùy chọn).'
+        'placeholder' => 'VD: 345678901',
+        'note' => '<span class="text-blue-600 font-bold">* Bắt buộc:</span> Dùng để hiển thị biểu đồ trong trang Admin. Lấy trong Admin GA4 -> Property Settings.'
     ],
     [
         'label' => 'Link Google Business',
