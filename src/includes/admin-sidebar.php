@@ -82,6 +82,11 @@ if (!function_exists('isActive')) {
             Liên Hệ
         </a>
 
+        <a href="/admin/report" class="flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium transition-all <?= isActive('/admin/report', $currentUri) ?>">
+            <i data-lucide="bar-chart-2" class="w-5 h-5"></i>
+            Báo cáo
+        </a>
+
         <p class="px-2 text-xs font-bold text-slate-500 uppercase tracking-widest mb-4 mt-8">Hệ thống</p>
 
         <a href="/admin/page" class="flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium transition-all <?= isActive('/admin/page', $currentUri) ?>">

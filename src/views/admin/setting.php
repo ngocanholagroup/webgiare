@@ -99,6 +99,24 @@ $form_fields = [
         'width' => 'col-span-12 md:col-span-6',
         'placeholder' => 'https://tiktok.com/@holagroup'
     ],
+    
+    // === PHẦN 4: ANALYTICS & MARKETING ===
+    [
+        'label' => 'Google Analytics ID (GA4)',
+        'name' => 'google_analytics_id',
+        'type' => 'text',
+        'width' => 'col-span-12 md:col-span-6',
+        'placeholder' => 'G-XXXXXXXXXX',
+        'note' => 'Nhập Measurement ID (G-XXXXXXXXXX). <a href="https://analytics.google.com/" target="_blank" class="text-blue-600 hover:underline font-medium">Truy cập Dashboard Google Analytics</a> để xem báo cáo chi tiết.'
+    ],
+    [
+        'label' => 'Google Tag Manager ID (GTM)',
+        'name' => 'google_tag_manager_id',
+        'type' => 'text',
+        'width' => 'col-span-12 md:col-span-6',
+        'placeholder' => 'GTM-XXXXXXX',
+        'note' => 'Nhập Container ID nếu dùng GTM (Tùy chọn).'
+    ],
     [
         'label' => 'Link Google Business',
         'name' => 'social_google',

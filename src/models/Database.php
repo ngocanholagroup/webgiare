@@ -1,18 +1,17 @@
 <?php
 // src/models/Database.php
 
+require_once __DIR__ . '/../config.php';
+
 class Database {
     private static $instance = null;
     private $conn;
 
     private function __construct() {
-        $host = getenv('DB_HOST') ?: 'db';
-        $db   = getenv('DB_NAME') ?: 'webgiare_db';
-        $user = getenv('DB_USER') ?: 'user_dev';
-        $pass = getenv('DB_PASS') ?: 'userpassword';
+        $config = Config::getDatabaseConfig();
         $charset = 'utf8mb4';
 
-        $dsn = "mysql:host=$host;dbname=$db;charset=$charset";
+        $dsn = "mysql:host={$config['host']};port={$config['port']};dbname={$config['database']};charset=$charset";
         $options = [
             PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
@@ -20,7 +19,7 @@ class Database {
         ];
 
         try {
-            $this->conn = new PDO($dsn, $user, $pass, $options);
+            $this->conn = new PDO($dsn, $config['username'], $config['password'], $options);
         } catch (\PDOException $e) {
             throw new \PDOException($e->getMessage(), (int)$e->getCode());
         }

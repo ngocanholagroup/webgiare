@@ -1,4 +1,6 @@
 <?php
+require_once __DIR__ . '/../config.php';
+
 class AdminAuthorController {
     // Helper upload ảnh (tái sử dụng từ TemplateController hoặc viết vào BaseController)
     private function uploadImage($file) {
@@ -21,7 +23,10 @@ class AdminAuthorController {
 
         if (move_uploaded_file($file['tmp_name'], $targetDir . $safeFilename)) {
             Logger::getInstance()->logUpload('AUTHOR_AVATAR', $safeFilename, ['size' => $file['size']]);
-            return '/' . $targetDir . $safeFilename;
+            
+            // Get base URL for production compatibility
+            $baseUrl = Config::getBaseUrl();
+            return $baseUrl . '/' . $targetDir . $safeFilename;
         }
         return '';
     }

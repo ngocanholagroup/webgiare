@@ -6,6 +6,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
+    <?php if ($ga_id = setting('google_analytics_id')): ?>
+    <!-- Google Analytics (GA4) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=<?= htmlspecialchars($ga_id) ?>"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', '<?= htmlspecialchars($ga_id) ?>');
+    </script>
+    <?php endif; ?>
+
+    <?php if ($gtm_id = setting('google_tag_manager_id')): ?>
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','<?= htmlspecialchars($gtm_id) ?>');</script>
+    <!-- End Google Tag Manager -->
+    <?php endif; ?>
+
     <title><?= htmlspecialchars($meta_title ?? $title ?? setting('default_title'), ENT_QUOTES, 'UTF-8') ?></title>
     
     <meta name="description" content="<?= htmlspecialchars($meta_desc ?? $description ?? setting('default_desc'), ENT_QUOTES, 'UTF-8') ?>">
@@ -34,6 +55,9 @@
     <?php $favicon = setting('site_favicon_url', '/assets/favicon.ico'); ?>
     <link rel="icon" href="<?= $favicon ?>" type="image/x-icon">
     <link rel="shortcut icon" href="<?= $favicon ?>" type="image/x-icon">
+    
+    <!-- Sitemap -->
+    <link rel="sitemap" type="application/xml" href="<?= (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'] ?>/sitemap.xml" />
 
     <?php if (isset($schema_json) && !empty($schema_json)): ?>
     <script type="application/ld+json">
@@ -47,8 +71,8 @@
       "@type": "ProfessionalService",
       "name": "<?= setting('company_name', 'HolaGroup') ?>",
       "image": "<?= setting('default_share_image') ?>",
-      "@id": "<?= (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http') . "://$_SERVER[HTTP_HOST'] ?>",
-      "url": "<?= (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http') . "://$_SERVER[HTTP_HOST'] ?>",
+      "@id": "<?= (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'] ?>",
+      "url": "<?= (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'] ?>",
       "telephone": "<?= setting('company_phone') ?>",
       "priceRange": "$$",
       "address": {
@@ -114,6 +138,12 @@
 </head>
 
 <body class="bg-gray-50 text-gray-800 flex flex-col min-h-screen overflow-x-hidden">
+    <?php if ($gtm_id = setting('google_tag_manager_id')): ?>
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=<?= htmlspecialchars($gtm_id) ?>"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+    <?php endif; ?>
 
     <?php
     // Logic xác định trang hiện tại để Active Menu

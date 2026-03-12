@@ -1,5 +1,6 @@
 <?php
 // src/controllers/AdminBlogController.php
+require_once __DIR__ . '/../config.php';
 
 class AdminBlogController
 {
@@ -109,8 +110,9 @@ class AdminBlogController
 
         // Move uploaded file
         if (move_uploaded_file($file['tmp_name'], $filepath)) {
-            // Return file URL
-            $fileUrl = '/' . $filepath;
+            // Return file URL with base URL for production compatibility
+            $baseUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'];
+            $fileUrl = $baseUrl . '/' . $filepath;
             header('Content-Type: application/json');
             echo json_encode(['location' => $fileUrl]);
         } else {
@@ -383,7 +385,10 @@ class AdminBlogController
         if (move_uploaded_file($file['tmp_name'], $targetPath)) {
             // Log file upload
             Logger::getInstance()->logUpload('BLOG_IMAGE', $safeFilename, ['size' => $file['size']]);
-            return '/' . $targetPath;
+            
+            // Get base URL for production compatibility
+            $baseUrl = Config::getBaseUrl();
+            return $baseUrl . '/' . $targetPath;
         }
         return '';
     }

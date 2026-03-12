@@ -135,8 +135,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
 <?php include 'includes/admin-footer.php'; ?>
 
-<!-- TinyMCE Editor - Self Hosted Version -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/7.8.0/tinymce.min.js"></script>
+<!-- TinyMCE Editor - Stable Version -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.8.2/tinymce.min.js"></script>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -155,9 +155,9 @@ document.addEventListener('DOMContentLoaded', function() {
         selector: 'textarea.tinymce-editor',
         
         // Cấu hình cơ bản
-        height: 800, // Tăng chiều cao lên 800px
+        height: 600,
         menubar: true,
-        language: 'en', // Sử dụng tiếng Anh để tránh lỗi language pack
+        language: 'en',
         
         // Theme và skin
         skin: 'oxide',
@@ -166,53 +166,41 @@ document.addEventListener('DOMContentLoaded', function() {
         // License key cho open source
         license_key: 'gpl',
         
-        // Đảm bảo editor không bị read-only
-        editable: true,
-        readonly: false,
-        
-        // Disable các tính năng gây lỗi kernel.js
-        autoresize: false,
-        
-        // Plugins - Các tính năng giống Word (loại bỏ các plugin gây lỗi)
+        // Plugins - Reduced set to avoid errors
         plugins: [
             'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
             'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
-            'insertdatetime', 'media', 'table', 'help', 'wordcount', 'visualchars',
-            'emoticons', 'codesample', 'pagebreak', 'nonbreaking',
-            'directionality', 'quickbars'
+            'insertdatetime', 'media', 'table', 'help', 'wordcount'
         ],
         
-        // Toolbar - Thanh công cụ giống Word
+        // Toolbar - Simplified
         toolbar: 'undo redo | formatselect | bold italic underline strikethrough | ' +
                 'alignleft aligncenter alignright alignjustify | ' +
                 'bullist numlist outdent indent | ' +
                 'forecolor backcolor removeformat | ' +
-                'link image media table codesample | ' +
-                'charmap emoticons | ' +
+                'link image media table | ' +
                 'fullscreen preview print help',
         
-        // Menu bar
+        // Menu bar - Simplified
         menu: {
-            file: { title: 'Tệp', items: 'newdocument restoredraft | preview | print ' },
-            edit: { title: 'Chỉnh sửa', items: 'undo redo | cut copy paste | selectall | searchreplace' },
-            view: { title: 'Xem', items: 'code | visualaid visualchars visualblocks | preview fullscreen' },
-            insert: { title: 'Chèn', items: 'image link media template codesample inserttable | charmap emoticons hr | pagebreak nonbreaking anchor toc | insertdatetime' },
-            format: { title: 'Định dạng', items: 'bold italic underline strikethrough superscript subscript codeformat | formats | fontfamily fontsize | align lineheight | forecolor backcolor | removeformat' },
-            tools: { title: 'Công cụ', items: 'spellchecker spellcheckerlanguage | code wordcount' },
-            table: { title: 'Bảng', items: 'inserttable | cell row column | tableprops deletetable' },
-            help: { title: 'Trợ giúp', items: 'help' }
+            file: { title: 'File', items: 'newdocument restoredraft | preview | print ' },
+            edit: { title: 'Edit', items: 'undo redo | cut copy paste | selectall | searchreplace' },
+            view: { title: 'View', items: 'code | visualaid visualchars visualblocks | preview fullscreen' },
+            insert: { title: 'Insert', items: 'image link media template inserttable | charmap hr | pagebreak nonbreaking anchor toc | insertdatetime' },
+            format: { title: 'Format', items: 'bold italic underline strikethrough superscript subscript codeformat | formats | fontfamily fontsize | align lineheight | forecolor backcolor | removeformat' },
+            tools: { title: 'Tools', items: 'spellchecker spellcheckerlanguage | code wordcount' },
+            table: { title: 'Table', items: 'inserttable | cell row column | tableprops deletetable' },
+            help: { title: 'Help', items: 'help' }
         },
         
         // Style formats
         style_formats: [
-            { title: 'Tiêu đề 1', format: 'h1' },
-            { title: 'Tiêu đề 2', format: 'h2' },
-            { title: 'Tiêu đề 3', format: 'h3' },
-            { title: 'Tiêu đề 4', format: 'h4' },
-            { title: 'Đoạn văn', format: 'p' },
-            { title: 'Trích dẫn', format: 'blockquote' },
-            { title: 'Code', format: 'code' },
-            { title: 'Code Sample', format: 'codesample' }
+            { title: 'Heading 1', format: 'h1' },
+            { title: 'Heading 2', format: 'h2' },
+            { title: 'Heading 3', format: 'h3' },
+            { title: 'Paragraph', format: 'p' },
+            { title: 'Quote', format: 'blockquote' },
+            { title: 'Code', format: 'code' }
         ],
         
         // Font sizes
@@ -223,7 +211,6 @@ document.addEventListener('DOMContentLoaded', function() {
             'Calibri=calibri,arial,sans-serif; ' +
             'Times New Roman=times new roman,times,serif; ' +
             'Verdana=verdana,geneva,sans-serif; ' +
-            'Tahoma=tahoma,arial,helvetica,sans-serif; ' +
             'Courier New=courier new,courier,monospace',
         
         // Content style
@@ -235,15 +222,13 @@ document.addEventListener('DOMContentLoaded', function() {
             'code { background: #f4f4f4; padding: 2px 4px; border-radius: 3px; font-family: monospace; }' +
             'pre { background: #f4f4f4; padding: 10px; border-radius: 5px; overflow-x: auto; }',
         
-        // Image upload
+        // Image upload - Simplified
         images_upload_handler: function (blobInfo, success, failure) {
             console.log('Starting image upload...', blobInfo.filename());
             
-            // Tạo FormData
             var formData = new FormData();
             formData.append('file', blobInfo.blob(), blobInfo.filename());
             
-            // Gửi request
             var xhr = new XMLHttpRequest();
             xhr.open('POST', '/admin/upload-tinymce');
             xhr.withCredentials = false;
@@ -257,7 +242,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         var response = JSON.parse(xhr.responseText);
                         console.log('Parsed response:', response);
                         
-                        if (response && response.location) {
+                        if (response && typeof response === 'object' && 'location' in response) {
                             console.log('Upload successful! URL:', response.location);
                             success(response.location);
                         } else {
@@ -280,7 +265,7 @@ document.addEventListener('DOMContentLoaded', function() {
             };
             
             xhr.send(formData);
-            return true; // Quan trọng: return true để TinyMCE biết xử lý bất đồng bộ
+            return true;
         },
         
         // Other settings
@@ -302,7 +287,7 @@ document.addEventListener('DOMContentLoaded', function() {
         paste_merge_formats: true,
         paste_auto_cleanup_on_paste: true,
         paste_remove_spans: true,
-        paste_remove_styles: true,
+        paste_remove_styles: false,
         paste_retain_style_properties: 'color,font-size,font-family,background-color,background',
         
         // Table settings
@@ -313,18 +298,6 @@ document.addEventListener('DOMContentLoaded', function() {
             'border-collapse': 'collapse',
             'width': '100%'
         },
-        
-        // Code sample settings
-        codesample_languages: [
-            { text: 'HTML/XML', value: 'markup' },
-            { text: 'JavaScript', value: 'javascript' },
-            { text: 'CSS', value: 'css' },
-            { text: 'PHP', value: 'php' },
-            { text: 'SQL', value: 'sql' },
-            { text: 'Python', value: 'python' },
-            { text: 'Java', value: 'java' },
-            { text: 'C/C++', value: 'cpp' }
-        ],
         
         // Setup callback
         setup: function(editor) {
@@ -359,7 +332,6 @@ document.addEventListener('DOMContentLoaded', function() {
         // Initialize callback
         init_instance_callback: function(editor) {
             console.log('TinyMCE editor initialized successfully!');
-            // Không cần setEditable cho phiên bản này
         }
     });
 });

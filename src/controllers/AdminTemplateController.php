@@ -1,6 +1,8 @@
 <?php
 // src/controllers/AdminTemplateController.php
 
+require_once __DIR__ . '/../config.php';
+
 class AdminTemplateController
 {
     // 1. DANH SÁCH (List)
@@ -316,7 +318,10 @@ class AdminTemplateController
 
         if (move_uploaded_file($file['tmp_name'], $targetPath)) {
             Logger::getInstance()->logUpload('TEMPLATE_IMAGE', $safeFilename, ['size' => $file['size']]);
-            return '/' . $targetPath;
+            
+            // Get base URL for production compatibility
+            $baseUrl = Config::getBaseUrl();
+            return $baseUrl . '/' . $targetPath;
         }
         return '';
     }

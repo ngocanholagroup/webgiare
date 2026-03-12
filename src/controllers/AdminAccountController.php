@@ -1,5 +1,6 @@
 <?php
 // src/controllers/AdminAccountController.php
+require_once __DIR__ . '/../config.php';
 
 class AdminAccountController {
     
@@ -193,7 +194,10 @@ class AdminAccountController {
 
         if (move_uploaded_file($file['tmp_name'], $targetDir . $safeFilename)) {
             Logger::getInstance()->logUpload('ADMIN_AVATAR', $safeFilename, ['size' => $file['size']]);
-            return '/' . $targetDir . $safeFilename;
+            
+            // Get base URL for production compatibility
+            $baseUrl = Config::getBaseUrl();
+            return $baseUrl . '/' . $targetDir . $safeFilename;
         }
         return '';
     }

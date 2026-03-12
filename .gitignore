@@ -1,16 +1,26 @@
 # Git Ignore File for HolaGroup Web Project
 
 # Uploads & Generated Files
-uploads/
-uploads/blog/
-uploads/posts_content/
-uploads/templates/
-uploads/temp/
+uploads/*
+!uploads/.gitkeep
+
+# Src Uploads (QUAN TRỌNG: Ignore ảnh upload để tránh conflict production)
+src/uploads/*
+!src/uploads/.gitkeep
+!src/uploads/.htaccess
+!src/uploads/authors/.gitkeep
+!src/uploads/avatars/.gitkeep
+!src/uploads/blog/.gitkeep
+!src/uploads/posts_content/.gitkeep
+!src/uploads/templates/.gitkeep
+!src/uploads/temp/.gitkeep
+
 *.log
 
-# Environment & Config
+# Environment & Config Files
 .env
 .env.local
+.env.staging
 .env.production
 config.php
 
