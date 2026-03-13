@@ -247,6 +247,10 @@ class AdminBlogController
 
         $data = $_POST;
         
+        // Validate reading_time - must be integer, default to 5 if empty
+        $val_reading_time = $data['reading_time'] ?? '';
+        $data['reading_time'] = ($val_reading_time !== '' && is_numeric($val_reading_time)) ? (int)$val_reading_time : 5;
+        
         if (empty($data['slug'])) {
             $data['slug'] = $this->createSlug($data['title']);
         }

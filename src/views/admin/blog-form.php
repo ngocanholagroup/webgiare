@@ -3,6 +3,9 @@
 <?php
 $isEdit = isset($post);
 $data = $post ?? [];
+if (!isset($data['reading_time'])) {
+    $data['reading_time'] = 5;
+}
 
 // Convert options
 $catOpts = []; foreach($categories as $c) $catOpts[$c['id']] = $c['name'];
@@ -49,7 +52,8 @@ $form_fields = [
     ],
     [
         'label' => 'Thời gian đọc (phút)', 'name' => 'reading_time', 'type' => 'number',
-        'width' => 'col-span-6 md:col-span-3', 'placeholder' => '5', 'min' => '1', 'max' => '999'
+        'width' => 'col-span-6 md:col-span-3', 'placeholder' => '5', 'min' => '1', 'max' => '999',
+        'required' => true
     ],
     [
         'label' => 'Nổi bật', 'name' => 'is_featured', 'type' => 'select',

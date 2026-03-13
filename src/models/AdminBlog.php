@@ -107,21 +107,20 @@ class AdminBlog
             summary=:sum, content=:cont, thumbnail=:thumb, reading_time=:read, is_featured=:feat, status=:stat 
             WHERE id=:id";
         $stmt = $this->conn->prepare($sql);
-        $data['id'] = $id;
-        // Bind các tham số tương tự hàm create, thêm :id
-        return $stmt->execute([
-            ':id' => $id,
-            ':cat' => $data['category_id'],
-            ':auth' => $data['author_id'],
-            ':title' => $data['title'],
-            ':slug' => $data['slug'],
-            ':sum' => $data['summary'],
-            ':cont' => $data['content'],
-            ':thumb' => $data['thumbnail'],
-            ':read' => $data['reading_time'],
-            ':feat' => $data['is_featured'],
-            ':stat' => $data['status']
-        ]);
+        
+        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+        $stmt->bindValue(':cat', (int)$data['category_id'], PDO::PARAM_INT);
+        $stmt->bindValue(':auth', (int)$data['author_id'], PDO::PARAM_INT);
+        $stmt->bindValue(':title', trim($data['title']));
+        $stmt->bindValue(':slug', trim($data['slug']));
+        $stmt->bindValue(':sum', trim($data['summary']));
+        $stmt->bindValue(':cont', $data['content']);
+        $stmt->bindValue(':thumb', $data['thumbnail']);
+        $stmt->bindValue(':read', (int)($data['reading_time'] ?? 5), PDO::PARAM_INT);
+        $stmt->bindValue(':feat', (int)($data['is_featured'] ?? 0), PDO::PARAM_INT);
+        $stmt->bindValue(':stat', (int)($data['status'] ?? 1), PDO::PARAM_INT);
+
+        return $stmt->execute();
     }
 
     public function deletePost($id)
