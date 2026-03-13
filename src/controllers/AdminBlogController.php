@@ -175,8 +175,8 @@ class AdminBlogController
         $data = $_POST;
         
         // Validate reading_time - must be integer, default to 5 if empty
-        $data['reading_time'] = !empty($data['reading_time']) ? 
-            (int)trim($data['reading_time']) : 5;
+        $val_reading_time = $data['reading_time'] ?? '';
+        $data['reading_time'] = ($val_reading_time !== '' && is_numeric($val_reading_time)) ? (int)$val_reading_time : 5;
         
         // Validate other required fields
         if (empty($data['title'])) {

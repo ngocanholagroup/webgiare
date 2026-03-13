@@ -83,18 +83,19 @@ class AdminBlog
         $sql = "INSERT INTO blog_posts (category_id, author_id, title, slug, summary, content, thumbnail, reading_time, is_featured, status) 
             VALUES (:cat, :auth, :title, :slug, :sum, :cont, :thumb, :read, :feat, :stat)";
         $stmt = $this->conn->prepare($sql);
-        $stmt->execute([
-            ':cat' => (int)$data['category_id'],
-            ':auth' => (int)$data['author_id'],
-            ':title' => trim($data['title']),
-            ':slug' => trim($data['slug']),
-            ':sum' => trim($data['summary']),
-            ':cont' => $data['content'],
-            ':thumb' => $data['thumbnail'],
-            ':read' => (int)$data['reading_time'],
-            ':feat' => (int)($data['is_featured'] ?? 0),
-            ':stat' => (int)($data['status'] ?? 1)
-        ]);
+        
+        $stmt->bindValue(':cat', (int)$data['category_id'], PDO::PARAM_INT);
+        $stmt->bindValue(':auth', (int)$data['author_id'], PDO::PARAM_INT);
+        $stmt->bindValue(':title', trim($data['title']));
+        $stmt->bindValue(':slug', trim($data['slug']));
+        $stmt->bindValue(':sum', trim($data['summary']));
+        $stmt->bindValue(':cont', $data['content']);
+        $stmt->bindValue(':thumb', $data['thumbnail']);
+        $stmt->bindValue(':read', (int)($data['reading_time'] ?? 5), PDO::PARAM_INT);
+        $stmt->bindValue(':feat', (int)($data['is_featured'] ?? 0), PDO::PARAM_INT);
+        $stmt->bindValue(':stat', (int)($data['status'] ?? 1), PDO::PARAM_INT);
+        
+        $stmt->execute();
         
         // Return ID of the inserted record
         return $this->conn->lastInsertId();
