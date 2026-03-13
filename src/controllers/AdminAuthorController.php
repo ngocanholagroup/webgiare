@@ -11,8 +11,17 @@ class AdminAuthorController {
             return '';
         }
 
-        $targetDir = "uploads/authors/";
-        if (!file_exists($targetDir)) mkdir($targetDir, 0777, true);
+        $rootPath = dirname(__DIR__); // Points to src/
+        $uploadDir = "uploads/authors/";
+        $normalizedDir = str_replace(['\\', '/'], DIRECTORY_SEPARATOR, trim($uploadDir, '/'));
+        $absoluteUploadDir = $rootPath . DIRECTORY_SEPARATOR . $normalizedDir;
+
+        if (!is_dir($absoluteUploadDir)) {
+            if (!mkdir($absoluteUploadDir, 0777, true)) {
+                 error_log("Failed to create directory: $absoluteUploadDir");
+                 return '';
+            }
+        }
         
         // Generate safe filename
         $safeFilename = FileUploadValidator::generateSafeFilename($file['name']);
@@ -21,12 +30,16 @@ class AdminAuthorController {
             return '';
         }
 
-        if (move_uploaded_file($file['tmp_name'], $targetDir . $safeFilename)) {
+        $targetPath = $absoluteUploadDir . DIRECTORY_SEPARATOR . $safeFilename;
+
+        if (move_uploaded_file($file['tmp_name'], $targetPath)) {
             Logger::getInstance()->logUpload('AUTHOR_AVATAR', $safeFilename, ['size' => $file['size']]);
             
             // Get base URL for production compatibility
             $baseUrl = Config::getBaseUrl();
-            return $baseUrl . '/' . $targetDir . $safeFilename;
+            // Web path with forward slashes
+            $webPath = '/' . str_replace('\\', '/', $normalizedDir) . '/' . $safeFilename;
+            return $baseUrl . $webPath;
         }
         return '';
     }
@@ -74,10 +87,16 @@ class AdminAuthorController {
 
         $data = $_POST;
         $data['avatar'] = $_POST['old_avatar'] ?? '';
+        
+        $rootPath = dirname(__DIR__); // Points to src/
+        
         if (!empty($_FILES['avatar']['name'])) {
             $newUrl = $this->uploadImage($_FILES['avatar']);
             if ($newUrl) {
-                if(file_exists(ltrim($data['avatar'], '/'))) unlink(ltrim($data['avatar'], '/'));
+                $oldPath = ltrim($data['avatar'], '/');
+                $absOldPath = $rootPath . DIRECTORY_SEPARATOR . str_replace(['\\', '/'], DIRECTORY_SEPARATOR, $oldPath);
+                
+                if(!empty($oldPath) && file_exists($absOldPath) && !is_dir($absOldPath)) unlink($absOldPath);
                 $data['avatar'] = $newUrl;
             }
         }
@@ -93,7 +112,15 @@ class AdminAuthorController {
         if (!isset($_SESSION['admin_logged_in'])) exit;
         $model = new AdminAuthor();
         $author = $model->getById($id);
-        if ($author && file_exists(ltrim($author['avatar'], '/'))) unlink(ltrim($author['avatar'], '/'));
+        
+        if ($author) {
+            $rootPath = dirname(__DIR__); // Points to src/
+            $path = ltrim($author['avatar'], '/');
+            $absPath = $rootPath . DIRECTORY_SEPARATOR . str_replace(['\\', '/'], DIRECTORY_SEPARATOR, $path);
+            
+            if (!empty($path) && file_exists($absPath) && !is_dir($absPath)) unlink($absPath);
+        }
+        
         $model->delete($id);
         
         // Log delete action

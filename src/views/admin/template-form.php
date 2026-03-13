@@ -73,6 +73,7 @@ $form_fields = [
         'type'     => 'file',
         'multiple' => true,  // Cho phép chọn nhiều file cùng lúc
         'width'    => 'col-span-12',
+        'delete_image_url' => '/admin/template/delete-image/:id',
         'note'     => 'Giữ phím Ctrl (hoặc Command) để chọn nhiều ảnh. Ảnh cũ đã lưu sẽ hiển thị bên dưới.'
     ],
 

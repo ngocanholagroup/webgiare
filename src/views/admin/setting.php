@@ -50,8 +50,14 @@ $form_fields = [
         'label' => 'Ảnh Share mặc định',
         'name'  => 'default_share_image',
         'type'  => 'file',
-        'width' => 'col-span-12',
+        'width' => 'col-span-12 md:col-span-6',
         'note'  => 'Ảnh hiển thị khi chia sẻ link lên Facebook/Zalo.'
+    ],
+    [
+        'label' => 'Ảnh Share Facebook mặc định',
+        'name'  => 'facebook_share_image',
+        'type'  => 'file',
+        'width' => 'col-span-12 md:col-span-6',
     ],
 
     // === PHẦN 2: LIÊN HỆ ===
@@ -168,14 +174,7 @@ $form_fields = [
         'type'  => 'text',
         'width' => 'col-span-12 md:col-span-6',
         'note'  => 'Cách nhau bằng dấu phẩy.'
-    ],
-    [
-        'label' => 'Ảnh Share Facebook mặc định',
-        'name'  => 'default_share_image',
-        'type'  => 'file',
-        'width' => 'col-span-12 md:col-span-6',
-    ],
-    
+    ],    
     // === PHẦN 5: CTA FOOTER ===
     [
         'label' => 'Tiêu đề CTA (Footer)',

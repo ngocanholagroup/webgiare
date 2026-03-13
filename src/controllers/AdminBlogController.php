@@ -85,12 +85,33 @@ class AdminBlogController
         }
 
         // Create upload directory if not exists
+        $rootPath = dirname(__DIR__); // Points to src/
         $uploadDir = 'uploads/blog/';
-        if (!is_dir($uploadDir)) {
-            mkdir($uploadDir, 0755, true);
+        $normalizedDir = str_replace(['\\', '/'], DIRECTORY_SEPARATOR, trim($uploadDir, '/'));
+        $absoluteUploadDir = $rootPath . DIRECTORY_SEPARATOR . $normalizedDir;
+
+        if (!is_dir($absoluteUploadDir)) {
+            if (!mkdir($absoluteUploadDir, 0777, true)) {
+                $error = error_get_last();
+                error_log("Failed to create directory: $absoluteUploadDir. Error: " . ($error['message'] ?? 'Unknown'));
+                header('HTTP/1.1 500 Internal Server Error');
+                echo json_encode(['error' => 'Failed to create upload directory: ' . $absoluteUploadDir]);
+                exit;
+            }
+        }
+        
+        // Ensure directory is writable
+        if (!is_writable($absoluteUploadDir)) {
+             chmod($absoluteUploadDir, 0777);
+             if (!is_writable($absoluteUploadDir)) {
+                 error_log("Directory not writable: $absoluteUploadDir");
+                 header('HTTP/1.1 500 Internal Server Error');
+                 echo json_encode(['error' => 'Upload directory is not writable']);
+                 exit;
+             }
         }
 
-        // Create additional upload directories
+        // Create additional upload directories (ensure they exist)
         $additionalDirs = [
             'uploads/posts_content/',
             'uploads/templates/',
@@ -98,21 +119,26 @@ class AdminBlogController
         ];
         
         foreach ($additionalDirs as $dir) {
-            if (!is_dir($dir)) {
-                mkdir($dir, 0755, true);
+            $norm = str_replace(['\\', '/'], DIRECTORY_SEPARATOR, trim($dir, '/'));
+            $abs = $rootPath . DIRECTORY_SEPARATOR . $norm;
+            if (!is_dir($abs)) {
+                mkdir($abs, 0777, true);
             }
         }
 
         // Generate unique filename
         $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
         $filename = 'blog_' . time() . '_' . uniqid() . '.' . $extension;
-        $filepath = $uploadDir . $filename;
+        $targetPath = $absoluteUploadDir . DIRECTORY_SEPARATOR . $filename;
 
         // Move uploaded file
-        if (move_uploaded_file($file['tmp_name'], $filepath)) {
+        if (move_uploaded_file($file['tmp_name'], $targetPath)) {
             // Return file URL with base URL for production compatibility
             $baseUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'];
-            $fileUrl = $baseUrl . '/' . $filepath;
+            // Always forward slashes for URL
+            $webPath = '/' . str_replace('\\', '/', $normalizedDir) . '/' . $filename;
+            $fileUrl = $baseUrl . $webPath;
+            
             header('Content-Type: application/json');
             echo json_encode(['location' => $fileUrl]);
         } else {
@@ -225,6 +251,8 @@ class AdminBlogController
             $data['slug'] = $this->createSlug($data['title']);
         }
 
+        $rootPath = dirname(__DIR__); // Points to src/
+
         // Xử lý Thumbnail
         $data['thumbnail'] = $_POST['old_thumbnail'] ?? '';
         
@@ -233,8 +261,9 @@ class AdminBlogController
             if ($newUrl) {
                 // Xóa ảnh cũ để dọn rác server
                 $oldFile = ltrim($data['thumbnail'], '/');
-                if (!empty($oldFile) && file_exists($oldFile)) {
-                    unlink($oldFile);
+                $absOldFile = $rootPath . DIRECTORY_SEPARATOR . str_replace(['\\', '/'], DIRECTORY_SEPARATOR, $oldFile);
+                if (!empty($oldFile) && file_exists($absOldFile) && !is_dir($absOldFile)) {
+                    unlink($absOldFile);
                 }
                 $data['thumbnail'] = $newUrl;
             }
@@ -251,8 +280,9 @@ class AdminBlogController
         
         // Tiến hành xóa file vật lý
         foreach ($deletedImages as $img) {
-            if (file_exists($img)) {
-                unlink($img);
+            $absImg = $rootPath . DIRECTORY_SEPARATOR . str_replace(['\\', '/'], DIRECTORY_SEPARATOR, $img);
+            if (file_exists($absImg) && !is_dir($absImg)) {
+                unlink($absImg);
             }
         }
 
@@ -274,17 +304,21 @@ class AdminBlogController
         $post = $model->getPostById($id);
         
         if ($post) {
+            $rootPath = dirname(__DIR__); // Points to src/
+
             // 1. Xóa Thumbnail (Code cũ đã có)
             $thumb = ltrim($post['thumbnail'], '/');
-            if (!empty($thumb) && file_exists($thumb)) {
-                unlink($thumb);
+            $absThumb = $rootPath . DIRECTORY_SEPARATOR . str_replace(['\\', '/'], DIRECTORY_SEPARATOR, $thumb);
+            if (!empty($thumb) && file_exists($absThumb) && !is_dir($absThumb)) {
+                unlink($absThumb);
             }
 
             // 2. [MỚI] Xóa toàn bộ ảnh trong nội dung bài viết
             $contentImages = $this->getImagesFromContent($post['content']);
             foreach ($contentImages as $img) {
-                if (file_exists($img)) {
-                    unlink($img);
+                $absImg = $rootPath . DIRECTORY_SEPARATOR . str_replace(['\\', '/'], DIRECTORY_SEPARATOR, $img);
+                if (file_exists($absImg) && !is_dir($absImg)) {
+                    unlink($absImg);
                 }
             }
         }
@@ -327,9 +361,17 @@ class AdminBlogController
         }
         
         // 4. Create upload directory if not exists
+        $rootPath = dirname(__DIR__); // Points to src/
         $uploadDir = 'uploads/posts_content/';
-        if (!is_dir($uploadDir)) {
-            mkdir($uploadDir, 0755, true);
+        $normalizedDir = str_replace(['\\', '/'], DIRECTORY_SEPARATOR, trim($uploadDir, '/'));
+        $absoluteUploadDir = $rootPath . DIRECTORY_SEPARATOR . $normalizedDir;
+        
+        if (!is_dir($absoluteUploadDir)) {
+            if (!mkdir($absoluteUploadDir, 0777, true)) {
+                http_response_code(500);
+                echo json_encode(['error' => ['message' => 'Failed to create directory. Permission denied.']]);
+                exit;
+            }
         }
         
         // 5. Generate safe filename
@@ -340,7 +382,7 @@ class AdminBlogController
             exit;
         }
         
-        $targetPath = $uploadDir . $safeFilename;
+        $targetPath = $absoluteUploadDir . DIRECTORY_SEPARATOR . $safeFilename;
         
         // 6. Move file to target directory
         if (move_uploaded_file($file['tmp_name'], $targetPath)) {
@@ -348,8 +390,10 @@ class AdminBlogController
             Logger::getInstance()->logUpload('CKEDITOR_IMAGE', $safeFilename, ['size' => $file['size']]);
             
             // 7. Trả về JSON đúng chuẩn CKEditor 5
+            // Đường dẫn web (luôn dùng forward slash)
+            $webPath = '/' . str_replace('\\', '/', $normalizedDir) . '/' . $safeFilename;
             echo json_encode([
-                'url' => '/' . $targetPath // Đường dẫn tuyệt đối để hiển thị
+                'url' => $webPath 
             ]);
         } else {
             echo json_encode(['error' => ['message' => 'Không thể lưu file vào server.']]);
@@ -367,10 +411,14 @@ class AdminBlogController
             return '';
         }
 
-        $targetDir = "uploads/blog/";
+        $rootPath = dirname(__DIR__); // Points to src/
+        $uploadDir = 'uploads/blog/';
+        $normalizedDir = str_replace(['\\', '/'], DIRECTORY_SEPARATOR, trim($uploadDir, '/'));
+        $absoluteUploadDir = $rootPath . DIRECTORY_SEPARATOR . $normalizedDir;
+
         // Tự tạo thư mục nếu chưa có
-        if (!file_exists($targetDir)) {
-            mkdir($targetDir, 0777, true);
+        if (!is_dir($absoluteUploadDir)) {
+            mkdir($absoluteUploadDir, 0777, true);
         }
 
         // Generate safe filename
@@ -380,15 +428,14 @@ class AdminBlogController
             return '';
         }
 
-        $targetPath = $targetDir . $safeFilename;
+        $targetPath = $absoluteUploadDir . DIRECTORY_SEPARATOR . $safeFilename;
 
         if (move_uploaded_file($file['tmp_name'], $targetPath)) {
             // Log file upload
             Logger::getInstance()->logUpload('BLOG_IMAGE', $safeFilename, ['size' => $file['size']]);
             
-            // Get base URL for production compatibility
-            $baseUrl = Config::getBaseUrl();
-            return $baseUrl . '/' . $targetPath;
+            // Return relative web path
+            return '/' . str_replace('\\', '/', $normalizedDir) . '/' . $safeFilename;
         }
         return '';
     }

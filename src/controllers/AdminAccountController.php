@@ -118,8 +118,11 @@ class AdminAccountController {
                 // Xóa ảnh cũ trên host để tiết kiệm dung lượng
                 if (!empty($avatarUrl)) {
                     $oldFile = ltrim($avatarUrl, '/'); // Xóa dấu / đầu tiên
-                    if (file_exists($oldFile)) {
-                        unlink($oldFile);
+                    $rootPath = dirname(__DIR__);
+                    $absOldFile = $rootPath . DIRECTORY_SEPARATOR . str_replace(['\\', '/'], DIRECTORY_SEPARATOR, $oldFile);
+                    
+                    if (file_exists($absOldFile) && !is_dir($absOldFile)) {
+                        unlink($absOldFile);
                     }
                 }
                 // Gán đường dẫn mới
@@ -161,8 +164,13 @@ class AdminAccountController {
         $model = new AdminAccount();
         // Xóa avatar cũ nếu có
         $admin = $model->getById($id);
-        if ($admin && !empty($admin['avatar']) && file_exists(ltrim($admin['avatar'], '/'))) {
-            unlink(ltrim($admin['avatar'], '/'));
+        if ($admin && !empty($admin['avatar'])) {
+            $rootPath = dirname(__DIR__);
+            $oldFile = ltrim($admin['avatar'], '/');
+            $absOldFile = $rootPath . DIRECTORY_SEPARATOR . str_replace(['\\', '/'], DIRECTORY_SEPARATOR, $oldFile);
+            if (file_exists($absOldFile) && !is_dir($absOldFile)) {
+                unlink($absOldFile);
+            }
         }
 
         $model->delete($id);
@@ -182,8 +190,17 @@ class AdminAccountController {
             return '';
         }
 
-        $targetDir = "uploads/avatars/";
-        if (!file_exists($targetDir)) mkdir($targetDir, 0777, true);
+        $rootPath = dirname(__DIR__); // Points to src/
+        $uploadDir = "uploads/avatars/";
+        $normalizedDir = str_replace(['\\', '/'], DIRECTORY_SEPARATOR, trim($uploadDir, '/'));
+        $absoluteUploadDir = $rootPath . DIRECTORY_SEPARATOR . $normalizedDir;
+
+        if (!is_dir($absoluteUploadDir)) {
+            if (!mkdir($absoluteUploadDir, 0777, true)) {
+                error_log("Failed to create directory: $absoluteUploadDir");
+                return '';
+            }
+        }
         
         // Generate safe filename
         $safeFilename = FileUploadValidator::generateSafeFilename($file['name']);
@@ -192,12 +209,16 @@ class AdminAccountController {
             return '';
         }
 
-        if (move_uploaded_file($file['tmp_name'], $targetDir . $safeFilename)) {
+        $targetPath = $absoluteUploadDir . DIRECTORY_SEPARATOR . $safeFilename;
+
+        if (move_uploaded_file($file['tmp_name'], $targetPath)) {
             Logger::getInstance()->logUpload('ADMIN_AVATAR', $safeFilename, ['size' => $file['size']]);
             
             // Get base URL for production compatibility
             $baseUrl = Config::getBaseUrl();
-            return $baseUrl . '/' . $targetDir . $safeFilename;
+            // Web path with forward slashes
+            $webPath = '/' . str_replace('\\', '/', $normalizedDir) . '/' . $safeFilename;
+            return $baseUrl . $webPath;
         }
         return '';
     }

@@ -222,8 +222,8 @@ document.addEventListener('DOMContentLoaded', function() {
             'code { background: #f4f4f4; padding: 2px 4px; border-radius: 3px; font-family: monospace; }' +
             'pre { background: #f4f4f4; padding: 10px; border-radius: 5px; overflow-x: auto; }',
         
-        // Image upload - Simplified
-        images_upload_handler: function (blobInfo, success, failure) {
+        // Image upload - Simplified for TinyMCE 6+
+        images_upload_handler: (blobInfo, progress) => new Promise((resolve, reject) => {
             console.log('Starting image upload...', blobInfo.filename());
             
             var formData = new FormData();
@@ -232,6 +232,10 @@ document.addEventListener('DOMContentLoaded', function() {
             var xhr = new XMLHttpRequest();
             xhr.open('POST', '/admin/upload-tinymce');
             xhr.withCredentials = false;
+            
+            xhr.upload.onprogress = (e) => {
+                progress(e.loaded / e.total * 100);
+            };
             
             xhr.onload = function() {
                 console.log('Upload response status:', xhr.status);
@@ -244,29 +248,28 @@ document.addEventListener('DOMContentLoaded', function() {
                         
                         if (response && typeof response === 'object' && 'location' in response) {
                             console.log('Upload successful! URL:', response.location);
-                            success(response.location);
+                            resolve(response.location);
                         } else {
                             console.error('Invalid response format:', response);
-                            failure('Server response missing location URL');
+                            reject('Server response missing location URL');
                         }
                     } catch (e) {
                         console.error('JSON parse error:', e);
-                        failure('Failed to parse server response');
+                        reject('Failed to parse server response');
                     }
                 } else {
                     console.error('Server error:', xhr.status, xhr.responseText);
-                    failure('Server error: ' + xhr.status);
+                    reject('Server error: ' + xhr.status);
                 }
             };
             
             xhr.onerror = function() {
                 console.error('Network error during upload');
-                failure('Network error: Failed to upload image');
+                reject('Network error: Failed to upload image');
             };
             
             xhr.send(formData);
-            return true;
-        },
+        }),
         
         // Other settings
         branding: false,

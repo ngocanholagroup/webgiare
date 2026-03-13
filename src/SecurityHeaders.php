@@ -87,7 +87,7 @@ class SecurityHeaders
             "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.ckeditor.com",
             
             // Images: allow self, data URIs, and all HTTPS
-            "img-src 'self' data: https:",
+            "img-src 'self' data: blob: https:",
             
             // Fonts: allow self and font CDNs
             "font-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com",

@@ -53,6 +53,7 @@ if (isset($form_fields) && is_array($form_fields)) {
                 $placeholder = $field['placeholder'] ?? '';
                 $note = $field['note'] ?? '';
                 $isMultiple = $field['multiple'] ?? false;
+                $delete_image_url = $field['delete_image_url'] ?? null;
             ?>
                 <div class="<?= $width ?>">
                     
