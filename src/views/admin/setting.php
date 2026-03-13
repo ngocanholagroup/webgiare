@@ -40,11 +40,18 @@ $form_fields = [
         'note'  => 'Ảnh PNG nền trong suốt.'
     ],
     [
-        'label' => 'Favicon (Icon trên tab)',
+        'label' => 'Favicon',
         'name'  => 'site_favicon_url',
         'type'  => 'file',
         'width' => 'col-span-12 md:col-span-6',
-        'note'  => 'Ảnh vuông nhỏ (ico, png).'
+        'note'  => 'Icon nhỏ trên tab trình duyệt (16x16, 32x32).'
+    ],
+    [
+        'label' => 'Ảnh Share mặc định',
+        'name'  => 'default_share_image',
+        'type'  => 'file',
+        'width' => 'col-span-12',
+        'note'  => 'Ảnh hiển thị khi chia sẻ link lên Facebook/Zalo.'
     ],
 
     // === PHẦN 2: LIÊN HỆ ===

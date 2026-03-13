@@ -37,7 +37,7 @@ function isActive($keyword, $uri)
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/47.4.0/ckeditor5.css">
 
-    <?php $favicon = setting('site_favicon_url', '/assets/favicon.ico'); ?>
+    <?php $favicon = setting('site_favicon_url', '/uploads/images/favicon.ico'); ?>
     <link rel="icon" href="<?= $favicon ?>" type="image/x-icon">
     <link rel="shortcut icon" href="<?= $favicon ?>" type="image/x-icon">
 

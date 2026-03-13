@@ -362,7 +362,7 @@ INSERT INTO `system_settings` (`setting_key`, `setting_value`, `setting_group`, 
 INSERT INTO `admins` (`username`, `password`, `full_name`) VALUES
 ('admin', '$2y$10$aBjBQx.zyO6Ucq94qkCvLunCvo9IKphaebenL6xVWcGRCOkF2wUVm', 'Super Admin');
 
--- 15. PAGES (HOME)
+-- 15. PAGES
 INSERT INTO `pages` (`slug`, `name`, `meta_title`, `meta_desc`, `content_json`) VALUES
 (
     'home',

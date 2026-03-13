@@ -1,0 +1,48 @@
+{
+    "trang-chu": {
+        "name": "Trang Chủ",
+        "meta_title": "Thiết Kế Website Chuyên Nghiệp - Web Giá Rẻ",
+        "meta_desc": "Dịch vụ thiết kế website chuyên nghiệp, giá rẻ, chuẩn SEO. Kho giao diện đa dạng, phù hợp mọi ngành nghề.",
+        "content": {
+            "hero": {
+                "badge": "Giải Pháp Toàn Diện",
+                "title_line_1": "Biến ý tưởng",
+                "title_highlight": "Hiện thực số",
+                "description": "Chúng tôi cung cấp giải pháp thiết kế website chuyên nghiệp, tối ưu SEO và trải nghiệm người dùng, giúp doanh nghiệp bứt phá doanh thu.",
+                "btn_primary_link": "/dich-vu",
+                "btn_primary_text": "Bắt đầu ngay",
+                "btn_secondary_link": "/kho-giao-dien",
+                "btn_secondary_text": "Xem mẫu giao diện"
+            }
+        }
+    },
+    "dich-vu": {
+        "name": "Dịch Vụ",
+        "meta_title": "Dịch Vụ Thiết Kế Web & Marketing Online",
+        "meta_desc": "Cung cấp các dịch vụ thiết kế website, SEO từ khóa, chạy quảng cáo Google/Facebook, Hosting & Domain chất lượng cao.",
+        "content": {
+            "hero": {
+                "badge": "Hệ sinh thái dịch vụ",
+                "title_line_1": "Giải pháp toàn diện cho",
+                "title_highlight": "Doanh nghiệp số",
+                "description": "Từ thiết kế website, hạ tầng hosting đến marketing online. Chúng tôi cung cấp mọi thứ bạn cần để vận hành doanh nghiệp trên Internet.",
+                "btn_primary_link": "#dich-vu-chinh",
+                "btn_primary_text": "Khám phá dịch vụ"
+            },
+            "main_services": {
+                "web": {
+                    "title": "Thiết kế Website",
+                    "description": "Website chuẩn SEO, tốc độ cao, giao diện đẹp mắt."
+                },
+                "seo": {
+                    "title": "Dịch vụ SEO",
+                    "description": "Tối ưu hóa công cụ tìm kiếm, đưa từ khóa lên Top Google."
+                },
+                "hosting": {
+                    "title": "Hosting & Tên miền",
+                    "description": "Cung cấp hosting tốc độ cao, ổn định và bảo mật."
+                }
+            }
+        }
+    }
+}

@@ -31,9 +31,9 @@ class AdminSettingController {
 
             // 1. DANH SÁCH CÁC TRƯỜNG FILE (Cần khớp với name trong View)
             $fileFields = [
-                'site_logo_url' => 'assets/images/',
-                'site_favicon_url' => 'assets/images/',
-                'default_share_image' => 'assets/images/'
+                'site_logo_url' => 'uploads/images/',
+                'site_favicon_url' => 'uploads/images/',
+                'default_share_image' => 'uploads/images/'
             ];
 
             // 2. XỬ LÝ UPLOAD

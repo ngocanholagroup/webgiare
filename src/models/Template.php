@@ -83,8 +83,8 @@ class TemplateModel {
         // 3. Cấu trúc lại mảng images chuẩn cho View
         // Ảnh chính lấy từ bảng templates, Gallery lấy từ bảng template_images
         $template['images'] = [
-            'main'    => !empty($template['image_desktop']) ? $template['image_desktop'] : '/assets/images/no-image.jpg',
-            'sub2'    => !empty($template['image_mobile']) ? $template['image_mobile'] : '/assets/images/no-image.jpg', // Dùng cho Mobile Demo
+            'main'    => !empty($template['image_desktop']) ? $template['image_desktop'] : '/uploads/images/no-image.jpg',
+            'sub2'    => !empty($template['image_mobile']) ? $template['image_mobile'] : '/uploads/images/no-image.jpg', // Dùng cho Mobile Demo
             'gallery' => []
         ];
 

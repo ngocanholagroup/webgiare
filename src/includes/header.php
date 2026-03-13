@@ -63,7 +63,7 @@
     <meta name="twitter:description" content="<?= htmlspecialchars($meta_desc ?? $description ?? setting('default_desc'), ENT_QUOTES, 'UTF-8') ?>">
     <meta name="twitter:image" content="<?= htmlspecialchars($og_image ?? setting('default_share_image'), ENT_QUOTES, 'UTF-8') ?>">
 
-    <?php $favicon = setting('site_favicon_url', '/assets/favicon.ico'); ?>
+    <?php $favicon = setting('site_favicon_url', '/uploads/images/favicon.ico'); ?>
     <link rel="icon" href="<?= $favicon ?>" type="image/x-icon">
     <link rel="shortcut icon" href="<?= $favicon ?>" type="image/x-icon">
     
