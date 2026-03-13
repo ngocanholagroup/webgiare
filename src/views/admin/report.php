@@ -16,30 +16,104 @@
 
     <!-- Config Modal -->
     <div id="config-modal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg p-6 relative animate-fade-in-up">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-2xl p-6 relative animate-fade-in-up max-h-[90vh] overflow-y-auto">
             <button onclick="document.getElementById('config-modal').classList.add('hidden')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600">
                 <i data-lucide="x" class="w-5 h-5"></i>
             </button>
             
-            <h3 class="text-lg font-bold text-slate-800 mb-4">Cấu hình GA4</h3>
+            <h3 class="text-xl font-bold text-slate-800 mb-4 flex items-center gap-2">
+                <i data-lucide="settings" class="w-5 h-5 text-blue-600"></i>
+                Hướng dẫn cấu hình Google Analytics 4 (GA4)
+            </h3>
             
-            <div class="mb-4 text-sm text-slate-600">
-                <p>Để kích hoạt báo cáo, vui lòng thực hiện:</p>
-                <ol class="list-decimal list-inside mt-2 space-y-1">
-                    <li>Vào trang <a href="/admin/setting" class="text-blue-600 hover:underline">Cài đặt chung</a> để nhập <strong>GA4 Property ID</strong>.</li>
-                    <li>Tải file <code>ga4-credentials.json</code> vào thư mục <code>src/config/</code>.</li>
-                </ol>
+            <div class="prose prose-sm text-slate-600 max-w-none">
+                <p class="mb-4">Để xem báo cáo truy cập ngay trong trang Admin, bạn cần kết nối với Google Analytics 4 thông qua Service Account. Hãy làm theo từng bước sau:</p>
+
+                <div class="space-y-6">
+                    <!-- Bước 1 -->
+                    <div class="border-l-4 border-blue-500 pl-4 py-1">
+                        <h4 class="font-bold text-slate-800 text-base mb-2">Bước 1: Tạo Google Cloud Project & Service Account</h4>
+                        <ol class="list-decimal list-inside space-y-1 ml-1">
+                            <li>Truy cập <a href="https://console.cloud.google.com/" target="_blank" class="text-blue-600 hover:underline font-medium">Google Cloud Console</a> và đăng nhập bằng Gmail của bạn.</li>
+                            <li>Tạo một <strong>Project mới</strong> (hoặc chọn Project có sẵn).</li>
+                            <li>Vào menu bên trái, chọn <strong>IAM & Admin</strong> > <strong>Service Accounts</strong>.</li>
+                            <li>Nhấn <strong>+ CREATE SERVICE ACCOUNT</strong>.</li>
+                            <li>Đặt tên (vd: <code>web-analytics</code>) và nhấn <strong>Create and Continue</strong> -> <strong>Done</strong>.</li>
+                        </ol>
+                    </div>
+
+                    <!-- Bước 2 -->
+                    <div class="border-l-4 border-indigo-500 pl-4 py-1">
+                        <h4 class="font-bold text-slate-800 text-base mb-2">Bước 2: Tải khóa bí mật (File JSON)</h4>
+                        <ol class="list-decimal list-inside space-y-1 ml-1">
+                            <li>Trong danh sách Service Accounts vừa tạo, nhấn vào <strong>Email</strong> của nó.</li>
+                            <li>Chuyển sang tab <strong>KEYS</strong>.</li>
+                            <li>Nhấn <strong>ADD KEY</strong> > <strong>Create new key</strong>.</li>
+                            <li>Chọn loại <strong>JSON</strong> và nhấn <strong>CREATE</strong>.</li>
+                            <li>File sẽ tự động tải về máy. Hãy đổi tên file này thành <code>ga4-credentials.json</code>.</li>
+                            <li><strong>Quan trọng:</strong> Copy email của Service Account này (vd: <code>web-analytics@...iam.gserviceaccount.com</code>) để dùng cho bước 3.</li>
+                        </ol>
+                    </div>
+
+                    <!-- Bước 3 -->
+                    <div class="border-l-4 border-orange-500 pl-4 py-1">
+                        <h4 class="font-bold text-slate-800 text-base mb-2">Bước 3: Cấp quyền truy cập trong Google Analytics</h4>
+                        <ol class="list-decimal list-inside space-y-1 ml-1">
+                            <li>Truy cập <a href="https://analytics.google.com/" target="_blank" class="text-blue-600 hover:underline font-medium">Google Analytics</a> > Chọn tài khoản của web bạn.</li>
+                            <li>Vào <strong>Admin (Quản trị)</strong> (biểu tượng bánh răng góc dưới trái).</li>
+                            <li>Chọn <strong>Property Settings (Cài đặt thuộc tính)</strong> > <strong>Property Access Management (Quản lý quyền truy cập thuộc tính)</strong>.</li>
+                            <li>Nhấn dấu <strong>+</strong> góc phải > <strong>Add users</strong>.</li>
+                            <li>Dán <strong>Email Service Account</strong> (đã copy ở Bước 2) vào.</li>
+                            <li>Chọn vai trò <strong>Viewer (Người xem)</strong> và nhấn <strong>Add (Thêm)</strong>.</li>
+                        </ol>
+                    </div>
+
+                    <!-- Bước 4 -->
+                    <div class="border-l-4 border-green-500 pl-4 py-1">
+                        <h4 class="font-bold text-slate-800 text-base mb-2">Bước 4: Cập nhật Website</h4>
+                        <ol class="list-decimal list-inside space-y-1 ml-1">
+                            <li>Upload file <code>ga4-credentials.json</code> lên hosting vào thư mục: <code>src/config/</code>.</li>
+                            <li>Lấy <strong>Property ID</strong> trong Google Analytics (Admin > Property Settings) - Thường là dãy số (vd: <code>345678901</code>).</li>
+                            <li>Vào <a href="/admin/setting" class="text-blue-600 hover:underline font-medium">Admin > Cài đặt chung</a> và nhập mã đó vào ô <strong>GA4 Property ID</strong>.</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <div class="bg-yellow-50 text-yellow-800 p-3 rounded mt-4 text-xs">
+                    <strong>Lưu ý:</strong> Dữ liệu từ API có thể chậm hơn thực tế 24h. Để xem realtime, hãy dùng trực tiếp trang Google Analytics hoặc Microsoft Clarity.
+                </div>
             </div>
             
-            <div class="flex justify-end gap-3">
-                <button type="button" onclick="document.getElementById('config-modal').classList.add('hidden')" class="px-4 py-2 text-slate-600 hover:bg-slate-100 rounded-lg text-sm font-medium transition">Đóng</button>
-                <a href="/admin/setting" class="px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 text-sm font-medium transition">Đến trang Cài đặt</a>
+            <div class="flex justify-end gap-3 mt-6 pt-4 border-t border-slate-100">
+                <button type="button" onclick="document.getElementById('config-modal').classList.add('hidden')" class="px-4 py-2 text-slate-600 hover:bg-slate-100 rounded-lg text-sm font-medium transition">Đã hiểu, đóng lại</button>
+                <a href="/admin/setting" class="px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 text-sm font-medium transition flex items-center gap-2">
+                    <i data-lucide="settings" class="w-4 h-4"></i> Đến trang Cài đặt
+                </a>
             </div>
         </div>
     </div>
 
     <!-- Report Display -->
     
+    <!-- Microsoft Clarity Link (Nếu đã cấu hình) -->
+    <?php if ($clarity_id = setting('microsoft_clarity_id')): ?>
+    <div class="bg-indigo-50 border border-indigo-100 p-4 rounded-lg mb-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-600">
+                <i data-lucide="activity" class="w-5 h-5"></i>
+            </div>
+            <div>
+                <strong class="text-indigo-900">Microsoft Clarity đang hoạt động</strong>
+                <p class="text-sm text-indigo-700">Đang theo dõi hành vi người dùng (Heatmap, Recording) với ID: <code><?= htmlspecialchars($clarity_id) ?></code></p>
+            </div>
+        </div>
+        <a href="https://clarity.microsoft.com/projects/view/<?= htmlspecialchars($clarity_id) ?>/dashboard" target="_blank" 
+           class="px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 transition flex items-center gap-2 shadow-sm whitespace-nowrap">
+            Mở Clarity Dashboard <i data-lucide="external-link" class="w-4 h-4"></i>
+        </a>
+    </div>
+    <?php endif; ?>
+
     <!-- Debug Info Block -->
     <?php if (!empty($debugInfo)): ?>
     <div class="bg-yellow-50 border border-yellow-200 p-4 rounded-lg mb-6 text-sm text-yellow-800">

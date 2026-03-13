@@ -27,6 +27,17 @@
     <!-- End Google Tag Manager -->
     <?php endif; ?>
 
+    <?php if ($clarity_id = setting('microsoft_clarity_id')): ?>
+    <!-- Microsoft Clarity -->
+    <script type="text/javascript">
+        (function(c,l,a,r,i,t,y){
+            c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+            y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+        })(window, document, "clarity", "script", "<?= htmlspecialchars($clarity_id) ?>");
+    </script>
+    <?php endif; ?>
+
     <title><?= htmlspecialchars($meta_title ?? $title ?? setting('default_title'), ENT_QUOTES, 'UTF-8') ?></title>
     
     <meta name="description" content="<?= htmlspecialchars($meta_desc ?? $description ?? setting('default_desc'), ENT_QUOTES, 'UTF-8') ?>">

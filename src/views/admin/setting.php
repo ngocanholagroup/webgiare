@@ -118,6 +118,14 @@ $form_fields = [
         'note' => '<span class="text-blue-600 font-bold">* Bắt buộc:</span> Dùng để hiển thị biểu đồ trong trang Admin. Lấy trong Admin GA4 -> Property Settings.'
     ],
     [
+        'label' => 'Microsoft Clarity ID',
+        'name' => 'microsoft_clarity_id',
+        'type' => 'text',
+        'width' => 'col-span-12 md:col-span-6',
+        'placeholder' => 'VD: k8y3j4m...',
+        'note' => 'Dùng để theo dõi hành vi người dùng (Heatmap, Recording). Lấy trong Project Settings -> Overview.'
+    ],
+    [
         'label' => 'Link Google Business',
         'name' => 'social_google',
         'type' => 'text',
