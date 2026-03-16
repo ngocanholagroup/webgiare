@@ -16,6 +16,61 @@ $form_data = $settings;
 
 // 2. CẤU HÌNH FIELDS
 $form_fields = [
+    [
+        'label' => '',
+        'name' => 'dashboard_cta',
+        'type' => 'custom',
+        'width' => 'col-span-12',
+        'html' => '
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Umami CTA -->
+                <div class="bg-indigo-50 border border-indigo-200 rounded-lg p-6 flex flex-col items-center text-center gap-4 hover:shadow-md transition-shadow">
+                    <div class="p-3 bg-white rounded-full shadow-sm text-indigo-600">
+                        <i data-lucide="bar-chart-2" class="w-8 h-8"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-bold text-indigo-900">Umami Analytics</h3>
+                        <p class="text-indigo-600 text-sm mt-1">Xem thống kê truy cập và người dùng.</p>
+                    </div>
+                    <a href="http://localhost:3000" target="_blank" class="w-full px-6 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-lg shadow-sm flex items-center justify-center gap-2 transition-colors">
+                        <i data-lucide="external-link" class="w-4 h-4"></i>
+                        Mở Dashboard
+                    </a>
+                </div>
+
+                <!-- MinIO CTA -->
+                <div class="bg-red-50 border border-red-200 rounded-lg p-6 flex flex-col items-center text-center gap-4 hover:shadow-md transition-shadow">
+                    <div class="p-3 bg-white rounded-full shadow-sm text-red-600">
+                        <i data-lucide="database" class="w-8 h-8"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-bold text-red-900">MinIO Object Storage</h3>
+                        <p class="text-red-600 text-sm mt-1">Quản lý file ảnh và bucket lưu trữ.</p>
+                    </div>
+                    <a href="http://localhost:9001" target="_blank" class="w-full px-6 py-2 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg shadow-sm flex items-center justify-center gap-2 transition-colors">
+                        <i data-lucide="external-link" class="w-4 h-4"></i>
+                        Mở Console
+                    </a>
+                </div>
+            </div>
+        '
+    ],
+    // === PHẦN: KẾT NỐI ANALYTICS ===
+    [
+        'label' => 'Umami Website ID',
+        'name'  => 'umami_website_id',
+        'type'  => 'text',
+        'width' => 'col-span-12 md:col-span-6',
+        'note'  => 'Lấy từ Umami Dashboard > Websites > Edit > Website ID.'
+    ],
+    [
+        'label' => 'Umami Script URL',
+        'name'  => 'umami_src_url',
+        'type'  => 'text',
+        'width' => 'col-span-12 md:col-span-6',
+        'placeholder' => 'http://localhost:3000/script.js',
+        'note'  => 'URL file script.js của Umami (VD: http://localhost:3000/script.js)'
+    ],
     // === PHẦN 1: THÔNG TIN CHUNG ===
     [
         'label' => 'Tên công ty / Brandname',
@@ -115,28 +170,20 @@ $form_fields = [
     
     // === PHẦN 4: ANALYTICS & MARKETING ===
     [
-        'label' => 'GA4 Measurement ID (Tracking Code)',
-        'name' => 'google_analytics_id',
+        'label' => 'Umami Website ID',
+        'name' => 'umami_website_id',
         'type' => 'text',
         'width' => 'col-span-12 md:col-span-6',
-        'placeholder' => 'G-XXXXXXXXXX',
-        'note' => '<span class="text-red-600 font-bold">* Bắt buộc:</span> Dùng để đếm lượt truy cập (Tracking). Lấy trong Admin GA4 -> Data Streams.'
+        'placeholder' => 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx',
+        'note' => 'Lấy trong Umami -> Websites -> Edit -> Details.'
     ],
     [
-        'label' => 'GA4 Property ID (Cho Báo Cáo Admin)',
-        'name' => 'ga4_property_id',
+        'label' => 'Umami Script URL',
+        'name' => 'umami_src_url',
         'type' => 'text',
         'width' => 'col-span-12 md:col-span-6',
-        'placeholder' => 'VD: 345678901',
-        'note' => '<span class="text-blue-600 font-bold">* Bắt buộc:</span> Dùng để hiển thị biểu đồ trong trang Admin. Lấy trong Admin GA4 -> Property Settings.'
-    ],
-    [
-        'label' => 'Microsoft Clarity ID',
-        'name' => 'microsoft_clarity_id',
-        'type' => 'text',
-        'width' => 'col-span-12 md:col-span-6',
-        'placeholder' => 'VD: k8y3j4m...',
-        'note' => 'Dùng để theo dõi hành vi người dùng (Heatmap, Recording). Lấy trong Project Settings -> Overview.'
+        'placeholder' => 'http://localhost:3000/script.js',
+        'note' => 'Mặc định: http://localhost:3000/script.js (Nếu dùng Docker) hoặc https://cloud.umami.is/script.js'
     ],
     [
         'label' => 'Link Google Business',

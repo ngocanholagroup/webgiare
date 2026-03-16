@@ -117,13 +117,7 @@ class AdminAccountController {
             if ($newUrl) {
                 // Xóa ảnh cũ trên host để tiết kiệm dung lượng
                 if (!empty($avatarUrl)) {
-                    $oldFile = ltrim($avatarUrl, '/'); // Xóa dấu / đầu tiên
-                    $rootPath = dirname(__DIR__);
-                    $absOldFile = $rootPath . DIRECTORY_SEPARATOR . str_replace(['\\', '/'], DIRECTORY_SEPARATOR, $oldFile);
-                    
-                    if (file_exists($absOldFile) && !is_dir($absOldFile)) {
-                        unlink($absOldFile);
-                    }
+                    MediaService::delete($avatarUrl);
                 }
                 // Gán đường dẫn mới
                 $avatarUrl = $newUrl;
@@ -165,12 +159,7 @@ class AdminAccountController {
         // Xóa avatar cũ nếu có
         $admin = $model->getById($id);
         if ($admin && !empty($admin['avatar'])) {
-            $rootPath = dirname(__DIR__);
-            $oldFile = ltrim($admin['avatar'], '/');
-            $absOldFile = $rootPath . DIRECTORY_SEPARATOR . str_replace(['\\', '/'], DIRECTORY_SEPARATOR, $oldFile);
-            if (file_exists($absOldFile) && !is_dir($absOldFile)) {
-                unlink($absOldFile);
-            }
+            MediaService::delete($admin['avatar']);
         }
 
         $model->delete($id);
@@ -183,43 +172,14 @@ class AdminAccountController {
 
     // Helper Upload Avatar
     private function uploadAvatar($file) {
-        // Validate file upload
-        $validation = FileUploadValidator::validate($file, 'image');
-        if (!$validation['valid']) {
-            $_SESSION['upload_error'] = implode(', ', $validation['errors']);
-            return '';
-        }
-
-        $rootPath = dirname(__DIR__); // Points to src/
-        $uploadDir = "uploads/avatars/";
-        $normalizedDir = str_replace(['\\', '/'], DIRECTORY_SEPARATOR, trim($uploadDir, '/'));
-        $absoluteUploadDir = $rootPath . DIRECTORY_SEPARATOR . $normalizedDir;
-
-        if (!is_dir($absoluteUploadDir)) {
-            if (!mkdir($absoluteUploadDir, 0777, true)) {
-                error_log("Failed to create directory: $absoluteUploadDir");
-                return '';
-            }
+        $result = MediaService::upload($file, 'account'); // Lưu vào thư mục account
+        
+        if ($result['success']) {
+            Logger::getInstance()->logUpload('ADMIN_AVATAR', basename($result['url']), ['size' => $file['size']]);
+            return $result['url'];
         }
         
-        // Generate safe filename
-        $safeFilename = FileUploadValidator::generateSafeFilename($file['name']);
-        if (!$safeFilename) {
-            $_SESSION['upload_error'] = 'Invalid file extension';
-            return '';
-        }
-
-        $targetPath = $absoluteUploadDir . DIRECTORY_SEPARATOR . $safeFilename;
-
-        if (move_uploaded_file($file['tmp_name'], $targetPath)) {
-            Logger::getInstance()->logUpload('ADMIN_AVATAR', $safeFilename, ['size' => $file['size']]);
-            
-            // Get base URL for production compatibility
-            $baseUrl = Config::getBaseUrl();
-            // Web path with forward slashes
-            $webPath = '/' . str_replace('\\', '/', $normalizedDir) . '/' . $safeFilename;
-            return $baseUrl . $webPath;
-        }
+        $_SESSION['upload_error'] = $result['error'];
         return '';
     }
 }

@@ -6,17 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-    <?php if ($ga_id = setting('google_analytics_id')): ?>
-    <!-- Google Analytics (GA4) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=<?= htmlspecialchars($ga_id) ?>"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', '<?= htmlspecialchars($ga_id) ?>');
-    </script>
-    <?php endif; ?>
-
     <?php if ($gtm_id = setting('google_tag_manager_id')): ?>
     <!-- Google Tag Manager -->
     <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -27,15 +16,9 @@
     <!-- End Google Tag Manager -->
     <?php endif; ?>
 
-    <?php if ($clarity_id = setting('microsoft_clarity_id')): ?>
-    <!-- Microsoft Clarity -->
-    <script type="text/javascript">
-        (function(c,l,a,r,i,t,y){
-            c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-            y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-        })(window, document, "clarity", "script", "<?= htmlspecialchars($clarity_id) ?>");
-    </script>
+    <?php if ($umami_id = setting('umami_website_id')): ?>
+    <!-- Umami Analytics -->
+    <script defer src="<?= htmlspecialchars(setting('umami_src_url', 'https://cloud.umami.is/script.js')) ?>" data-website-id="<?= htmlspecialchars($umami_id) ?>"></script>
     <?php endif; ?>
 
     <title><?= htmlspecialchars($meta_title ?? $title ?? setting('default_title'), ENT_QUOTES, 'UTF-8') ?></title>

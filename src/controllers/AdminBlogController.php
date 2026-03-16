@@ -60,90 +60,21 @@ class AdminBlogController
             exit;
         }
 
-        if (!isset($_FILES['file']) || $_FILES['file']['error'] !== UPLOAD_ERR_OK) {
+        if (!isset($_FILES['file'])) {
             header('HTTP/1.1 400 Bad Request');
             echo json_encode(['error' => 'No file uploaded']);
             exit;
         }
 
-        $file = $_FILES['file'];
-        $allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
-        $maxSize = 5 * 1024 * 1024; // 5MB
+        // Upload vào thư mục blog
+        $result = MediaService::upload($_FILES['file'], 'blog');
 
-        // Validate file type
-        if (!in_array($file['type'], $allowedTypes)) {
-            header('HTTP/1.1 400 Bad Request');
-            echo json_encode(['error' => 'Invalid file type. Only JPEG, PNG, GIF, WebP allowed.']);
-            exit;
-        }
-
-        // Validate file size
-        if ($file['size'] > $maxSize) {
-            header('HTTP/1.1 400 Bad Request');
-            echo json_encode(['error' => 'File too large. Maximum size is 5MB.']);
-            exit;
-        }
-
-        // Create upload directory if not exists
-        $rootPath = dirname(__DIR__); // Points to src/
-        $uploadDir = 'uploads/blog/';
-        $normalizedDir = str_replace(['\\', '/'], DIRECTORY_SEPARATOR, trim($uploadDir, '/'));
-        $absoluteUploadDir = $rootPath . DIRECTORY_SEPARATOR . $normalizedDir;
-
-        if (!is_dir($absoluteUploadDir)) {
-            if (!mkdir($absoluteUploadDir, 0777, true)) {
-                $error = error_get_last();
-                error_log("Failed to create directory: $absoluteUploadDir. Error: " . ($error['message'] ?? 'Unknown'));
-                header('HTTP/1.1 500 Internal Server Error');
-                echo json_encode(['error' => 'Failed to create upload directory: ' . $absoluteUploadDir]);
-                exit;
-            }
-        }
-        
-        // Ensure directory is writable
-        if (!is_writable($absoluteUploadDir)) {
-             chmod($absoluteUploadDir, 0777);
-             if (!is_writable($absoluteUploadDir)) {
-                 error_log("Directory not writable: $absoluteUploadDir");
-                 header('HTTP/1.1 500 Internal Server Error');
-                 echo json_encode(['error' => 'Upload directory is not writable']);
-                 exit;
-             }
-        }
-
-        // Create additional upload directories (ensure they exist)
-        $additionalDirs = [
-            'uploads/posts_content/',
-            'uploads/templates/',
-            'uploads/temp/'
-        ];
-        
-        foreach ($additionalDirs as $dir) {
-            $norm = str_replace(['\\', '/'], DIRECTORY_SEPARATOR, trim($dir, '/'));
-            $abs = $rootPath . DIRECTORY_SEPARATOR . $norm;
-            if (!is_dir($abs)) {
-                mkdir($abs, 0777, true);
-            }
-        }
-
-        // Generate unique filename
-        $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
-        $filename = 'blog_' . time() . '_' . uniqid() . '.' . $extension;
-        $targetPath = $absoluteUploadDir . DIRECTORY_SEPARATOR . $filename;
-
-        // Move uploaded file
-        if (move_uploaded_file($file['tmp_name'], $targetPath)) {
-            // Return file URL with base URL for production compatibility
-            $baseUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'];
-            // Always forward slashes for URL
-            $webPath = '/' . str_replace('\\', '/', $normalizedDir) . '/' . $filename;
-            $fileUrl = $baseUrl . $webPath;
-            
+        if ($result['success']) {
             header('Content-Type: application/json');
-            echo json_encode(['location' => $fileUrl]);
+            echo json_encode(['location' => $result['url']]);
         } else {
             header('HTTP/1.1 500 Internal Server Error');
-            echo json_encode(['error' => 'Failed to move uploaded file']);
+            echo json_encode(['error' => $result['error']]);
         }
         exit;
     }
@@ -263,11 +194,9 @@ class AdminBlogController
         if (!empty($_FILES['thumbnail']['name'])) {
             $newUrl = $this->uploadImage($_FILES['thumbnail']);
             if ($newUrl) {
-                // Xóa ảnh cũ để dọn rác server
-                $oldFile = ltrim($data['thumbnail'], '/');
-                $absOldFile = $rootPath . DIRECTORY_SEPARATOR . str_replace(['\\', '/'], DIRECTORY_SEPARATOR, $oldFile);
-                if (!empty($oldFile) && file_exists($absOldFile) && !is_dir($absOldFile)) {
-                    unlink($absOldFile);
+                // Xóa ảnh cũ để dọn rác server (MinIO)
+                if (!empty($data['thumbnail'])) {
+                    MediaService::delete($data['thumbnail']);
                 }
                 $data['thumbnail'] = $newUrl;
             }
@@ -282,12 +211,9 @@ class AdminBlogController
         // Tìm những ảnh có trong CŨ mà KHÔNG có trong MỚI (tức là đã bị user xóa)
         $deletedImages = array_diff($oldImages, $newImages);
         
-        // Tiến hành xóa file vật lý
-        foreach ($deletedImages as $img) {
-            $absImg = $rootPath . DIRECTORY_SEPARATOR . str_replace(['\\', '/'], DIRECTORY_SEPARATOR, $img);
-            if (file_exists($absImg) && !is_dir($absImg)) {
-                unlink($absImg);
-            }
+        // Tiến hành xóa file trên MinIO
+        foreach ($deletedImages as $imgUrl) {
+            MediaService::delete($imgUrl);
         }
 
         (new AdminBlog())->updatePost($id, $data);
@@ -310,20 +236,15 @@ class AdminBlogController
         if ($post) {
             $rootPath = dirname(__DIR__); // Points to src/
 
-            // 1. Xóa Thumbnail (Code cũ đã có)
-            $thumb = ltrim($post['thumbnail'], '/');
-            $absThumb = $rootPath . DIRECTORY_SEPARATOR . str_replace(['\\', '/'], DIRECTORY_SEPARATOR, $thumb);
-            if (!empty($thumb) && file_exists($absThumb) && !is_dir($absThumb)) {
-                unlink($absThumb);
+            // 1. Xóa Thumbnail (Media Server)
+            if (!empty($post['thumbnail'])) {
+                MediaService::delete($post['thumbnail']);
             }
 
-            // 2. [MỚI] Xóa toàn bộ ảnh trong nội dung bài viết
+            // 2. Xóa toàn bộ ảnh trong nội dung bài viết (Media Server)
             $contentImages = $this->getImagesFromContent($post['content']);
-            foreach ($contentImages as $img) {
-                $absImg = $rootPath . DIRECTORY_SEPARATOR . str_replace(['\\', '/'], DIRECTORY_SEPARATOR, $img);
-                if (file_exists($absImg) && !is_dir($absImg)) {
-                    unlink($absImg);
-                }
+            foreach ($contentImages as $imgUrl) {
+                MediaService::delete($imgUrl);
             }
         }
 
@@ -348,59 +269,21 @@ class AdminBlogController
         }
 
         // 2. Kiểm tra file gửi lên (Name mặc định của CKEditor là 'upload')
-        if (!isset($_FILES['upload']) || $_FILES['upload']['error'] !== UPLOAD_ERR_OK) {
+        if (!isset($_FILES['upload'])) {
             http_response_code(400);
             echo json_encode(['error' => ['message' => 'Upload failed.']]);
             exit;
         }
 
-        $file = $_FILES['upload'];
-        
-        // 3. Validate file using FileUploadValidator
-        $validation = FileUploadValidator::validate($file, 'image');
-        if (!$validation['valid']) {
-            http_response_code(400);
-            echo json_encode(['error' => ['message' => implode(', ', $validation['errors'])]]);
-            exit;
-        }
-        
-        // 4. Create upload directory if not exists
-        $rootPath = dirname(__DIR__); // Points to src/
-        $uploadDir = 'uploads/posts_content/';
-        $normalizedDir = str_replace(['\\', '/'], DIRECTORY_SEPARATOR, trim($uploadDir, '/'));
-        $absoluteUploadDir = $rootPath . DIRECTORY_SEPARATOR . $normalizedDir;
-        
-        if (!is_dir($absoluteUploadDir)) {
-            if (!mkdir($absoluteUploadDir, 0777, true)) {
-                http_response_code(500);
-                echo json_encode(['error' => ['message' => 'Failed to create directory. Permission denied.']]);
-                exit;
-            }
-        }
-        
-        // 5. Generate safe filename
-        $safeFilename = FileUploadValidator::generateSafeFilename($file['name']);
-        if (!$safeFilename) {
-            http_response_code(400);
-            echo json_encode(['error' => ['message' => 'Invalid file extension']]);
-            exit;
-        }
-        
-        $targetPath = $absoluteUploadDir . DIRECTORY_SEPARATOR . $safeFilename;
-        
-        // 6. Move file to target directory
-        if (move_uploaded_file($file['tmp_name'], $targetPath)) {
-            // Log upload
-            Logger::getInstance()->logUpload('CKEDITOR_IMAGE', $safeFilename, ['size' => $file['size']]);
-            
-            // 7. Trả về JSON đúng chuẩn CKEditor 5
-            // Đường dẫn web (luôn dùng forward slash)
-            $webPath = '/' . str_replace('\\', '/', $normalizedDir) . '/' . $safeFilename;
+        $result = MediaService::upload($_FILES['upload']);
+
+        if ($result['success']) {
+            Logger::getInstance()->logUpload('CKEDITOR_IMAGE', basename($result['url']), ['size' => $_FILES['upload']['size']]);
             echo json_encode([
-                'url' => $webPath 
+                'url' => $result['url'] 
             ]);
         } else {
-            echo json_encode(['error' => ['message' => 'Không thể lưu file vào server.']]);
+            echo json_encode(['error' => ['message' => $result['error']]]);
         }
         exit;
     }
@@ -408,39 +291,15 @@ class AdminBlogController
     // Hàm upload ảnh vào folder uploads/blog/
     private function uploadImage($file)
     {
-        // Validate file upload
-        $validation = FileUploadValidator::validate($file, 'image');
-        if (!$validation['valid']) {
-            $_SESSION['upload_error'] = implode(', ', $validation['errors']);
-            return '';
-        }
-
-        $rootPath = dirname(__DIR__); // Points to src/
-        $uploadDir = 'uploads/blog/';
-        $normalizedDir = str_replace(['\\', '/'], DIRECTORY_SEPARATOR, trim($uploadDir, '/'));
-        $absoluteUploadDir = $rootPath . DIRECTORY_SEPARATOR . $normalizedDir;
-
-        // Tự tạo thư mục nếu chưa có
-        if (!is_dir($absoluteUploadDir)) {
-            mkdir($absoluteUploadDir, 0777, true);
-        }
-
-        // Generate safe filename
-        $safeFilename = FileUploadValidator::generateSafeFilename($file['name']);
-        if (!$safeFilename) {
-            $_SESSION['upload_error'] = 'Invalid file extension';
-            return '';
-        }
-
-        $targetPath = $absoluteUploadDir . DIRECTORY_SEPARATOR . $safeFilename;
-
-        if (move_uploaded_file($file['tmp_name'], $targetPath)) {
+        $result = MediaService::upload($file, 'blog'); // Lưu vào thư mục blog
+        
+        if ($result['success']) {
             // Log file upload
-            Logger::getInstance()->logUpload('BLOG_IMAGE', $safeFilename, ['size' => $file['size']]);
-            
-            // Return relative web path
-            return '/' . str_replace('\\', '/', $normalizedDir) . '/' . $safeFilename;
+            Logger::getInstance()->logUpload('BLOG_IMAGE', basename($result['url']), ['size' => $file['size']]);
+            return $result['url'];
         }
+        
+        $_SESSION['upload_error'] = $result['error'];
         return '';
     }
 
@@ -452,17 +311,9 @@ class AdminBlogController
         preg_match_all('/src="([^"]+)"/', $html, $matches);
         
         if (!empty($matches[1])) {
-            foreach ($matches[1] as $src) {
-                // Chỉ lấy những ảnh nằm trong folder uploads của mình
-                // (Tránh xóa nhầm ảnh từ link ngoài hoặc ảnh giao diện)
-                if (strpos($src, '/uploads/posts_content/') !== false) {
-                    // Loại bỏ tên miền nếu có, chỉ lấy đường dẫn tương đối từ root
-                    $path = parse_url($src, PHP_URL_PATH);
-                    $images[] = ltrim($path, '/'); // Xóa dấu / ở đầu để dùng với hàm unlink
-                }
-            }
+            return array_unique($matches[1]);
         }
-        return array_unique($images);
+        return [];
     }
 
     // Hàm tạo slug tiếng Việt

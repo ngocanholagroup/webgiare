@@ -16,7 +16,16 @@ $page_tabs = [
     $post_columns = [
         ['label' => '#', 'type' => 'index', 'width' => '50px'],
         [
-            'label' => 'Tiêu đề bài viết', 
+            'label' => 'Hình ảnh',
+            'type' => 'custom',
+            'width' => '80px',
+            'callback' => function($row) {
+                $img = !empty($row['thumbnail']) ? $row['thumbnail'] : '/assets/images/no-image.png';
+                return '<img src="' . htmlspecialchars($img) . '" class="w-12 h-12 object-cover rounded shadow-sm border border-slate-200" alt="Thumbnail">';
+            }
+        ],
+        [
+            'label' => 'Tiêu đề bài viết',  
             'type' => 'custom',
             'bold' => true,
             'callback' => function($row) {

@@ -5,6 +5,16 @@
     $template_columns = [
         ['label' => '#', 'type' => 'index', 'width' => '50px'],
         [
+            'label' => 'Hình ảnh',
+            'type' => 'custom',
+            'width' => '80px',
+            'callback' => function($row) {
+                $img = !empty($row['image_desktop']) ? $row['image_desktop'] : 
+                      (!empty($row['image_url']) ? $row['image_url'] : '/assets/images/no-image.png');
+                return '<img src="' . htmlspecialchars($img) . '" class="w-12 h-12 object-cover rounded shadow-sm border border-slate-200" alt="Template Image">';
+            }
+        ],
+        [
             'label' => 'Tên giao diện / SKU', 
             'key' => 'name', 
             'bold' => true, 

@@ -164,6 +164,10 @@ if (isset($form_fields) && is_array($form_fields)) {
                                 placeholder="<?= $placeholder ?>">
                             <?php break; ?>
 
+                        <?php case 'custom': ?>
+                            <?= $field['html'] ?? '' ?>
+                            <?php break; ?>
+
                         <?php default: ?>
                             <input type="<?= $type ?>" name="<?= $key ?>" value="<?= htmlspecialchars($val) ?>" 
                                 <?= $required ? 'required' : '' ?> <?= $disabled ? 'disabled' : '' ?>

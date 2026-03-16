@@ -4,16 +4,8 @@
 uploads/*
 !uploads/.gitkeep
 
-# Src Uploads (QUAN TRỌNG: Ignore ảnh upload để tránh conflict production)
-src/uploads/*
-!src/uploads/.gitkeep
-!src/uploads/.htaccess
-!src/uploads/authors/.gitkeep
-!src/uploads/avatars/.gitkeep
-!src/uploads/blog/.gitkeep
-!src/uploads/posts_content/.gitkeep
-!src/uploads/templates/.gitkeep
-!src/uploads/temp/.gitkeep
+# Src Uploads (Deprecated)
+src/uploads/
 
 *.log
 
@@ -73,3 +65,7 @@ access.log
 *.sql
 *.sqlite
 *.db
+
+# MinIO Data (Dữ liệu ảnh, tránh commit lên git)
+docker/minio_data/
+minio_data/

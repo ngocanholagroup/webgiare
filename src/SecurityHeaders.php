@@ -86,8 +86,8 @@ class SecurityHeaders
             // - Tailwind: https://cdn.jsdelivr.net
             "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com https://cdnjs.cloudflare.com https://cdn.ckeditor.com",
             
-            // Images: allow self, data URIs, and all HTTPS
-            "img-src 'self' data: blob: https:",
+            // Images: allow self, data URIs, and all HTTPS + Localhost MinIO
+            "img-src 'self' data: blob: https: http://localhost:9000",
             
             // Fonts: allow self and font CDNs
             "font-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com",

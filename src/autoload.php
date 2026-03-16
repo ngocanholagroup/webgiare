@@ -9,6 +9,7 @@ spl_autoload_register(function ($className) {
     $paths = [
         '/controllers/',
         '/models/',
+        '/services/',
         '/' // Để load các file nằm ngay trong src như Router.php
     ];
 

@@ -49,7 +49,7 @@ if (!function_exists('isActive')) {
 <aside id="sidebar" class="fixed inset-y-0 left-0 z-50 w-64 bg-slate-900 text-white transform -translate-x-full lg:translate-x-0 sidebar-transition flex flex-col border-r border-slate-800 shadow-2xl">
     
     <div class="h-16 flex items-center justify-between px-6 border-b border-slate-800 bg-slate-900/50 backdrop-blur-md relative">
-        <div class="text-xl font-bold text-orange-500">HOLA GROUP</div>
+        <div class="text-xl font-bold text-orange-500">HOLA ADMIN</div>
         
         <button onclick="toggleSidebar()" class="lg:hidden text-slate-400 hover:text-white absolute right-4">
             <i data-lucide="x" class="w-6 h-6"></i>
@@ -58,7 +58,7 @@ if (!function_exists('isActive')) {
 
     <div class="flex-1 overflow-y-auto no-scrollbar py-6 px-4 space-y-1">
 
-        <p class="px-2 text-xs font-bold text-slate-500 uppercase tracking-widest mb-4 mt-2">Quản lý</p>
+        <p class="px-2 text-xs font-medium text-slate-500 uppercase tracking-widest mb-4 mt-2">Quản lý</p>
 
         <a href="/admin/template" class="flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium transition-all <?= isActive('/admin/template', $currentUri) ?>">
             <i data-lucide="layout-template" class="w-5 h-5"></i>
@@ -82,12 +82,7 @@ if (!function_exists('isActive')) {
             Liên Hệ
         </a>
 
-        <a href="/admin/report" class="flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium transition-all <?= isActive('/admin/report', $currentUri) ?>">
-            <i data-lucide="bar-chart-2" class="w-5 h-5"></i>
-            Báo cáo
-        </a>
-
-        <p class="px-2 text-xs font-bold text-slate-500 uppercase tracking-widest mb-4 mt-8">Hệ thống</p>
+        <p class="px-2 text-xs font-medium text-slate-500 uppercase tracking-widest mb-4 mt-8">Hệ thống</p>
 
         <a href="/admin/page" class="flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium transition-all <?= isActive('/admin/page', $currentUri) ?>">
             <i data-lucide="file" class="w-5 h-5"></i>

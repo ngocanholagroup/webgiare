@@ -25,6 +25,7 @@ services:
       - DB_NAME=${DB_NAME}
       - DB_USER=${DB_USER}
       - DB_PASS=${DB_PASS}
+      - MEDIA_SERVER_URL=http://webgiare_media:3000/upload
 
   # 2. Database (MySQL)
   db:
@@ -65,11 +66,91 @@ services:
     networks:
       - webgiare_net
 
+  # 4. Umami Analytics (Database PostgreSQL)
+  umami_db:
+    image: postgres:15-alpine
+    container_name: umami_db
+    environment:
+      POSTGRES_DB: ${UMAMI_DB}
+      POSTGRES_USER: ${UMAMI_USER}
+      POSTGRES_PASSWORD: ${UMAMI_PASSWORD}
+    volumes:
+      - umami_db_data:/var/lib/postgresql/data
+    networks:
+      - webgiare_net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${UMAMI_USER} -d ${UMAMI_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: always
+
+  # 5. Umami Analytics (App)
+  umami_app:
+    image: ghcr.io/umami-software/umami:postgresql-latest
+    container_name: umami_app
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: postgresql://${UMAMI_USER}:${UMAMI_PASSWORD}@umami_db:5432/${UMAMI_DB}
+      DATABASE_TYPE: postgresql
+      APP_SECRET: ${APP_SECRET:-replace-me-with-a-random-string}
+    ports:
+      - "3000:3000" # Truy cập Umami qua http://localhost:3000
+    depends_on:
+      umami_db:
+        condition: service_healthy
+    networks:
+      - webgiare_net
+    restart: always
+
+  # 6. MinIO (Object Storage)
+  minio:
+    image: minio/minio
+    container_name: webgiare_minio
+    command: server /data --console-address ":9001"
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+    volumes:
+      - ./docker/minio_data:/data
+    networks:
+      - webgiare_net
+    restart: always
+
+  # 7. Media Server (Satellite)
+  webgiare_media:
+    build:
+      context: ./webgiare_media
+    container_name: webgiare_media_server
+    ports:
+      - "3001:3000"
+    environment:
+      PORT: 3000
+      MINIO_ENDPOINT: minio
+      MINIO_PORT: 9000
+      MINIO_USE_SSL: "false"
+      MINIO_ACCESS_KEY: ${MINIO_ROOT_USER}
+      MINIO_SECRET_KEY: ${MINIO_ROOT_PASSWORD}
+      MINIO_BUCKET_NAME: uploads
+      MINIO_PUBLIC_ENDPOINT: http://localhost:9000
+      # Force WebP MIME type to be correct
+      MINIO_REGION: us-east-1
+    depends_on:
+      - minio
+    networks:
+      - webgiare_net
+    restart: always
+
 # Khai báo Volumes và Networks
 volumes:
   db_data:
+  umami_db_data:
   webgiare_uploads:
-
+  # minio_data: # Dùng local folder ./docker/minio_data thay vì volume để dễ quản lý
 
 networks:
   webgiare_net:

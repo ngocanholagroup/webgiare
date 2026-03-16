@@ -142,9 +142,9 @@ class AdminTemplateController
         if (!empty($_FILES['image_desktop']['name'])) {
             $path = $this->uploadImage($_FILES['image_desktop']);
             if ($path) {
-                $oldPath = ltrim($data['image_desktop'], '/');
-                $absOldPath = $rootPath . DIRECTORY_SEPARATOR . str_replace(['\\', '/'], DIRECTORY_SEPARATOR, $oldPath);
-                if (!empty($oldPath) && file_exists($absOldPath) && !is_dir($absOldPath)) unlink($absOldPath);
+                if (!empty($data['image_desktop'])) {
+                    MediaService::delete($data['image_desktop']);
+                }
                 $data['image_desktop'] = $path;
             }
         }
@@ -153,9 +153,9 @@ class AdminTemplateController
         if (!empty($_FILES['image_mobile']['name'])) {
             $path = $this->uploadImage($_FILES['image_mobile']);
             if ($path) {
-                $oldPath = ltrim($data['image_mobile'], '/');
-                $absOldPath = $rootPath . DIRECTORY_SEPARATOR . str_replace(['\\', '/'], DIRECTORY_SEPARATOR, $oldPath);
-                if (!empty($oldPath) && file_exists($absOldPath) && !is_dir($absOldPath)) unlink($absOldPath);
+                if (!empty($data['image_mobile'])) {
+                    MediaService::delete($data['image_mobile']);
+                }
                 $data['image_mobile'] = $path;
             }
         }
@@ -201,26 +201,24 @@ class AdminTemplateController
         $model = new AdminTemplate();
 
         // --- XÓA FILE ẢNH TRÊN SERVER ---
-        $rootPath = dirname(__DIR__); // Points to src/
-
+        
         // 1. Lấy thông tin template để xóa 2 ảnh chính
         $tpl = $model->getById($id);
         if ($tpl) {
-            $pathD = ltrim($tpl['image_desktop'], '/');
-            $absD = $rootPath . DIRECTORY_SEPARATOR . str_replace(['\\', '/'], DIRECTORY_SEPARATOR, $pathD);
-            if (file_exists($absD) && !is_dir($absD)) unlink($absD);
-
-            $pathM = ltrim($tpl['image_mobile'], '/');
-            $absM = $rootPath . DIRECTORY_SEPARATOR . str_replace(['\\', '/'], DIRECTORY_SEPARATOR, $pathM);
-            if (file_exists($absM) && !is_dir($absM)) unlink($absM);
+            if (!empty($tpl['image_desktop'])) {
+                MediaService::delete($tpl['image_desktop']);
+            }
+            if (!empty($tpl['image_mobile'])) {
+                MediaService::delete($tpl['image_mobile']);
+            }
         }
 
         // 2. Lấy danh sách gallery để xóa ảnh phụ
         $gallery = $model->getGallery($id);
         foreach ($gallery as $img) {
-            $pathG = ltrim($img['image_url'], '/');
-            $absG = $rootPath . DIRECTORY_SEPARATOR . str_replace(['\\', '/'], DIRECTORY_SEPARATOR, $pathG);
-            if (file_exists($absG) && !is_dir($absG)) unlink($absG);
+            if (!empty($img['image_url'])) {
+                MediaService::delete($img['image_url']);
+            }
         }
 
         // --- XÓA TRONG DATABASE ---
@@ -281,22 +279,9 @@ class AdminTemplateController
         $img = $stmt->fetch();
 
         if ($img) {
-            // Fix: Use absolute path for deletion
-            $rootPath = dirname(__DIR__); // Points to src/
-            $relativePath = ltrim($img['image_url'], '/');
-            
-            // Handle full URL if present (remove domain)
-            $baseUrl = Config::getBaseUrl();
-            if (strpos($relativePath, $baseUrl) === 0) {
-                $relativePath = str_replace($baseUrl, '', $relativePath);
-                $relativePath = ltrim($relativePath, '/');
-            }
-
-            $normalizedPath = str_replace(['\\', '/'], DIRECTORY_SEPARATOR, $relativePath);
-            $absolutePath = $rootPath . DIRECTORY_SEPARATOR . $normalizedPath;
-
-            if (file_exists($absolutePath) && !is_dir($absolutePath)) {
-                unlink($absolutePath);
+            // Xóa file trên MinIO
+            if (!empty($img['image_url'])) {
+                MediaService::delete($img['image_url']);
             }
 
             // Xóa trong Database
@@ -315,44 +300,12 @@ class AdminTemplateController
     // --- HELPER: UPLOAD FILE ---
     private function uploadImage($file)
     {
-        // Validate file upload
-        $validation = FileUploadValidator::validate($file, 'image');
-        if (!$validation['valid']) {
-            $_SESSION['upload_error'] = implode(', ', $validation['errors']);
-            return '';
+        $result = MediaService::upload($file, 'template');
+        if ($result['success']) {
+            Logger::getInstance()->logUpload('TEMPLATE_IMAGE', basename($result['url']), ['size' => $file['size']]);
+            return $result['url'];
         }
-
-        $rootPath = dirname(__DIR__); // Points to src/
-        $targetDir = "uploads/templates/";
-        $normalizedTarget = str_replace(['\\', '/'], DIRECTORY_SEPARATOR, trim($targetDir, '/'));
-        $absoluteTargetDir = $rootPath . DIRECTORY_SEPARATOR . $normalizedTarget;
-
-        if (!is_dir($absoluteTargetDir)) {
-            if (!mkdir($absoluteTargetDir, 0777, true)) {
-                 $error = error_get_last();
-                 error_log("Failed to create directory: $absoluteTargetDir. Error: " . ($error['message'] ?? 'Unknown'));
-                 return '';
-            }
-        }
-
-        // Generate safe filename
-        $safeFilename = FileUploadValidator::generateSafeFilename($file['name']);
-        if (!$safeFilename) {
-            $_SESSION['upload_error'] = 'Invalid file extension';
-            return '';
-        }
-
-        $targetPath = $absoluteTargetDir . DIRECTORY_SEPARATOR . $safeFilename;
-
-        if (move_uploaded_file($file['tmp_name'], $targetPath)) {
-            Logger::getInstance()->logUpload('TEMPLATE_IMAGE', $safeFilename, ['size' => $file['size']]);
-            
-            // Get base URL for production compatibility
-            $baseUrl = Config::getBaseUrl();
-            // Construct web path with forward slashes
-            $webPath = '/' . str_replace('\\', '/', $normalizedTarget) . '/' . $safeFilename;
-            return $baseUrl . $webPath;
-        }
+        $_SESSION['upload_error'] = $result['error'];
         return '';
     }
 
