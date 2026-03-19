@@ -1,11 +1,6 @@
 # Git Ignore File for HolaGroup Web Project
 
 # Uploads & Generated Files
-uploads/*
-!uploads/.gitkeep
-
-# Src Uploads (Deprecated)
-src/uploads/
 
 *.log
 
@@ -14,7 +9,6 @@ src/uploads/
 .env.local
 .env.staging
 .env.production
-src/config/ga4-credentials.json
 
 # Cache & Temporary
 cache/
@@ -62,9 +56,13 @@ access.log
 
 # Database
 *.sql
+!docker/init.sql
 *.sqlite
 *.db
 
-# MinIO Data (Dữ liệu ảnh, tránh commit lên git)
+# Docker Volumes & Backups
+docker/mysql_data/
+docker/umami_postgres_data/
 docker/minio_data/
+docker/backups/
 minio_data/

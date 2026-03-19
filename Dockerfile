@@ -36,9 +36,6 @@ RUN echo '    Require all granted' >> /etc/apache2/apache2.conf
 RUN echo '</Directory>' >> /etc/apache2/apache2.conf
 # ---------------------
 
-# Cài đặt Composer
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
-
 WORKDIR /var/www/html
 
 # Copy custom entrypoint

@@ -1,46 +1,158 @@
 {
     "trang-chu": {
-        "name": "Trang Chủ",
-        "meta_title": "Thiết Kế Website Chuyên Nghiệp - Web Giá Rẻ",
-        "meta_desc": "Dịch vụ thiết kế website chuyên nghiệp, giá rẻ, chuẩn SEO. Kho giao diện đa dạng, phù hợp mọi ngành nghề.",
+        "name": "Trang chủ",
+        "meta_title": "Web Giá Rẻ - Thiết kế website trọn gói uy tín, chuyên nghiệp",
+        "meta_desc": "Dịch vụ thiết kế website giá rẻ, chuẩn SEO tại TP.HCM. Kho giao diện đẹp, load nhanh, bảo hành trọn đời.",
         "content": {
             "hero": {
-                "badge": "Giải Pháp Toàn Diện",
-                "title_line_1": "Biến ý tưởng",
-                "title_highlight": "Hiện thực số",
-                "description": "Chúng tôi cung cấp giải pháp thiết kế website chuyên nghiệp, tối ưu SEO và trải nghiệm người dùng, giúp doanh nghiệp bứt phá doanh thu.",
-                "btn_primary_link": "/dich-vu",
+                "badge": "Công nghệ Web 2026",
+                "title_line_1": "Biến ý tưởng kinh doanh",
+                "title_highlight": "Cỗ máy in tiền",
+                "description": "Chúng tôi không chỉ thiết kế website. Chúng tôi xây dựng nền tảng kỹ thuật số giúp bạn <strong>bán hàng tự động</strong>, tối ưu SEO và nâng tầm thương hiệu.",
                 "btn_primary_text": "Bắt đầu ngay",
-                "btn_secondary_link": "/kho-giao-dien",
-                "btn_secondary_text": "Xem mẫu giao diện"
+                "btn_primary_link": "#bao-gia",
+                "btn_secondary_text": "Xem mẫu giao diện",
+                "btn_secondary_link": "#kho-giao-dien"
+            },
+            "feature_intro": {
+                "title_prefix": "Không chỉ là Website, đó là",
+                "title_highlight": "Vũ khí cạnh tranh",
+                "desc": "Chúng tôi trang bị cho bạn những công nghệ mới nhất để vượt mặt đối thủ."
+            },
+            "feature_items": {
+                "speed": {
+                    "title": "Tốc độ tải trang < 0.5s",
+                    "desc": "Google yêu thích website nhanh. Khách hàng ghét chờ đợi...",
+                    "sub_1": "Hosting SSD NVMe cao cấp",
+                    "sub_2": "Công nghệ Caching đa tầng"
+                },
+                "seo": {
+                    "title": "Chuẩn SEO từ gốc",
+                    "desc": "Cấu trúc HTML Semantic, Schema Markup, Meta Tags tự động..."
+                },
+                "mobile": {
+                    "title": "Mobile First",
+                    "desc": "Giao diện hiển thị hoàn hảo trên mọi thiết bị..."
+                }
+            },
+            "security": {
+                "title": "Bảo mật cấp ngân hàng",
+                "desc": "Đừng để hacker phá hoại công việc kinh doanh của bạn...",
+                "link_text": "Tìm hiểu thêm",
+                "link_url": "#security-details"
+            },
+            "template_intro": {
+                "title": "Giao diện",
+                "highlight": "Đẳng cấp",
+                "desc": "Hàng trăm mẫu thiết kế chuẩn chỉnh cho đa ngành nghề.",
+                "btn_all_text": "Xem tất cả mẫu",
+                "btn_all_link": "/kho-giao-dien"
+            },
+            "template_items": {
+                "item_1": {
+                    "cat": "Thương mại điện tử",
+                    "name": "Shop Thời Trang Modern",
+                    "btn_text": "Xem Demo",
+                    "btn_url": "#demo-fashion"
+                },
+                "item_2": {
+                    "cat": "Doanh nghiệp",
+                    "name": "Corporate Pro",
+                    "btn_text": "Xem Demo",
+                    "btn_url": "#demo-corp"
+                },
+                "item_3": {
+                    "cat": "Landing Page",
+                    "name": "Bất Động Sản Luxury",
+                    "btn_text": "Xem Demo",
+                    "btn_url": "#demo-land"
+                }
+            },
+            "pricing_intro": {
+                "title": "Đầu tư nhỏ",
+                "highlight": "Hiệu quả lớn",
+                "btn_text": "Trọn gói",
+                "btn_link": "#full-package"
+            },
+            "pricing_plans": {
+                "basic": {
+                    "name": "Khởi nghiệp",
+                    "price": "2.500.000",
+                    "desc": "Website giới thiệu cơ bản...",
+                    "features": ["Giao diện theo mẫu", "Hosting 1GB", "Bảo mật SSL"],
+                    "btn_text": "Chọn gói này",
+                    "btn_link": "https://zalo.me/0778764017?text=TuvanGoiBasic"
+                },
+                "pro": {
+                    "name": "Kinh doanh",
+                    "price": "4.900.000",
+                    "desc": "Đầy đủ tính năng bán hàng...",
+                    "features": ["Giao diện Premium", "Chuẩn SEO Pro", "Hosting NVMe 5GB", "Backup hàng ngày"],
+                    "btn_text": "Đăng ký ngay",
+                    "btn_link": "https://zalo.me/0778764017?text=TuvanGoiPro"
+                },
+                "enterprise": {
+                    "name": "Doanh nghiệp lớn",
+                    "price": "Liên hệ",
+                    "desc": "Thiết kế riêng độc quyền...",
+                    "features": ["Thiết kế UI/UX riêng", "Server riêng (VPS)", "Code tính năng riêng"],
+                    "btn_text": "Chat tư vấn",
+                    "btn_link": "https://zalo.me/0778764017?text=TuvanGoiEnterprise"
+                }
+            },
+            "cta": {
+                "title": "Đừng để đối thủ vượt mặt bạn trên Google",
+                "desc": "Mỗi giây bạn chần chừ là một khách hàng tiềm năng đang rơi vào tay đối thủ.",
+                "note": "Tư vấn miễn phí 100% • Không mua không sao"
             }
         }
     },
     "dich-vu": {
-        "name": "Dịch Vụ",
-        "meta_title": "Dịch Vụ Thiết Kế Web & Marketing Online",
-        "meta_desc": "Cung cấp các dịch vụ thiết kế website, SEO từ khóa, chạy quảng cáo Google/Facebook, Hosting & Domain chất lượng cao.",
+        "name": "Dịch vụ",
+        "meta_title": "WebGiaRe cung cấp các dịch vụ thiết kế website, hosting, SEO và marketing online cho doanh nghiệp.",
+        "meta_desc": "Dịch vụ thiết kế website, hosting, SEO và marketing online",
         "content": {
             "hero": {
                 "badge": "Hệ sinh thái dịch vụ",
                 "title_line_1": "Giải pháp toàn diện cho",
                 "title_highlight": "Doanh nghiệp số",
                 "description": "Từ thiết kế website, hạ tầng hosting đến marketing online. Chúng tôi cung cấp mọi thứ bạn cần để vận hành doanh nghiệp trên Internet.",
-                "btn_primary_link": "#dich-vu-chinh",
-                "btn_primary_text": "Khám phá dịch vụ"
+                "btn_primary_text": "Khám phá dịch vụ",
+                "btn_primary_link": "#dich-vu-chinh"
             },
             "main_services": {
                 "web": {
-                    "title": "Thiết kế Website",
-                    "description": "Website chuẩn SEO, tốc độ cao, giao diện đẹp mắt."
+                    "title": "Thiết kế Website Trọn gói",
+                    "desc": "Không chỉ đẹp, website của chúng tôi được tối ưu hóa để <strong>bán hàng</strong>. Giao diện chuẩn UX/UI, tương thích mọi thiết bị và tốc độ tải trang dưới 1s.",
+                    "features": [
+                        "Website Bán hàng / Thương mại điện tử",
+                        "Website Giới thiệu công ty / Landing Page",
+                        "Web App / Hệ thống quản lý (SaaS)"
+                    ],
+                    "btn_text": "Xem kho giao diện mẫu",
+                    "btn_url": "/kho-giao-dien"
+                },
+                "hosting": {
+                    "title": "Hosting & Domain",
+                    "desc": "Hạ tầng server cao cấp, uptime 99.9%. Hỗ trợ nhiều loại website từ WordPress đến PHP/MySQL.",
+                    "features": [
+                        "Hosting SSD NVMe tốc độ cao",
+                        "Miễn phí SSL/HTTPS",
+                        "Hỗ trợ PHP 8.x, MySQL 8.0"
+                    ],
+                    "btn_text": "Xem gói hosting",
+                    "btn_url": "#contact"
                 },
                 "seo": {
                     "title": "Dịch vụ SEO",
-                    "description": "Tối ưu hóa công cụ tìm kiếm, đưa từ khóa lên Top Google."
-                },
-                "hosting": {
-                    "title": "Hosting & Tên miền",
-                    "description": "Cung cấp hosting tốc độ cao, ổn định và bảo mật."
+                    "desc": "Đưa website lên TOP Google với chi phí hiệu quả. Cam kết từ khóa lên top hoặc hoàn tiền.",
+                    "features": [
+                        "SEO tổng thể (On-page + Off-page)",
+                        "Content Marketing",
+                        "Audit & Analysis"
+                    ],
+                    "btn_text": "Tư vấn SEO",
+                    "btn_url": "#contact"
                 }
             }
         }

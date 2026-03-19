@@ -92,7 +92,12 @@ class Router {
                 'method' => $method
             ]);
         } else {
-            echo "404 Not Found";
+            http_response_code(404);
+            if (file_exists(__DIR__ . '/views/client/404.php')) {
+                require __DIR__ . '/views/client/404.php';
+            } else {
+                echo "404 Not Found";
+            }
         }
     }
 

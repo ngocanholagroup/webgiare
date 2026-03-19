@@ -1,184 +1,186 @@
-# WebGiare - HolaGroup
+# WebGiare - Dự án Website Bán Template
 
-Hệ thống website thương mại điện tử và bán template web của HolaGroup, được xây dựng trên nền tảng PHP thuần với kiến trúc MVC.
-
-## 📋 Mô tả dự án
-
-WebGiare là một nền tảng web cung cấp:
-- **Blog/Tin tức**: Quản lý và hiển thị các bài viết, tin tức
-- **Kho giao diện**: Kho template website chất lượng cao
-- **Hệ thống quản trị**: Admin panel để quản lý nội dung
-- **Liên hệ**: Form liên hệ khách hàng
-
-## 🛠️ Công nghệ sử dụng
-
-- **Backend**: PHP 8.2
-- **Web Server**: Apache (với mod_rewrite)
-- **Database**: MySQL 8.0
-- **Frontend**: HTML5, CSS3, JavaScript
-- **Containerization**: Docker & Docker Compose
-- **Admin Tool**: phpMyAdmin
-
-## 📁 Cấu trúc dự án
-
-```
-webgiare/
-├── src/                          # Source code chính
-│   ├── controllers/              # Controllers xử lý logic
-│   ├── models/                   # Models tương tác database
-│   ├── views/                    # Views hiển thị giao diện
-│   ├── assets/                   # CSS, JS, images
-│   ├── includes/                 # Các file include chung
-│   ├── helpers.php               # Helper functions
-│   ├── autoload.php              # Autoloader
-│   ├── Router.php                # Router system
-│   └── index.php                 # Entry point
-├── database.sql                  # Database schema
-├── docker-compose.yml            # Docker configuration
-├── Dockerfile                    # Docker image build
-└── README.md                     # Documentation
-```
-
-## 🚀 Cài đặt và chạy
+## 🚀 Cài Đặt & Chạy Dự Án
 
 ### Yêu cầu
-- Docker & Docker Compose
-- Git
+- Docker Desktop (Windows/Mac/Linux)
+- Docker Compose
 
-### Các bước thực hiện
+### Các bước cài đặt
 
-1. **Clone repository**
 ```bash
-git clone <repository-url>
+# 1. Clone project và di chuyển vào thư mục
 cd webgiare
-```
 
-2. **Khởi động Docker containers**
-```bash
-docker-compose up -d
-```
-
-3. **Import database**
-```bash
-# Copy file database.sql vào container MySQL
-docker cp database.sql webgiare_db:/tmp/database.sql
-
-# Truy cập MySQL container và import
-docker exec -it webgiare_db mysql -u root -prootpassword
-mysql> USE webgiare_db;
-mysql> SOURCE /tmp/database.sql;
-mysql> EXIT;
-```
-
-4. **Kiểm tra kết quả**
-- Website: http://localhost:8080
-- phpMyAdmin: http://localhost:8081
-  - Server: db
-  - Username: root
-  - Password: rootpassword
-
-## 🔧 Cấu hình
-
-### Database
-- **Host**: db
-- **Database**: webgiare_db
-- **Username**: user_dev
-- **Password**: userpassword
-
-### Ports
-- **Website**: 8080
-- **phpMyAdmin**: 8081
-
-## 📝 Features
-
-### Client Features
-- Trang chủ với thông tin giới thiệu
-- Blog/Tin tức với danh mục và tags
-- Kho giao diện với danh mục và tính năng
-- Form liên hệ
-- Responsive design
-
-### Admin Features
-- Quản lý bài viết blog
-- Quản lý template/giao diện
-- Quản lý danh mục
-- Quản lý liên hệ
-- Quản lý hệ thống
-
-## 🛠️ Development
-
-### Thêm route mới
-Mở file `src/index.php` và thêm route vào phần định nghĩa:
-
-```php
-// GET route
-$router->get('/path', [ControllerName::class, 'method']);
-
-// POST route
-$router->post('/path', [ControllerName::class, 'method']);
-```
-
-### Thêm controller
-Tạo file mới trong `src/controllers/` với class extends từ base controller (nếu có).
-
-### Thêm model
-Tạo file mới trong `src/models/` để xử lý tương tác database.
-
-### Database queries
-Sử dụng PDO với prepared statements để đảm bảo security.
-
-## 🐛 Debugging
-
-### Kiểm tra kết nối database
-Truy cập: http://localhost:8080/test_db.php
-
-### Xem logs
-```bash
-# Xem logs của web container
-docker logs webgiare_app
-
-# Xem logs của database container
-docker logs webgiare_db
-```
-
-## 📦 Commands hữu ích
-
-```bash
-# Khởi động tất cả containers
+# 2. Chạy Docker (lần đầu sẽ tạo database và seed data)
 docker-compose up -d
 
-# Dừng tất cả containers
-docker-compose down
+# 3. Đợi khoảng 1-2 phút để các service khởi động hoàn tất
 
-# Xóa volumes (mất dữ liệu)
-docker-compose down -v
-
-# Rebuild container
-docker-compose build --no-cache
-
-# Truy cập vào web container
-docker exec -it webgiare_app bash
-
-# Truy cập vào database container
-docker exec -it webgiare_db mysql -u root -prootpassword
+# 4. Truy cập các địa chỉ:
+- Website:        http://localhost:8080
+- phpMyAdmin:     http://localhost:8081
+- Umami Analytics: http://localhost:3000
+- MinIO Console:  http://localhost:9001
 ```
 
-## 🔒 Security Notes
+### Tài khoản đăng nhập
 
-- Luôn sử dụng prepared statements cho database queries
-- Validate và sanitize user input
-- Không commit sensitive information (passwords, API keys)
-- Sử dụng HTTPS trong production
-- Regular updates cho dependencies
-
-## 📄 License
-
-Dự án này thuộc sở hữu của HolaGroup.
-
-## 👥 Contributors
-
-- HolaGroup Development Team
+| Service | Username | Password |
+|---------|----------|----------|
+| Admin Panel | `admin` | `123456` |
+| phpMyAdmin | `root` | `root` |
+| MinIO | `admin` | `12345678` |
+| Umami | `admin` | `umami` |
 
 ---
 
-**Lưu ý**: Đây là dự án internal của HolaGroup. Vui lòng liên hệ team development trước khi thực hiện các thay đổi lớn.
+## 📁 Cấu Trúc Dữ Liệu
+
+Dữ liệu được lưu trong thư mục `docker/`:
+
+```
+docker/
+├── mysql_data/           # Database MySQL
+├── umami_postgres_data/ # Database PostgreSQL (Umami)
+├── minio_data/          # Ảnh upload (MinIO)
+└── backups/             # File backup tự động
+```
+
+---
+
+## 💾 Backup & Restore
+
+### Backup Tự Động
+- Hệ thống tự động backup lúc **2h sáng mỗi ngày**
+- File backup lưu tại: `docker/backups/`
+
+### Backup Thủ Công
+```bash
+docker exec webgiare_backup /workspace/backup-db.sh
+```
+
+### Restore Dữ Liệu
+
+```bash
+# Xem các file backup có sẵn
+ls -la docker/backups/
+
+# Restore database
+./docker/restore-db.sh db webgiare_db_YYYYMMDD_HHMMSS.sql
+
+# Restore ảnh (MinIO)
+./docker/restore-db.sh minio minio_data_YYYYMMDD_HHMMSS.tar.gz
+
+# Restore tất cả (database + ảnh)
+./docker/restore-db.sh all webgiare_db_YYYYMMDD_HHMMSS.sql
+```
+
+---
+
+## ⚠️ Lưu Ý Quan Trọng
+
+### Không xóa thư mục `docker/`
+- Thư mục `docker/` chứa TẤT CẢ dữ liệu của bạn
+- **KHÔNG** xóa thư mục này nếu muốn giữ dữ liệu
+
+### Các lệnh Docker an toàn
+
+| Lệnh | Dữ liệu | Dùng khi |
+|------|---------|----------|
+| `docker-compose down` | ✅ Giữ nguyên | Restart bình thường |
+| `docker-compose down -v` | ✅ Giữ nguyên | Restart có init.sql |
+| `docker system prune -a` | ✅ Giữ nguyên | Dọn dẹp Docker |
+| `rm -rf docker/*` | ❌ Mất hết! | KHÔNG BAO GIỜ |
+
+### Reset Database (xóa toàn bộ dữ liệu)
+
+Nếu cần reset về trạng thái ban đầu:
+
+```bash
+# Cách 1: Xóa thư mục data và restart
+rm -rf docker/mysql_data docker/umami_postgres_data docker/minio_data
+docker-compose down
+docker-compose up -d
+
+# Cách 2: Bỏ comment init.sql trong docker-compose.yml rồi chạy
+# (xem phần "Setup lần đầu" bên dưới)
+```
+
+---
+
+## 🔧 Cấu Hình
+
+### Các biến môi trường
+Chỉnh sửa file `.env`:
+
+```env
+# Database
+DB_NAME=webgiare_dev
+DB_USER=webgiare_user
+DB_PASS=root
+
+# MinIO
+MINIO_ROOT_USER=admin
+MINIO_ROOT_PASSWORD=12345678
+
+# Umami
+UMAMI_DB=admin
+UMAMI_USER=admin
+UMAMI_PASSWORD=umami
+```
+
+---
+
+## 📋 Các Service
+
+| Service | Port | Mô tả |
+|---------|------|--------|
+| Web (PHP+Apache) | 8080 | Ứng dụng chính |
+| MySQL | 3306 | Database |
+| phpMyAdmin | 8081 | Quản lý MySQL |
+| Umami Analytics | 3000 | Thống kê truy cập |
+| PostgreSQL | 5432 | Database Umami |
+| MinIO | 9000 | Lưu trữ file |
+| MinIO Console | 9001 | Quản lý MinIO |
+
+---
+
+## 🆘 Khắc Phục Sự Cố
+
+### Container không khởi động được
+```bash
+# Xem logs
+docker-compose logs [ten_container]
+
+# Ví dụ:
+docker-compose logs web
+docker-compose logs db
+```
+
+### Xóa và chạy lại từ đầu
+```bash
+# Dừng và xóa tất cả
+docker-compose down
+
+# Xóa dữ liệu (CẨN THẬN!)
+rm -rf docker/mysql_data docker/umami_postgres_data docker/minio_data
+
+# Chạy lại
+docker-compose up -d
+```
+
+### Backup thủ công không chạy
+```bash
+# Kiểm tra container backup
+docker logs webgiare_backup
+
+# Chạy thủ công
+docker exec webgiare_backup sh /workspace/backup-db.sh
+```
+
+---
+
+## 📝 Giấy phép
+
+Copyright © 2026 HolaGroup

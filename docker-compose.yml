@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   # 1. Web Server (PHP + Apache)
   web:
@@ -39,8 +37,8 @@ services:
       MYSQL_USER: ${DB_USER}
       MYSQL_PASSWORD: ${DB_PASS}
     volumes:
-      - db_data:/var/lib/mysql           # Giữ dữ liệu không bị mất khi tắt container
-      - ./docker/init.sql:/docker-entrypoint-initdb.d/init.sql  # Script khởi tạo DB
+      - ./docker/mysql_data:/var/lib/mysql           # Mount thư mục từ host để dễ quản lý
+      - ./docker/init.sql:/docker-entrypoint-initdb.d/init.sql  # Tự động chạy init.sql khi khởi tạo DB lần đầu
     networks:
       - webgiare_net
     healthcheck:
@@ -75,7 +73,7 @@ services:
       POSTGRES_USER: ${UMAMI_USER}
       POSTGRES_PASSWORD: ${UMAMI_PASSWORD}
     volumes:
-      - umami_db_data:/var/lib/postgresql/data
+      - ./docker/umami_postgres_data:/var/lib/postgresql/data
     networks:
       - webgiare_net
     healthcheck:
@@ -89,6 +87,8 @@ services:
   umami_app:
     image: ghcr.io/umami-software/umami:postgresql-latest
     container_name: umami_app
+    extra_hosts:
+      - "umami_db:172.21.0.2"
     env_file:
       - .env
     environment:
@@ -145,10 +145,28 @@ services:
       - webgiare_net
     restart: always
 
+  # 8. Auto Backup Service
+  backup:
+    image: alpine:latest
+    container_name: webgiare_backup
+    volumes:
+      - ./docker:/workspace
+    env_file:
+      - .env
+    command: |
+      sh -c "
+        apk add --no-cache mysql-client postgresql-client bash curl &&
+        echo '0 2 * * * /workspace/backup-db.sh >> /workspace/backups/backup.log 2>&1' > /etc/crontabs/root &&
+        crond -b -l 2
+      "
+    networks:
+      - webgiare_net
+    restart: unless-stopped
+
 # Khai báo Volumes và Networks
 volumes:
-  db_data:
-  umami_db_data:
+  # db_data: # Đã chuyển sang mount thư mục host
+  # umami_db_data: # Đã chuyển sang mount thư mục host
   webgiare_uploads:
   # minio_data: # Dùng local folder ./docker/minio_data thay vì volume để dễ quản lý
 

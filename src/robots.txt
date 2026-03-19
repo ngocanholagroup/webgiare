@@ -2,7 +2,6 @@ User-agent: *
 Allow: /
 Disallow: /admin
 Disallow: /includes
-Disallow: /uploads/temp
 Disallow: /src
 Disallow: /vendor
 
