@@ -94,6 +94,11 @@ if (!function_exists('isActive')) {
             Admin
         </a>
         
+        <a href="/admin/backup" class="flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium transition-all <?= isActive('/admin/backup', $currentUri) ?>">
+            <i data-lucide="hard-drive" class="w-5 h-5"></i>
+            Sao lưu & Khôi phục
+        </a>
+
         <a href="/admin/setting" class="flex items-center gap-3 px-3 py-2.5 rounded-xl font-medium transition-all <?= isActive('/admin/setting', $currentUri) ?>">
             <i data-lucide="settings" class="w-5 h-5"></i>
             Cài Đặt

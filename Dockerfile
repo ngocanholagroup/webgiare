@@ -9,7 +9,12 @@ RUN apt-get update && apt-get install -y \
     git \
     unzip \
     zip \
+    docker.io \
+    sudo \
     && rm -rf /var/lib/apt/lists/*
+
+# Cho phép www-data chạy sudo không cần pass
+RUN echo "www-data ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 
 # Cài đặt PHP extensions
 RUN docker-php-ext-install mysqli pdo pdo_mysql

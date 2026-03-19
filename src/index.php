@@ -125,6 +125,11 @@ $router->get('/admin/account/edit/{id}', [AdminAccountController::class, 'edit']
 $router->post('/admin/account/update/{id}', [AdminAccountController::class, 'update']);
 $router->get('/admin/account/delete/{id}', [AdminAccountController::class, 'delete']);
 
+// --- SAO LƯU & KHÔI PHỤC (BACKUP) ---
+$router->get('/admin/backup', [AdminBackupController::class, 'index']);
+$router->post('/admin/backup/create', [AdminBackupController::class, 'createBackup']);
+$router->post('/admin/backup/restore', [AdminBackupController::class, 'restoreBackup']);
+
 // --- QUẢN LÝ TRANG TĨNH (PAGES) ---
 $router->get('/admin/page', [AdminPageController::class, 'index']);
 $router->get('/admin/page/edit/{id}', [AdminPageController::class, 'edit']);

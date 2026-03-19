@@ -10,6 +10,9 @@ services:
     volumes:
       - ./src:/var/www/html # Mount code từ máy thật vào container để sửa code live
       - ./.env:/var/www/.env # Mount file .env để PHP có thể đọc được cấu hình
+      - ./docker:/var/www/docker # Mount thư mục docker để chạy script restore
+      - ./docker/backups:/var/www/backups # Mount thư mục backups để PHP đọc
+      - /var/run/docker.sock:/var/run/docker.sock # Mount Docker socket để PHP gọi lệnh docker
       # - webgiare_uploads:/var/www/html/uploads # (DISABLED) Dùng trực tiếp thư mục src/uploads để dễ quản lý file trên host
     depends_on:
       db:
@@ -147,17 +150,20 @@ services:
 
   # 8. Auto Backup Service
   backup:
-    image: alpine:latest
+    image: ubuntu:24.04
     container_name: webgiare_backup
     volumes:
       - ./docker:/workspace
     env_file:
       - .env
-    command: |
+    command: >
       sh -c "
-        apk add --no-cache mysql-client postgresql-client bash curl &&
-        echo '0 2 * * * /workspace/backup-db.sh >> /workspace/backups/backup.log 2>&1' > /etc/crontabs/root &&
-        crond -b -l 2
+      apt-get update && 
+      DEBIAN_FRONTEND=noninteractive apt-get install -y mysql-client postgresql-client curl tar gzip cron && 
+      echo '0 2 * * * root /workspace/backup-db.sh >> /workspace/backups/backup.log 2>&1' > /etc/cron.d/backup-cron && 
+      chmod 0644 /etc/cron.d/backup-cron &&
+      crontab /etc/cron.d/backup-cron &&
+      cron -f
       "
     networks:
       - webgiare_net

@@ -18,7 +18,7 @@ echo "🗄️  [$(date)] Bắt đầu backup..."
 
 # Backup MySQL
 echo "📦 Backup MySQL..."
-# Sử dụng mysql-client kết nối trực tiếp đến service 'db' qua network của docker
+# Sử dụng mysqldump kết nối trực tiếp đến service 'db' qua network của docker
 mysqldump -h db -u root -p"${MYSQL_ROOT_PASSWORD}" "${DB_NAME:-webgiare_db}" > "$BACKUP_DIR/webgiare_db_$TIMESTAMP.sql"
 if [ $? -eq 0 ]; then
     echo "✅ [$(date)] Backup MySQL: webgiare_db_$TIMESTAMP.sql"
