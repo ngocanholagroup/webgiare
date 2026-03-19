@@ -14,7 +14,6 @@ src/uploads/
 .env.local
 .env.staging
 .env.production
-config.php
 src/config/ga4-credentials.json
 
 # Cache & Temporary
