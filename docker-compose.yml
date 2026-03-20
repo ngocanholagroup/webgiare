@@ -90,8 +90,6 @@ services:
   umami_app:
     image: ghcr.io/umami-software/umami:postgresql-latest
     container_name: umami_app
-    extra_hosts:
-      - "umami_db:172.21.0.2"
     env_file:
       - .env
     environment:
