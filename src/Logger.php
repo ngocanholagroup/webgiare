@@ -97,12 +97,21 @@ class Logger {
      * Write to file log
      */
     private function logToFile($logData) {
+        if (!is_dir($this->logDir) && !@mkdir($this->logDir, 0755, true)) {
+            // Nếu không thể tạo thư mục logs, chuyển sang dùng thư mục tạm của hệ thống
+            $this->logDir = sys_get_temp_dir() . '/webgiare_logs';
+            if (!is_dir($this->logDir)) {
+                @mkdir($this->logDir, 0755, true);
+            }
+        }
+
         $date = date('Y-m-d');
         $logFile = $this->logDir . "/admin-{$date}.log";
 
         $logMessage = json_encode($logData) . PHP_EOL;
 
-        if (!file_put_contents($logFile, $logMessage, FILE_APPEND | LOCK_EX)) {
+        // Bỏ qua cảnh báo nếu không có quyền ghi file
+        if (@file_put_contents($logFile, $logMessage, FILE_APPEND | LOCK_EX) === false) {
             error_log("Failed to write to log file: {$logFile}");
         }
     }
@@ -162,7 +171,13 @@ class Logger {
      */
     private function ensureLogDirectory() {
         if (!is_dir($this->logDir)) {
-            mkdir($this->logDir, 0755, true);
+            // Cố gắng tạo thư mục, nếu không được thì gán vào /tmp
+            if (!@mkdir($this->logDir, 0755, true)) {
+                $this->logDir = sys_get_temp_dir() . '/webgiare_logs';
+                if (!is_dir($this->logDir)) {
+                    @mkdir($this->logDir, 0755, true);
+                }
+            }
         }
     }
 

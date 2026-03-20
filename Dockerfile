@@ -11,6 +11,8 @@ RUN apt-get update && apt-get install -y \
     zip \
     docker.io \
     sudo \
+    mariadb-client \
+    postgresql-client \
     && rm -rf /var/lib/apt/lists/*
 
 # Cho phép www-data chạy sudo không cần pass

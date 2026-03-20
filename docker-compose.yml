@@ -26,7 +26,11 @@ services:
       - DB_NAME=${DB_NAME}
       - DB_USER=${DB_USER}
       - DB_PASS=${DB_PASS}
-      - MEDIA_SERVER_URL=http://webgiare_media:3000/upload
+      - MINIO_ENDPOINT=minio
+      - MINIO_ROOT_USER=${MINIO_ROOT_USER}
+      - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}
+      - MINIO_BUCKET_NAME=uploads
+      - MINIO_PUBLIC_ENDPOINT=http://localhost:9000
 
   # 2. Database (MySQL)
   db:
@@ -121,51 +125,6 @@ services:
     networks:
       - webgiare_net
     restart: always
-
-  # 7. Media Server (Satellite)
-  webgiare_media:
-    build:
-      context: ./webgiare_media
-    container_name: webgiare_media_server
-    ports:
-      - "3001:3000"
-    environment:
-      PORT: 3000
-      MINIO_ENDPOINT: minio
-      MINIO_PORT: 9000
-      MINIO_USE_SSL: "false"
-      MINIO_ACCESS_KEY: ${MINIO_ROOT_USER}
-      MINIO_SECRET_KEY: ${MINIO_ROOT_PASSWORD}
-      MINIO_BUCKET_NAME: uploads
-      MINIO_PUBLIC_ENDPOINT: http://localhost:9000
-      # Force WebP MIME type to be correct
-      MINIO_REGION: us-east-1
-    depends_on:
-      - minio
-    networks:
-      - webgiare_net
-    restart: always
-
-  # 8. Auto Backup Service
-  backup:
-    image: ubuntu:24.04
-    container_name: webgiare_backup
-    volumes:
-      - ./docker:/workspace
-    env_file:
-      - .env
-    command: >
-      sh -c "
-      apt-get update && 
-      DEBIAN_FRONTEND=noninteractive apt-get install -y mysql-client postgresql-client curl tar gzip cron && 
-      echo '0 2 * * * root /workspace/backup-db.sh >> /workspace/backups/backup.log 2>&1' > /etc/cron.d/backup-cron && 
-      chmod 0644 /etc/cron.d/backup-cron &&
-      crontab /etc/cron.d/backup-cron &&
-      cron -f
-      "
-    networks:
-      - webgiare_net
-    restart: unless-stopped
 
 # Khai báo Volumes và Networks
 volumes:

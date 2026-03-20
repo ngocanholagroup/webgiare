@@ -113,10 +113,6 @@ $router->get('/admin/service/delete/{id}', [AdminContactController::class, 'dele
 $router->get('/admin/setting', [AdminSettingController::class, 'index']);
 $router->post('/admin/setting/save', [AdminSettingController::class, 'save']);
 
-// --- BÁO CÁO & THỐNG KÊ ---
-$router->get('/admin/report', [AdminReportController::class, 'index']);
-$router->post('/admin/report/save', [AdminReportController::class, 'saveConfig']);
-
 // --- QUẢN LÝ TÀI KHOẢN (ADMINS) ---
 $router->get('/admin/account', [AdminAccountController::class, 'index']);
 $router->get('/admin/account/create', [AdminAccountController::class, 'create']);
