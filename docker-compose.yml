@@ -113,7 +113,7 @@ services:
   minio:
     image: minio/minio
     container_name: webgiare_minio
-    command: server /data --console-address ":9001"
+    command: server /data --console-address ":9001" --address ":9000"
     ports:
       - "9000:9000"
       - "9001:9001"
