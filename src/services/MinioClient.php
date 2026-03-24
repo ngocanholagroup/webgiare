@@ -81,7 +81,7 @@ class MinioClient {
         return $httpHeaders;
     }
 
-    public function putObject($bucket, $object, $payload, $contentType = 'application/octet-stream') {
+    public function putObject($bucket, $object, $payload, $contentType = 'application/octet-stream', $isRetry = false) {
         $headers = $this->signRequest('PUT', $bucket, $object, $payload, $contentType);
         $url = $this->endpoint . '/' . $bucket . '/' . ltrim($object, '/');
 
@@ -96,9 +96,55 @@ class MinioClient {
 
         $response = curl_exec($ch);
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $error = curl_error($ch);
         curl_close($ch);
 
-        return $httpCode === 200;
+        // Nếu bucket chưa tồn tại (404), thử tạo bucket và retry
+        if ($httpCode === 404 && !$isRetry) {
+            $createResult = $this->createBucket($bucket);
+            if ($createResult) {
+                return $this->putObject($bucket, $object, $payload, $contentType, true);
+            }
+        }
+
+        if ($httpCode !== 200) {
+            $errorMsg = "MinioClient putObject error: HTTP $httpCode, Error: $error, Response: $response";
+            error_log($errorMsg);
+            
+            // Lấy thông tin lỗi từ XML response của MinIO nếu có
+            $detailedError = $error;
+            if (empty($detailedError) && !empty($response)) {
+                if (preg_match('/<Message>(.*)<\/Message>/', $response, $matches)) {
+                    $detailedError = $matches[1];
+                } else {
+                    $detailedError = strip_tags($response);
+                }
+            }
+
+            return ['success' => false, 'error' => "HTTP $httpCode - " . ($detailedError ?: 'Unknown error')];
+        }
+
+        return ['success' => true];
+    }
+
+    public function createBucket($bucket) {
+        $headers = $this->signRequest('PUT', $bucket, '');
+        $url = $this->endpoint . '/' . $bucket . '/';
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PUT');
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+
+        $response = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+
+        // 200 OK hoặc 409 Conflict (đã tồn tại) đều coi là thành công
+        return $httpCode === 200 || $httpCode === 409;
     }
 
     public function deleteObject($bucket, $object) {

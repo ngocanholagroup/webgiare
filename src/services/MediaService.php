@@ -41,9 +41,9 @@ class MediaService {
             $minioClient = self::getMinioClient();
             $bucket = self::getBucketName();
             
-            $success = $minioClient->putObject($bucket, $objectName, $fileContent, $mimeType);
+            $result = $minioClient->putObject($bucket, $objectName, $fileContent, $mimeType);
             
-            if ($success) {
+            if (isset($result['success']) && $result['success'] === true) {
                 // Construct public URL
                 $publicEndpoint = getenv('MINIO_PUBLIC_ENDPOINT') ?: 'http://localhost:9000';
                 $publicEndpoint = rtrim($publicEndpoint, '/');
@@ -56,7 +56,7 @@ class MediaService {
             } else {
                 return [
                     'success' => false,
-                    'error' => 'Lỗi khi upload lên MinIO'
+                    'error' => 'Lỗi khi upload lên MinIO: ' . ($result['error'] ?? 'Unknown error')
                 ];
             }
             
@@ -113,8 +113,28 @@ class MediaService {
      */
     private static function getMinioClient() {
         // Lấy thông tin từ biến môi trường
-        // Trong container app, minio là tên service
-        $endpoint = getenv('MINIO_ENDPOINT') ? 'http://' . getenv('MINIO_ENDPOINT') . ':9000' : 'http://minio:9000';
+        // Linh hoạt hơn: cho phép endpoint đầy đủ có protocol, hoặc mặc định docker 'minio:9000'
+        $endpoint = getenv('MINIO_ENDPOINT') ?: 'minio:9000';
+        
+        // Nếu endpoint chưa có http/https, thêm http:// vào đầu
+        if (!preg_match('/^http(s)?:\/\//', $endpoint)) {
+            $endpoint = 'http://' . $endpoint;
+        }
+        
+        // Nếu chưa có port (và không phải port mặc định của http/https), thêm :9000 làm mặc định cho MinIO
+        $urlParts = parse_url($endpoint);
+        if (!isset($urlParts['port']) && !in_array($urlParts['scheme'], ['http', 'https'])) {
+             // Chỉ thêm :9000 nếu không có port
+             $endpoint = rtrim($endpoint, '/') . ':9000';
+        } else if (!isset($urlParts['port'])) {
+            // Nếu parse_url không thấy port nhưng có scheme, có thể cần port nếu là minio mặc định
+            // Tuy nhiên, nếu là domain thật (ví dụ s3.amazonaws.com) thì không cần port.
+            // Để an toàn, nếu endpoint là 'minio' hoặc 'localhost' mà không có port, thêm :9000
+            if (in_array($urlParts['host'], ['minio', 'localhost', '127.0.0.1'])) {
+                $endpoint = rtrim($endpoint, '/') . ':9000';
+            }
+        }
+
         $accessKey = getenv('MINIO_ROOT_USER') ?: 'admin';
         $secretKey = getenv('MINIO_ROOT_PASSWORD') ?: 'admin123';
         

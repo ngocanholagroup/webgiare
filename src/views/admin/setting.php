@@ -26,13 +26,18 @@ $form_fields = [
                 <!-- Umami CTA -->
                 <div class="bg-indigo-50 border border-indigo-200 rounded-lg p-6 flex flex-col items-center text-center gap-4 hover:shadow-md transition-shadow">
                     <div class="p-3 bg-white rounded-full shadow-sm text-indigo-600">
-                        <i data-lucide="bar-chart-2" class="w-8 h-8"></i>
+                        <i data-lucide="bar-chart-3" class="w-8 h-8"></i>
                     </div>
                     <div>
                         <h3 class="text-lg font-bold text-indigo-900">Umami Analytics</h3>
                         <p class="text-indigo-600 text-sm mt-1">Xem thống kê truy cập và người dùng.</p>
                     </div>
-                    <a href="http://localhost:3000" target="_blank" class="w-full px-6 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-lg shadow-sm flex items-center justify-center gap-2 transition-colors">
+                    <?php 
+                        $umamiUrl = (strpos($_SERVER['HTTP_HOST'], 'webgiare.cloud') !== false) 
+                                    ? 'https://umami.webgiare.cloud' 
+                                    : 'http://localhost:3000';
+                    ?>
+                    <a href="<?= $umamiUrl ?>" target="_blank" class="w-full px-6 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-lg shadow-sm flex items-center justify-center gap-2 transition-colors">
                         <i data-lucide="external-link" class="w-4 h-4"></i>
                         Mở Dashboard
                     </a>
@@ -47,7 +52,12 @@ $form_fields = [
                         <h3 class="text-lg font-bold text-red-900">MinIO Object Storage</h3>
                         <p class="text-red-600 text-sm mt-1">Quản lý file ảnh và bucket lưu trữ.</p>
                     </div>
-                    <a href="http://localhost:9001" target="_blank" class="w-full px-6 py-2 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg shadow-sm flex items-center justify-center gap-2 transition-colors">
+                    <?php 
+                        $minioUrl = (strpos($_SERVER['HTTP_HOST'], 'webgiare.cloud') !== false) 
+                                    ? 'https://minio.webgiare.cloud' 
+                                    : 'http://localhost:9001';
+                    ?>
+                    <a href="<?= $minioUrl ?>" target="_blank" class="w-full px-6 py-2 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg shadow-sm flex items-center justify-center gap-2 transition-colors">
                         <i data-lucide="external-link" class="w-4 h-4"></i>
                         Mở Console
                     </a>
