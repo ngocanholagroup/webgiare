@@ -279,7 +279,6 @@ class AdminTemplateController
         $img = $stmt->fetch();
 
         if ($img) {
-            // Xóa file trên MinIO
             if (!empty($img['image_url'])) {
                 MediaService::delete($img['image_url']);
             }

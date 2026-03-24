@@ -93,19 +93,19 @@ class AdminBackupController {
                 error_log("Cảnh báo backup Umami: " . ($out2 ?: 'Không có phản hồi'));
             }
 
-            // 3. Backup MinIO (Files)
-            $minioFile = "minio_data_$timestamp.tar.gz";
-            $minioPath = $this->backupDir . '/' . $minioFile;
-            $minioDir = "/var/www/docker/minio_data";
-            if (is_dir($minioDir)) {
+            // 3. Backup uploads local (Files)
+            $uploadsFile = "uploads_$timestamp.tar.gz";
+            $uploadsPath = $this->backupDir . '/' . $uploadsFile;
+            $uploadsDir = "/var/www/html/uploads";
+            if (is_dir($uploadsDir)) {
                 $tarCmd = sprintf(
-                    'cd %s && tar -czf %s minio_data 2>&1',
-                    escapeshellarg(dirname($minioDir)),
-                    escapeshellarg($minioPath)
+                    'cd %s && tar -czf %s uploads 2>&1',
+                    escapeshellarg(dirname($uploadsDir)),
+                    escapeshellarg($uploadsPath)
                 );
                 $out3 = shell_exec($tarCmd);
-                if (!file_exists($minioPath) || filesize($minioPath) === 0) {
-                    throw new Exception("Lỗi backup MinIO: " . ($out3 ?: 'Không có phản hồi'));
+                if (!file_exists($uploadsPath) || filesize($uploadsPath) === 0) {
+                    throw new Exception("Lỗi backup uploads: " . ($out3 ?: 'Không có phản hồi'));
                 }
             }
 
@@ -123,7 +123,7 @@ class AdminBackupController {
 
     private function cleanupOldBackups() {
         $files = scandir($this->backupDir);
-        $groups = ['webgiare_db' => [], 'umami' => [], 'minio_data' => []];
+        $groups = ['webgiare_db' => [], 'umami' => [], 'uploads' => []];
         
         foreach ($files as $file) {
             foreach ($groups as $prefix => &$list) {
@@ -159,11 +159,11 @@ class AdminBackupController {
 
         // Lấy danh sách file của ngày được chọn
         $mysqlFile = "webgiare_db_$date.sql";
-        $minioFile = "minio_data_$date.tar.gz";
+        $uploadsFile = "uploads_$date.tar.gz";
         $pgFile = "umami_$date.sql";
 
         $mysqlPath = $this->backupDir . '/' . $mysqlFile;
-        $minioPath = $this->backupDir . '/' . $minioFile;
+        $uploadsPath = $this->backupDir . '/' . $uploadsFile;
         $pgPath = $this->backupDir . '/' . $pgFile;
 
         if (!file_exists($mysqlPath)) {
@@ -219,18 +219,17 @@ class AdminBackupController {
                 }
             }
 
-            // 3. Khôi phục MinIO (nếu có)
-            if (file_exists($minioPath)) {
-                $minioDir = "/var/www/docker"; // Giải nén vào thư mục cha vì file nén chứa thư mục minio_data
-                // Xóa thư mục uploads cũ để đảm bảo không còn file rác
+            // 3. Khôi phục uploads local (nếu có)
+            if (file_exists($uploadsPath)) {
+                $webDir = "/var/www/html";
                 $tarCmd = sprintf(
-                    'cd %s && rm -rf minio_data/uploads && tar -xzf %s 2>&1',
-                    escapeshellarg($minioDir),
-                    escapeshellarg($minioPath)
+                    'cd %s && rm -rf uploads && tar -xzf %s 2>&1',
+                    escapeshellarg($webDir),
+                    escapeshellarg($uploadsPath)
                 );
                 $out3 = shell_exec($tarCmd);
                 if (!empty($out3) && stripos($out3, 'error') !== false) {
-                    error_log("Lỗi restore MinIO: " . $out3);
+                    error_log("Lỗi restore uploads: " . $out3);
                 }
             }
 
@@ -255,7 +254,7 @@ class AdminBackupController {
             if ($file === '.' || $file === '..') continue;
 
             // Parse tên file để lấy ngày giờ
-            // Định dạng: webgiare_db_YYYYMMDD_HHMMSS.sql, umami_YYYYMMDD_HHMMSS.sql, minio_data_YYYYMMDD_HHMMSS.tar.gz
+            // Định dạng: webgiare_db_YYYYMMDD_HHMMSS.sql, umami_YYYYMMDD_HHMMSS.sql, uploads_YYYYMMDD_HHMMSS.tar.gz
             if (preg_match('/_(\d{8}_\d{6})\.(sql|tar\.gz)$/', $file, $matches)) {
                 $dateStr = $matches[1];
                 

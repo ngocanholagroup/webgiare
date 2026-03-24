@@ -194,7 +194,6 @@ class AdminBlogController
         if (!empty($_FILES['thumbnail']['name'])) {
             $newUrl = $this->uploadImage($_FILES['thumbnail']);
             if ($newUrl) {
-                // Xóa ảnh cũ để dọn rác server (MinIO)
                 if (!empty($data['thumbnail'])) {
                     MediaService::delete($data['thumbnail']);
                 }
@@ -211,7 +210,6 @@ class AdminBlogController
         // Tìm những ảnh có trong CŨ mà KHÔNG có trong MỚI (tức là đã bị user xóa)
         $deletedImages = array_diff($oldImages, $newImages);
         
-        // Tiến hành xóa file trên MinIO
         foreach ($deletedImages as $imgUrl) {
             MediaService::delete($imgUrl);
         }

@@ -14,11 +14,9 @@ if (isset($_SESSION['upload_error'])) {
 // Ta gán nó vào $form_data để form.php tự điền value
 $form_data = $settings;
 
- $umamiBase = getenv('UMAMI_CONSOLE_URL') ?: 'http://localhost:3000';
- $umamiUrl = rtrim($umamiBase, '/') . '/websites';
- $minioUrl = getenv('MINIO_CONSOLE_URL') ?: 'http://localhost:9001';
-
 // 2. CẤU HÌNH FIELDS
+$umamiUrl = getenv("UMAMI_CONSOLE_URL") ?: "http://localhost:3000";
+
 $form_fields = [
     [
         'label' => '',
@@ -26,7 +24,7 @@ $form_fields = [
         'type' => 'custom',
         'width' => 'col-span-12',
         'html' => '
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="grid grid-cols-1 gap-6">
                 <!-- Umami CTA -->
                 <div class="bg-indigo-50 border border-indigo-200 rounded-lg p-6 flex flex-col items-center text-center gap-4 hover:shadow-md transition-shadow">
                     <div class="p-3 bg-white rounded-full shadow-sm text-indigo-600">
@@ -36,24 +34,9 @@ $form_fields = [
                         <h3 class="text-lg font-bold text-indigo-900">Umami Analytics</h3>
                         <p class="text-indigo-600 text-sm mt-1">Xem thống kê truy cập và người dùng.</p>
                     </div>
-                    <a href="/admin/setting/umami" target="_blank" class="w-full px-6 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-lg shadow-sm flex items-center justify-center gap-2 transition-colors">
+                    <a href="' . htmlspecialchars($umamiUrl) . '" target="_blank" class="w-full px-6 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-lg shadow-sm flex items-center justify-center gap-2 transition-colors">
                         <i data-lucide="external-link" class="w-4 h-4"></i>
                         Mở Dashboard
-                    </a>
-                </div>
-
-                <!-- MinIO CTA -->
-                <div class="bg-red-50 border border-red-200 rounded-lg p-6 flex flex-col items-center text-center gap-4 hover:shadow-md transition-shadow">
-                    <div class="p-3 bg-white rounded-full shadow-sm text-red-600">
-                        <i data-lucide="database" class="w-8 h-8"></i>
-                    </div>
-                    <div>
-                        <h3 class="text-lg font-bold text-red-900">MinIO Object Storage</h3>
-                        <p class="text-red-600 text-sm mt-1">Quản lý file ảnh và bucket lưu trữ.</p>
-                    </div>
-                    <a href="/admin/setting/minio" target="_blank" class="w-full px-6 py-2 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg shadow-sm flex items-center justify-center gap-2 transition-colors">
-                        <i data-lucide="external-link" class="w-4 h-4"></i>
-                        Mở Console
                     </a>
                 </div>
             </div>

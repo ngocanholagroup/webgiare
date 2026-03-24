@@ -21,7 +21,6 @@ docker-compose up -d
 - Website:        http://localhost:8080
 - phpMyAdmin:     http://localhost:8081
 - Umami Analytics: http://localhost:3000
-- MinIO Console:  http://localhost:9001
 ```
 
 ### Tài khoản đăng nhập
@@ -30,7 +29,6 @@ docker-compose up -d
 |---------|----------|----------|
 | Admin Panel | `admin` | `123456` |
 | phpMyAdmin | `root` | `root` |
-| MinIO | `admin` | `12345678` |
 | Umami | `admin` | `umami` |
 
 ---
@@ -43,9 +41,10 @@ Dữ liệu được lưu trong thư mục `docker/`:
 docker/
 ├── mysql_data/           # Database MySQL
 ├── umami_postgres_data/ # Database PostgreSQL (Umami)
-├── minio_data/          # Ảnh upload (MinIO)
 └── backups/             # File backup tự động
 ```
+
+Ảnh upload được lưu tại: `src/uploads/`
 
 ---
 
@@ -69,11 +68,8 @@ ls -la docker/backups/
 # Restore database
 ./docker/restore-db.sh db webgiare_db_YYYYMMDD_HHMMSS.sql
 
-# Restore ảnh (MinIO)
-./docker/restore-db.sh minio minio_data_YYYYMMDD_HHMMSS.tar.gz
-
-# Restore tất cả (database + ảnh)
-./docker/restore-db.sh all webgiare_db_YYYYMMDD_HHMMSS.sql
+# Restore ảnh (Local uploads)
+./docker/restore-db.sh uploads uploads_YYYYMMDD_HHMMSS.tar.gz
 ```
 
 ---
@@ -99,7 +95,7 @@ Nếu cần reset về trạng thái ban đầu:
 
 ```bash
 # Cách 1: Xóa thư mục data và restart
-rm -rf docker/mysql_data docker/umami_postgres_data docker/minio_data
+rm -rf docker/mysql_data docker/umami_postgres_data src/uploads
 docker-compose down
 docker-compose up -d
 
@@ -120,10 +116,6 @@ DB_NAME=webgiare_dev
 DB_USER=webgiare_user
 DB_PASS=root
 
-# MinIO
-MINIO_ROOT_USER=admin
-MINIO_ROOT_PASSWORD=12345678
-
 # Umami
 UMAMI_DB=admin
 UMAMI_USER=admin
@@ -141,8 +133,6 @@ UMAMI_PASSWORD=umami
 | phpMyAdmin | 8081 | Quản lý MySQL |
 | Umami Analytics | 3000 | Thống kê truy cập |
 | PostgreSQL | 5432 | Database Umami |
-| MinIO | 9000 | Lưu trữ file |
-| MinIO Console | 9001 | Quản lý MinIO |
 
 ---
 
@@ -164,7 +154,7 @@ docker-compose logs db
 docker-compose down
 
 # Xóa dữ liệu (CẨN THẬN!)
-rm -rf docker/mysql_data docker/umami_postgres_data docker/minio_data
+rm -rf docker/mysql_data docker/umami_postgres_data src/uploads
 
 # Chạy lại
 docker-compose up -d

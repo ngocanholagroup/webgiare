@@ -63,6 +63,4 @@ access.log
 # Docker Volumes & Backups
 docker/mysql_data/
 docker/umami_postgres_data/
-docker/minio_data/
 docker/backups/
-minio_data/
