@@ -14,10 +14,9 @@ if (isset($_SESSION['upload_error'])) {
 // Ta gán nó vào $form_data để form.php tự điền value
 $form_data = $settings;
 
- $httpHost = $_SERVER['HTTP_HOST'] ?? '';
- $isWebgiareCloud = strpos($httpHost, 'webgiare.cloud') !== false;
- $umamiUrl = $isWebgiareCloud ? 'https://umami.webgiare.cloud' : 'http://localhost:3000';
- $minioUrl = $isWebgiareCloud ? 'https://minio.webgiare.cloud' : 'http://localhost:9001';
+ $umamiBase = getenv('UMAMI_CONSOLE_URL') ?: 'http://localhost:3000';
+ $umamiUrl = rtrim($umamiBase, '/') . '/websites';
+ $minioUrl = getenv('MINIO_CONSOLE_URL') ?: 'http://localhost:9001';
 
 // 2. CẤU HÌNH FIELDS
 $form_fields = [
