@@ -1,8 +1,9 @@
 <?php
 // Không gọi các file cấu hình không tồn tại trên view.
-// Giữ trải nghiệm đồng bộ: include header/footer chuẩn.
+// Giữ trải nghiệm đồng bộ: include header/footer chuẩn với đường dẫn tuyệt đối.
 $pageTitle = "Không tìm thấy trang - 404 Error";
-include 'includes/header.php';
+$rootPath = dirname(__DIR__, 2);
+include $rootPath . '/includes/header.php';
 ?>
 
 <section class="min-h-screen bg-white flex items-center justify-center relative overflow-hidden pt-20 pb-20">
@@ -47,5 +48,5 @@ include 'includes/header.php';
 
 <?php
 // Footer tối giản cho trang 404 (hoặc include footer thường)
-include 'includes/footer.php';
+include $rootPath . '/includes/footer.php';
 ?>
