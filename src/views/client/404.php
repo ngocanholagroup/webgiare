@@ -1,7 +1,6 @@
 <?php
-// Không gọi header/footer đầy đủ nếu muốn trang 404 đứng độc lập, 
-// nhưng để giữ trải nghiệm đồng bộ, ta vẫn nên include header.
-require_once 'config/database.php';
+// Không gọi các file cấu hình không tồn tại trên view.
+// Giữ trải nghiệm đồng bộ: include header/footer chuẩn.
 $pageTitle = "Không tìm thấy trang - 404 Error";
 include 'includes/header.php';
 ?>

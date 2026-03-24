@@ -36,7 +36,7 @@ $form_fields = [
                         <h3 class="text-lg font-bold text-indigo-900">Umami Analytics</h3>
                         <p class="text-indigo-600 text-sm mt-1">Xem thống kê truy cập và người dùng.</p>
                     </div>
-                    <a href="' . htmlspecialchars($umamiUrl, ENT_QUOTES, 'UTF-8') . '" target="_blank" class="w-full px-6 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-lg shadow-sm flex items-center justify-center gap-2 transition-colors">
+                    <a href="/admin/setting/umami" target="_blank" class="w-full px-6 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-lg shadow-sm flex items-center justify-center gap-2 transition-colors">
                         <i data-lucide="external-link" class="w-4 h-4"></i>
                         Mở Dashboard
                     </a>
@@ -51,7 +51,7 @@ $form_fields = [
                         <h3 class="text-lg font-bold text-red-900">MinIO Object Storage</h3>
                         <p class="text-red-600 text-sm mt-1">Quản lý file ảnh và bucket lưu trữ.</p>
                     </div>
-                    <a href="' . htmlspecialchars($minioUrl, ENT_QUOTES, 'UTF-8') . '" target="_blank" class="w-full px-6 py-2 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg shadow-sm flex items-center justify-center gap-2 transition-colors">
+                    <a href="/admin/setting/minio" target="_blank" class="w-full px-6 py-2 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg shadow-sm flex items-center justify-center gap-2 transition-colors">
                         <i data-lucide="external-link" class="w-4 h-4"></i>
                         Mở Console
                     </a>

@@ -113,6 +113,37 @@ $router->get('/admin/service/delete/{id}', [AdminContactController::class, 'dele
 $router->get('/admin/setting', [AdminSettingController::class, 'index']);
 $router->post('/admin/setting/save', [AdminSettingController::class, 'save']);
 
+// --- Shortcuts to external consoles (Umami / MinIO) ---
+$router->get('/admin/setting/umami', function() {
+    if (!isset($_SESSION['admin_logged_in'])) {
+        header('Location: /admin/login');
+        exit;
+    }
+    $host = $_SERVER['HTTP_HOST'] ?? '';
+    if (strpos($host, 'webgiare.cloud') !== false) {
+        $url = 'https://umami.webgiare.cloud/websites';
+    } else {
+        $url = 'http://localhost:3000/websites';
+    }
+    header('Location: ' . $url, true, 302);
+    exit;
+});
+
+$router->get('/admin/setting/minio', function() {
+    if (!isset($_SESSION['admin_logged_in'])) {
+        header('Location: /admin/login');
+        exit;
+    }
+    $host = $_SERVER['HTTP_HOST'] ?? '';
+    if (strpos($host, 'webgiare.cloud') !== false) {
+        $url = 'https://minio.webgiare.cloud';
+    } else {
+        $url = 'http://localhost:9001';
+    }
+    header('Location: ' . $url, true, 302);
+    exit;
+});
+
 // --- QUẢN LÝ TÀI KHOẢN (ADMINS) ---
 $router->get('/admin/account', [AdminAccountController::class, 'index']);
 $router->get('/admin/account/create', [AdminAccountController::class, 'create']);
