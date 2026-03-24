@@ -195,20 +195,32 @@ class FileUploadValidator {
 
         error_log("Image info: " . print_r($info, true));
 
+        // Nếu server không cài đặt thư viện GD (thường gặp ở một số host), 
+        // ta bỏ qua bước kiểm tra chuyên sâu từng pixel và tin tưởng vào getimagesize()
+        if (!extension_loaded('gd')) {
+            return true;
+        }
+
         // Try to create image resource to verify it's not corrupted
         $image = null;
+        $gd_function_missing = false;
+
         switch ($info[2]) {
             case IMAGETYPE_JPEG:
-                $image = @imagecreatefromjpeg($filepath);
+                if (function_exists('imagecreatefromjpeg')) $image = @imagecreatefromjpeg($filepath);
+                else $gd_function_missing = true;
                 break;
             case IMAGETYPE_PNG:
-                $image = @imagecreatefrompng($filepath);
+                if (function_exists('imagecreatefrompng')) $image = @imagecreatefrompng($filepath);
+                else $gd_function_missing = true;
                 break;
             case IMAGETYPE_GIF:
-                $image = @imagecreatefromgif($filepath);
+                if (function_exists('imagecreatefromgif')) $image = @imagecreatefromgif($filepath);
+                else $gd_function_missing = true;
                 break;
             case IMAGETYPE_WEBP:
-                $image = @imagecreatefromwebp($filepath);
+                if (function_exists('imagecreatefromwebp')) $image = @imagecreatefromwebp($filepath);
+                else $gd_function_missing = true;
                 break;
             case IMAGETYPE_ICO:
                 // ICO files cannot be processed by GD, just validate file structure
@@ -225,6 +237,12 @@ class FileUploadValidator {
                 }
                 error_log("ICO file validation failed");
                 return false;
+        }
+
+        if ($gd_function_missing) {
+            // Function to process this image type is missing from GD library
+            // Trust getimagesize() instead of rejecting
+            return true;
         }
 
         if ($image === false || $image === null) {
