@@ -47,5 +47,14 @@ fi
 echo "🌟  Ready to serve requests!"
 echo ""
 
+# Cấu hình Auto Backup bằng Cron (03:00 AM VN = 20:00 UTC)
+echo "📅 Configuring Auto Backup Cron Job..."
+echo "0 20 * * * root php /var/www/html/cron_backup.php >> /var/www/backups/cron.log 2>&1" > /etc/cron.d/auto-backup
+chmod 0644 /etc/cron.d/auto-backup
+crontab /etc/cron.d/auto-backup
+service cron start
+echo "✅ Auto Backup scheduled at 03:00 AM VN time."
+echo ""
+
 # Execute the CMD from Dockerfile
 exec docker-php-entrypoint apache2-foreground

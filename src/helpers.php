@@ -3,7 +3,6 @@
 require_once __DIR__ . '/models/Setting.php';
 require_once __DIR__ . '/SecurityHelper.php';
 require_once __DIR__ . '/Logger.php';
-require_once __DIR__ . '/FileUploadValidator.php';
 require_once __DIR__ . '/SecurityHeaders.php';    // Priority 3
 
 if (!function_exists('setting')) {

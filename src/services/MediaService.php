@@ -8,13 +8,9 @@ class MediaService {
      * @return array ['success' => bool, 'url' => string, 'error' => string]
      */
     public static function upload($file, $folder = '') {
-        // 1. Validate cơ bản
-        $validation = FileUploadValidator::validate($file);
-        if (!$validation['valid']) {
-            return [
-                'success' => false, 
-                'error' => implode(', ', $validation['errors'])
-            ];
+        // Check for PHP-level upload errors only
+        if ($file['error'] !== UPLOAD_ERR_OK) {
+            return ['success' => false, 'error' => 'Upload error code: ' . $file['error']];
         }
 
         try {

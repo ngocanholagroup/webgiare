@@ -1,7 +1,9 @@
 <?php include 'includes/admin-header.php'; ?>
 
 <form id="page-form" action="/admin/page/update/<?= $page['id'] ?>" method="POST">
-    
+    <!-- CSRF Token -->
+    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(SecurityHelper::getCSRFToken() ?? '') ?>">
+
     <div class="flex items-center justify-between mb-6 pb-4 border-b border-slate-200 w-full">
         <a href="/admin/page" class="flex items-center gap-1 text-sm font-semibold text-slate-500 hover:text-slate-800 transition-colors">
             <i data-lucide="arrow-left" class="w-4 h-4"></i> Quay lại

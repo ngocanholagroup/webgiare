@@ -99,7 +99,7 @@ if (isset($form_fields) && is_array($form_fields)) {
                                 $previewContainerId = "gallery_preview_" . $key;
                             ?>
                                 <div class="border border-dashed border-slate-300 rounded-xl p-4 bg-slate-50">
-                                    <input type="file" name="<?= $key ?>[]" id="<?= $inputId ?>" multiple accept="image/*"
+                                    <input type="file" name="<?= $key ?>[]" id="<?= $inputId ?>" multiple
                                            onchange="previewGallery(this, '<?= $previewContainerId ?>')"
                                            class="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-blue-600 file:text-white hover:file:bg-blue-700 cursor-pointer mb-4">
                                     
@@ -143,7 +143,7 @@ if (isset($form_fields) && is_array($form_fields)) {
                                     </div>
 
                                     <div class="flex-1 w-full">
-                                        <input type="file" name="<?= $key ?>" id="<?= $inputId ?>" accept="image/*"
+                                        <input type="file" name="<?= $key ?>" id="<?= $inputId ?>"
                                             <?= ($required && !$hasImage) ? 'required' : '' ?>
                                             onchange="previewSingleImage(this, '<?= $previewId ?>', '<?= $iconId ?>')"
                                             class="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-bold file:bg-slate-700 file:text-white hover:file:bg-slate-800 cursor-pointer mb-2">

@@ -63,6 +63,7 @@
                     </div>
                     <!-- Thêm vào cái select để đánh dấu trạng thái ở đây: 'new', 'contacted', 'completed', 'spam' -->
                     <form id="contact-form" action="/admin/contact/update/<?= $contact['id'] ?>" method="POST">
+                        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(SecurityHelper::getCSRFToken() ?? '') ?>">
                     <div class="space-y-2">
                         <label class="text-sm font-bold text-slate-700">Trạng thái</label>
                         <select name="status" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:border-blue-500 text-sm">

@@ -13,6 +13,7 @@ RUN apt-get update && apt-get install -y \
     sudo \
     mariadb-client \
     postgresql-client \
+    cron \
     && rm -rf /var/lib/apt/lists/*
 
 # Cho phép www-data chạy sudo không cần pass
